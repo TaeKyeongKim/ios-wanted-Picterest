@@ -53,7 +53,7 @@
 ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진만 검색하는 기능 이 추가 될경우 를 위하여 
 
 ### [API 분석]
-> https://api.unsplash.com/photos/?client_id=(API_Key)&page=1$per_page=15
+> https://api.unsplash.com/photos/?client_id=(API_Key)&page=1&per_page=15
 
 |Scheme|Host|Path|Query|
 |---|---|---|---|
