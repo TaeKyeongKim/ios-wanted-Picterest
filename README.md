@@ -41,7 +41,7 @@
 
 - ViewModel 에서 필요한 데이터를 네트워크 혹은, 각종 저장소에서 가져와 전달합니다.
 - 네트워크 서비스를 이용하여 특정 API request 및, Data 를 DTO 로 디코딩 해줍니다.
-- Disk 혹은 coreData 에 데이터를 저장합니다.
+- Disk 와 coreData 에 데이터를 저장합니다.
 ---- 
 
 ## NetWork Layer
