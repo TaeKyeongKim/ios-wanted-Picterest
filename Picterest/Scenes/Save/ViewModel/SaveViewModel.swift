@@ -18,8 +18,9 @@ final class SaveViewModel: ImageConfigurable {
   }
   
   func resetList() {
-    imageList.value = []
+    imageList.value.removeAll()
   }
+  
   func updateLikeStatus() {
     let storedModels = repository.fetchSavedImageData()
     imageList.value.forEach({ imageEntity in
