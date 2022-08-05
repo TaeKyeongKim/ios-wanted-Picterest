@@ -37,14 +37,14 @@ class SaveViewController: UIViewController {
     super.viewWillAppear(animated)
     resetData()
     fetchImage()
-    setDataBinding()
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
-    setConstraints()
     setGuesture()
+    setDataBinding()
+    setConstraints()
   }
   
 }
@@ -66,9 +66,11 @@ private extension SaveViewController {
       }else {
         self.defaultView.isHidden = true
       }
-        DispatchQueue.main.async {
+      DispatchQueue.main.async {
+        self.collectionView.performBatchUpdates {
           self.collectionView.reloadSections(IndexSet(integer: 0))
         }
+      }
     })
   }
   
@@ -79,6 +81,7 @@ private extension SaveViewController {
     if let layout = collectionView.collectionViewLayout as? SceneLayout {
       layout.delegate = self
     }
+    
     NSLayoutConstraint.activate([
       collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
       collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
@@ -148,7 +151,9 @@ extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
     guard let model = viewModel[indexPath],
           let image = ImageManager.shared.getSavedImage(named: model.imageURL.lastPathComponent)
-    else {return 0}
+    else {
+      CoreDataManager.shared.delete(viewModel[indexPath]!)
+      return 0}
     let widthRatio = image.size.width / image.size.height
     return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }

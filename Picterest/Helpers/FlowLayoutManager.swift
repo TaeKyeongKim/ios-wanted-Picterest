@@ -23,7 +23,6 @@ final class SceneLayout: UICollectionViewLayout {
   let numberOfColumns: Int
   let cellPadding: CGFloat
   private var cache: [cacheType: [UICollectionViewLayoutAttributes]] = [.items:[], .footer:[]]
-  private var previousItemCounter = 0
   private var contentHeight: CGFloat = 0
   private var contentWidth: CGFloat {
     guard let collectionView = collectionView else {
@@ -58,8 +57,7 @@ extension SceneLayout {
   
   override func prepare() {
     super.prepare()
-    guard let collectionView = collectionView
-    else {
+    guard let collectionView = collectionView else {
       return
     }
     
@@ -78,7 +76,6 @@ extension SceneLayout {
     var column = 0
     var yOffset: [CGFloat] = .init(repeating: 0, count: numberOfColumns)
     
-    
     for item in 0..<collectionView.numberOfItems(inSection: 0) {
       let indexPath = IndexPath(item: item, section: 0)
       
@@ -91,7 +88,6 @@ extension SceneLayout {
                          y: yOffset[column],
                          width: columnWidth,
                          height: height)
-      
       let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
       
       //10
@@ -108,25 +104,26 @@ extension SceneLayout {
       //11
       contentHeight = max(contentHeight, frame.maxY)
       yOffset[column] = yOffset[column] + height
+      
       if numberOfColumns == SceneType.save.rawValue {
         continue
       }
       let otherCol = column == 0 ? 1:0
       column = yOffset[column] < yOffset[otherCol] ? column : otherCol
 
-      let footerAtrributes = UICollectionViewLayoutAttributes(
-        forSupplementaryViewOfKind:
-          UICollectionView.elementKindSectionFooter,
-        with:
-          IndexPath(
-            item: item,
-            section: 0)
-      )
-      
-      if (previousItemCounter != item) && ((item + 1) % 15 == 0) {
-        previousItemCounter += item
+      if ((item + 1) % 15 == 0) {
+        let footerAtrributes = UICollectionViewLayoutAttributes(
+          forSupplementaryViewOfKind:
+            UICollectionView.elementKindSectionFooter,
+          with: 
+            IndexPath(
+              item: item,
+              section: 0)
+        )
         footerAtrributes.frame = CGRect(x: 0, y: max(contentHeight, frame.maxY),
                                         width: UIScreen.main.bounds.width, height: 50)
+        
+        
         guard var footerAttribute = cache[.footer] else {return}
         footerAttribute.removeAll()
         footerAttribute.append(footerAtrributes)

@@ -36,8 +36,8 @@ class HomeViewController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    fetchImage()
     updateData()
+    fetchImage()
   }
   
   override func viewDidLoad() {
@@ -47,6 +47,7 @@ class HomeViewController: UIViewController {
     setConstraints()
   }
   
+
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     resetData()
@@ -192,6 +193,7 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    print("viewForSupplementaryElementOfKind")
     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: Footer.id, for: indexPath) as? Footer else {
       return UICollectionReusableView()
     }
