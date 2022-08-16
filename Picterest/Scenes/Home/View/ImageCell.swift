@@ -8,7 +8,7 @@
 import UIKit
 
 final class ImageCell: UICollectionViewCell {
-
+  
   static let id = "ImageCell"
   private var model: ImageEntity?
   var saveDidTap: ((ImageEntity) -> Void)?
@@ -60,50 +60,7 @@ final class ImageCell: UICollectionViewCell {
     return imageView
   }()
   
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    setConstraints()
-    layer.cornerRadius = 15
-    clipsToBounds = true
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-  
-  func configure(model: ImageEntity, indexPath: IndexPath, sceneType: SceneType) {
-    self.model = model
-    self.memoLabel.text = "\(indexPath.item + 1)번째 사진"
-    self.imageView.setImage(urlSource: model){ image in
-      model.saveImage(image: image)
-    }
-    switch sceneType {
-    case .save:
-      setCellToLikeState(model: model)
-    case .home:
-      setCellToDefaultState(model: model)
-    }
-  }
-  
-  override func prepareForReuse() {
-    imageView.image = nil
-    memoLabel.text = nil
-    likeButton.setImage(defaultLikeImage, for: .normal)
-  }
-  
-  func setLikeButtonToLike() {
-    likeButton.setImage(likeImage, for: .normal)
-  }
-  
-  func setLikeButtonToUndoLike() {
-    likeButton.setImage(defaultLikeImage, for: .normal)
-  }
-  
-}
-
-private extension ImageCell {
-  
-  func setConstraints() {
+  private func setConstraints() {
     
     contentView.addSubview(imageView)
     contentView.addSubview(labelStackView)
@@ -121,22 +78,74 @@ private extension ImageCell {
     ])
   }
   
-  @objc func saveButtonDidTap(){
+  @objc private func saveButtonDidTap(){
     guard let model = self.model else {return}
     if model.isLiked == false {
       saveDidTap?(model)
     }
   }
   
-  func setCellToDefaultState(model: ImageEntity) {
+  private func setMemoLabel(index: Int) {
+    self.memoLabel.text = "\(index + 1)번째 사진"
+  }
+  
+  private func setLikeButtonToUndoLike() {
+    likeButton.setImage(defaultLikeImage, for: .normal)
+  }
+  
+  private func setCellToHomeState(model: ImageEntity, index: Int) {
+    setMemoLabel(index: index)
     if model.isLiked == true {
-      setLikeButtonToLike()
+      setLikeButtonToOn()
+    }else {
+      setLikeButtonToUndoLike()
     }
   }
   
-  func setCellToLikeState(model: ImageEntity) {
-    setLikeButtonToLike()
+  private func setCellToSaveState(model: ImageEntity) {
+    setLikeButtonToOn()
     self.memoLabel.text = model.memo
   }
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    setConstraints()
+    layer.cornerRadius = 15
+    clipsToBounds = true
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  
+  override func prepareForReuse() {
+    imageView.image = nil
+    memoLabel.text = nil
+    likeButton.setImage(defaultLikeImage, for: .normal)
+  }
 
+}
+
+extension ImageCell {
+  
+  
+  func configure(model: ImageEntity, indexPath: IndexPath, sceneType: SceneType) {
+    self.model = model
+    self.imageView.setImage(urlSource: model){ image in
+      model.saveImage(image: image)
+    }
+    
+    switch sceneType {
+    case .save:
+      setCellToSaveState(model: model)
+    case .home:
+      setCellToHomeState(model: model, index: indexPath.item)
+    }
+  }
+  
+  func setLikeButtonToOn() {
+    likeButton.setImage(likeImage, for: .normal)
+  }
+  
 }

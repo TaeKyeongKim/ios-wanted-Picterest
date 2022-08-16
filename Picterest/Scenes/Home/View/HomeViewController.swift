@@ -127,7 +127,7 @@ private extension HomeViewController {
           if let error = error {
             print(error.localizedDescription)
           }else {
-            cell.setLikeButtonToLike()
+            cell.setLikeButtonToOn()
           }
         }
       }),
