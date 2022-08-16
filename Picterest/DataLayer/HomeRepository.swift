@@ -9,14 +9,19 @@ import Foundation
 
 struct HomeRepository {
   
-  func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[ImageDTO], NetworkError>) -> Void) {
+  func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[ImageEntity], NetworkError>) -> Void) {
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
     NetworkService.request(on: request.value) { result in
       switch result {
       case .success(let data):
         let decorder = Decoder<[ImageDTO]>()
+        var tempList:[ImageEntity] = []
         guard let decodedData = decorder.decode(data: data) else {return}
-        completion(.success(decodedData))
+        for item in decodedData {
+          let imageEntity = item.toDomain()
+          tempList.append(imageEntity)
+        }
+        completion(.success(tempList))
       case .failure(let error):
         completion(.failure(error))
       }

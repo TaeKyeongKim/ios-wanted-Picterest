@@ -47,18 +47,16 @@ final class HomeViewModel: ImageConfigurable {
     let page = pageCount() + 1
     let storedModels = repository.fetchSavedImageData()
     let endPoint = EndPoint(path: .showList, query: .imagesPerPage(pageNumber: page, perPage: imagesPerPage))
+    
     repository.fetchImages(endPoint: endPoint) { result in
       switch result {
       case .success(let data):
-        var tempList: [ImageEntity] = []
         for item in data {
-          let imageEntity = item.toDomain()
-          if storedModels.contains(where: {$0.id == imageEntity.id}) {
-            imageEntity.toogleLikeStates()
+          if storedModels.contains(where: {$0.id == item.id}) {
+            item.toogleLikeStates()
           }
-          tempList.append(imageEntity)
         }
-        self.imageList.value += tempList
+        self.imageList.value += data
       case .failure(let error):
         print(error)
       }

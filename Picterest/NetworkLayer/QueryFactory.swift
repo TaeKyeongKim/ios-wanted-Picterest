@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum QueryMaker {
+enum QueryFactory {
   
   static let defaultAPIKEY: String? = Bundle.searchObject(from: "API", key: "key")
   
@@ -15,7 +15,7 @@ enum QueryMaker {
   case noQuery
   
   var queryItems: [URLQueryItem]? {
-    guard let APIKey = QueryMaker.defaultAPIKEY else {return nil}
+    guard let APIKey = QueryFactory.defaultAPIKEY else {return nil}
     var baseQuery: [URLQueryItem] = [URLQueryItem(name: Query.clientID.rawValue,
                                                   value: APIKey)]
     switch self {
