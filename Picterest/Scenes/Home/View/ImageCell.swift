@@ -129,7 +129,6 @@ final class ImageCell: UICollectionViewCell {
 
 extension ImageCell {
   
-  
   func configure(model: ImageEntity, indexPath: IndexPath, sceneType: SceneType) {
     self.model = model
     self.imageView.setImage(urlSource: model){ image in

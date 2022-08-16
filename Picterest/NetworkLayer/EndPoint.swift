@@ -11,7 +11,7 @@ struct EndPoint: EndPointable {
   let path: ServerPath
   var queryItems: [URLQueryItem]?
   
-  init(path: ServerPath, query: QueryMaker){
+  init(path: ServerPath, query: QueryFactory){
     self.path = path
     self.queryItems = query.queryItems
   }
