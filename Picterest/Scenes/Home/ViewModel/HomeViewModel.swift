@@ -7,9 +7,6 @@
 
 import UIKit
 
-
-
-
 final class HomeViewModel: ImageConfigurable {
   
   var didUpdateLikeStatusAt: ((Int) -> Void)?

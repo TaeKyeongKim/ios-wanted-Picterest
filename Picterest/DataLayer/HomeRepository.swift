@@ -44,7 +44,7 @@ struct HomeRepository {
   }
   
   func deleteImage(imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
-    ImageManager.shared.deleteSavedImage(imageEntity: imageEntity){ error in
+    ImageManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
       if let error = error {
         completion(error)
       }else {
@@ -54,11 +54,9 @@ struct HomeRepository {
   }
   
   func resetRepository(completion: @escaping ((Error?) -> Void)) {
-    ImageManager.shared.clearStorage(){ error in
-      if let error = error {
+    ImageManager.shared.clearStorage(){ result in
+      if case let .failure(error) = result {
         completion(error)
-      }else {
-        completion(nil)
       }
     }
   }
