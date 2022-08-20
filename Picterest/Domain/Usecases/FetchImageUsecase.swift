@@ -9,7 +9,6 @@ import Foundation
 
 protocol FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               cached: @escaping ([ImageEntity]) -> Void,
                completion: @escaping (Result<[ImageEntity],NetworkError>) -> Void)
 }
 
@@ -28,7 +27,6 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   
   //TODO: Consider cached data as ImageEntity. Not only Image itself.
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               cached: @escaping ([ImageEntity]) -> Void,
                completion: @escaping (Result<[ImageEntity], NetworkError>) -> Void) {
     
     let endPoint = EndPoint(path: .showList,
@@ -38,7 +36,6 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
     return imageRepository.fetchImages(endPoint: endPoint) { result in
       completion(result)
     }
-    
   }
   
   

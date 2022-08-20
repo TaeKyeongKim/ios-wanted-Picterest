@@ -50,6 +50,12 @@ final class CoreDataManager {
     }
   }
   
+  func isSaved(id: String) -> Bool {
+    guard let fetchResults = fetchImages(),
+          let _ = fetchResults.filter({$0.id == id}).first
+    else {return false}
+    return true
+  }
   
   func delete(_ model: ImageEntity) {
     guard let fetchResults = fetchImages(),
