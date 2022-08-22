@@ -19,9 +19,9 @@ struct FetchImageUsecaseRequestValue {
 
 final class DefaultFetchImageUsecase: FetchImageUsecase {
   
-  private let imageRepository: HomeRepository
+  private let imageRepository: ImageRepository
   
-  init(imageRespository: HomeRepository) {
+  init(imageRespository: ImageRepository) {
     self.imageRepository = imageRespository
   }
   

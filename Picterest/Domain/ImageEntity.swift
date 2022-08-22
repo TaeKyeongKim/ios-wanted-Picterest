@@ -8,11 +8,13 @@
 import UIKit
 
 final class ImageEntity: Identifiable {
+  
   let id: String
   let imageURL: URL
   private(set) var width: CGFloat?
   private(set) var height: CGFloat?
   private(set) var isLiked: Bool
+  
   private(set) var memo: String?
   private(set) var image: UIImage?
   private(set) var storedDirectory: URL?

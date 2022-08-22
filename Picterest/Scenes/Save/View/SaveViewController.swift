@@ -150,7 +150,7 @@ extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
     guard let model = viewModel[indexPath],
-          let image = ImageManager.shared.getSavedImage(named: model.imageURL.lastPathComponent)
+          let image = ImageManager.shared.getSavedImage(named: model.imageURL.lastPathComponent) //이부분 ViewModel 로 빼야한다.
     else {
       CoreDataManager.shared.delete(viewModel[indexPath]!)
       return 0}
