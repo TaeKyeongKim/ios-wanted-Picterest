@@ -7,15 +7,25 @@
 
 import UIKit
 
-final class HomeViewModel: ImageConfigurable {
+
+final class HomeViewModel {
   
   var didUpdateLikeStatusAt: ((Int) -> Void)?
   var imageList: Observable<[ImageEntity]> = Observable([])
-  let repository = HomeRepository()
+  
+  private let fetchImageUsecase: DefaultFetchImageUsecase
+  private let likeImageUsecase: ChangeImageLikeStateUsecase
+  
   private(set) var imagesPerPage = 15
   
   subscript(index: IndexPath) -> ImageEntity? {
     return imageList.value[index.row]
+  }
+  
+  init(fetchImageUsecase: DefaultFetchImageUsecase,
+       likeImageUsecase: LikeImageUsecase) {
+    self.fetchImageUsecase = fetchImageUsecase
+    self.likeImageUsecase = likeImageUsecase
   }
   
   func resetList() {

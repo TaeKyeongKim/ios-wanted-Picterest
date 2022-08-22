@@ -14,9 +14,9 @@ protocol ChangeImageLikeStateUsecase {
 
 final class LikeImageUsecase: ChangeImageLikeStateUsecase {
   
-  private var repository: HomeRepository
+  private var repository: ImageRepository
   
-  init (repository: HomeRepository){
+  init (repository: ImageRepository){
     self.repository = repository
   }
   
