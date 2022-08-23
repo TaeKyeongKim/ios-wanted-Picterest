@@ -226,6 +226,7 @@ public class ImageData: NSManagedObject {
 - `추가`: CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러올때 CollectionView 끝에 Loading Indicator 를 보여줍니다.
 
 > 해결 
+
 → Custom CollectionViewLayout 을 사용하여 높이 가변 Cell 및 Loading Indicator Footer 를 구현 하였습니다. 
 
 → 가변 Height 는 각 이미지의 종횡비율 을 구합니다.
@@ -240,6 +241,7 @@ public class ImageData: NSManagedObject {
 - 현재 사용자가 이미지를 저장하면 현재 실행되고 있는 시뮬레이터의 GUID 는 빌드가 될때마다 바뀌는것을 확인했습니다. 이미지를 저장할때마다 새로운 simulator GUID 의 디렉토리로 저장하기 때문에 저장된 디렉토리 `storedDirectory` 에서 이미지 데이터를 불러오는 로직이 기능을 하지 못하게 되었습니다. 
 
 > 해결 
+
 → `storedDirectory` 를 지우고, 실행 때마다 fileManager 가 가르키고 있는 GUID 디렉토리 주소로 이미지 id 를 사용해서 디스크 캐싱 처리를 해주었습니다.   
 
 
