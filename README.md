@@ -235,7 +235,7 @@ public class ImageData: NSManagedObject {
 
 → 따라서 CustomLayout 의 item height 설정을 `prepare()` 에서 계산하고, `UICollectionViewLayoutAttributes` 을 생성해주었습니다.
 
-### 3.0 이미지 Disk Caching 
+### 4.0 이미지 Disk Caching 
 
 > 문제 
 - 현재 사용자가 이미지를 저장하면 현재 실행되고 있는 시뮬레이터의 GUID 는 빌드가 될때마다 바뀌는것을 확인했습니다. 이미지를 저장할때마다 새로운 simulator GUID 의 디렉토리로 저장하기 때문에 저장된 디렉토리 `storedDirectory` 에서 이미지 데이터를 불러오는 로직이 기능을 하지 못하게 되었습니다. 
