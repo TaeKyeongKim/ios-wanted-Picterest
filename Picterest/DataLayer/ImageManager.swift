@@ -16,38 +16,35 @@ final class ImageManager {
   
   private init(){}
   
-  func loadImage(urlSource: ImageEntity, completion: @escaping (Result<Data?,Error>) -> Void) {
+  func loadImage(urlSource: ImageEntity, completion: @escaping (Data?) -> Void) {
     //MARK: Search Data in Memory
     if let data = imageCache.object(forKey: urlSource.imageURL.lastPathComponent as NSString) {
-      completion(.success(data as Data))
+      completion(data as Data)
       return
     }
     
     //MARK: Search Image data in Disk
-    getSavedImage(named: urlSource.imageURL.lastPathComponent) { result in
-      if case let .success(image) = result {
-        completion(.success(self.makeImageData(image: image)))
-      }
+    if let image = getSavedImage(named: urlSource.imageURL.lastPathComponent) {
+      completion(makeImageData(image: image))
+      return
     }
     
     let URLRequest = URLRequest(url: urlSource.imageURL)
     NetworkService.request(on: URLRequest) {[weak self] result in
       switch result{
       case .success(let data):
-        completion(.success(data))
+        completion(data)
         self?.imageCache.setObject(data as NSData, forKey: urlSource.imageURL.lastPathComponent as NSString)
-      case .failure(let error):
-        completion(.failure(error))
+      case .failure(_):
+        completion(nil)
       }
     }
   }
-  
+
   
   func saveImage(_ imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
-    guard let directory = makePath(with: imageEntity.imageURL),
+    guard let directory = makeDefaultPath(),
           let imageData = makeImageData(image: imageEntity.image) else {return}
-    //TODO: remove saveStoredDirectory 이걸로 안씀.
-    imageEntity.saveStoredDirectory(url: directory.appendingPathComponent(imageEntity.imageURL.lastPathComponent))
     do {
       try imageData.write(to: directory.appendingPathComponent(imageEntity.imageURL.lastPathComponent))
       coreDataManager.insert(imageEntity)
@@ -62,98 +59,56 @@ final class ImageManager {
     return data
   }
   
-  enum DataPersistenceError: Error {
-    
-    case DirectoryNotFound(for: String)
-    case ImageNotFoundInCoreData
-  }
-  
-  func deleteSavedImage(imageEntity: ImageEntity, completion: @escaping ((Error?)-> Void)) {
-    getStoredDirectory(imageName: imageEntity.imageURL.lastPathComponent) { result in
-      switch result {
-      case .success(let path):
-        do {
-          try self.fileManager.removeItem(atPath: path)
-          self.coreDataManager.delete(imageEntity)
-        }catch{
-          completion(error)
-          return
-        }
-      case .failure(let error):
-        completion(error)
-      }
+  func deleteSavedImage(imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+    guard let storedDirectory = getStoredDirectory(imageName: imageEntity.imageURL.lastPathComponent) else {return}
+    do {
+      try fileManager.removeItem(atPath: storedDirectory)
+      coreDataManager.delete(imageEntity)
+      completion(nil)
+    }catch{
+      completion(error)
     }
   }
-
-  func clearStorage(completion: @escaping (Result<Void,Error>) -> Void) {
+  
+  func clearStorage(completion: @escaping ((Error?) -> Void)) {
     let storedModels = coreDataManager.fetchImages()
     storedModels?.forEach({
-        getStoredDirectory(imageName: $0.imageURL.lastPathComponent){ result in
-          switch result {
-          case.success(let path):
-            do {
-              try self.fileManager.removeItem(atPath: path)
-            }catch {
-              completion(.failure(error))
-            }
-          case .failure(let error):
-            completion(.failure(error))
-            return
-          }
-        }
+      do {
+        guard let storedDirectory = getStoredDirectory(imageName: $0.imageURL.lastPathComponent) else {return}
+        try fileManager.removeItem(atPath: storedDirectory)
         coreDataManager.deleteAll()
-      })
-  }
-   
-                          
-  
-  func getSavedImage(named: String, completion: @escaping (Result<UIImage?,Error>) -> Void) {
-    self.getStoredDirectory(imageName: named) { result in
-      switch result {
-      case .success(let path):
-        let image: UIImage? = UIImage(contentsOfFile: path)
-        completion(.success(image))
-        return
-      case .failure(let error):
-        completion(.failure(error))
-        return
       }
-    }
+      catch{
+        completion(error)
+      }
+    })
+  }
+  
+  func getSavedImage(named: String) -> UIImage? {
+    guard let path = getStoredDirectory(imageName: named) else {return nil}
+    let image: UIImage? = UIImage(contentsOfFile: path)
+    return image
   }
 }
 
 private extension ImageManager {
   
-  func getStoredDirectory(imageName: String, completion: @escaping (Result<String,Error>) -> Void) {
-    do {
-      let dir: URL
-          = try FileManager.default.url(for: .downloadsDirectory,
-                                         in: .userDomainMask,
-                                         appropriateFor: nil,
-                                         create: false)
+  func makeDefaultPath() -> URL? {
+    if let directory = fileManager.urls(for: .documentDirectory,
+                                        in: .userDomainMask).first {return directory}
+    return nil
+  }
+  
+  func getStoredDirectory(imageName: String) -> String? {
+    if let dir = makeDefaultPath() {
       let path: String
       = URL(fileURLWithPath: dir.absoluteString)
         .appendingPathComponent(imageName).path
-      
-      completion(.success(path))
-      return
-    }catch{
-      completion(.failure(error))
-      return
+      return path
     }
-        
+    return nil
   }
   
-  func makePath(with url: URL) -> URL? {
-    guard let directory = try? FileManager.default.url(for: .downloadsDirectory,
-                                                       in: .userDomainMask,
-                                                       appropriateFor: nil,
-                                                       create: true) as URL
-    else {
-      return nil
-    }
-    return directory
-  }
 
   func makeImageData(image: UIImage?) -> Data? {
     guard let image = image,

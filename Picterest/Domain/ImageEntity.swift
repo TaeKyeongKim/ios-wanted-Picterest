@@ -17,7 +17,7 @@ final class ImageEntity: Identifiable {
   
   private(set) var memo: String?
   private(set) var image: UIImage?
-  private(set) var storedDirectory: URL?
+//  private(set) var storedDirectory: URL?
   
   init(id:String, imageURL:URL, isLiked: Bool, width: CGFloat, height: CGFloat) {
     self.id = id
@@ -27,12 +27,12 @@ final class ImageEntity: Identifiable {
     self.height = height
   }
   
-  init(id:String, imageURL:URL, isLiked: Bool, memo: String, storedDirectory: URL) {
+  init(id:String, imageURL:URL, isLiked: Bool, memo: String) {
     self.id = id
     self.isLiked = isLiked
     self.imageURL = imageURL
     self.memo = memo
-    self.storedDirectory = storedDirectory
+//    self.storedDirectory = storedDirectory
   }
   
 }
@@ -51,8 +51,9 @@ extension ImageEntity {
     self.image = image
   }
   
-  func saveStoredDirectory(url: URL) {
-    self.storedDirectory = url
-  }
+//  func saveStoredDirectory(url: URL) {
+//    print("Saving New URL to = \(url)")
+//    self.storedDirectory = url
+//  }
   
 }

@@ -45,7 +45,7 @@ final class CoreDataManager {
       managedObject.setValue(model.id, forKey: "id")
       managedObject.setValue(model.memo, forKey: "memo")
       managedObject.setValue(model.imageURL, forKey: "imageURL")
-      managedObject.setValue(model.storedDirectory, forKey: "storedDirectory")
+//      managedObject.setValue(model.storedDirectory, forKey: "storedDirectory")
       save()
     }
   }
