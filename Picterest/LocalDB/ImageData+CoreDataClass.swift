@@ -14,5 +14,4 @@ public class ImageData: NSManagedObject {
   @NSManaged public var id: String
   @NSManaged public var memo: String?
   @NSManaged public var imageURL: URL
-  @NSManaged public var storedDirectory: URL?
 }

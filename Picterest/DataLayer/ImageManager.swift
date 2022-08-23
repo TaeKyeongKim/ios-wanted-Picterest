@@ -26,6 +26,7 @@ final class ImageManager {
     //MARK: Search Image data in Disk
     if let image = getSavedImage(named: urlSource.imageURL.lastPathComponent) {
       completion(makeImageData(image: image))
+      return
     }
     
     let URLRequest = URLRequest(url: urlSource.imageURL)
@@ -39,12 +40,11 @@ final class ImageManager {
       }
     }
   }
-  
+
   
   func saveImage(_ imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
-    guard let directory = makePath(with: imageEntity.imageURL),
+    guard let directory = makeDefaultPath(),
           let imageData = makeImageData(image: imageEntity.image) else {return}
-    imageEntity.saveStoredDirectory(url: directory.appendingPathComponent(imageEntity.imageURL.lastPathComponent))
     do {
       try imageData.write(to: directory.appendingPathComponent(imageEntity.imageURL.lastPathComponent))
       coreDataManager.insert(imageEntity)
@@ -93,12 +93,14 @@ final class ImageManager {
 
 private extension ImageManager {
   
+  func makeDefaultPath() -> URL? {
+    if let directory = fileManager.urls(for: .documentDirectory,
+                                        in: .userDomainMask).first {return directory}
+    return nil
+  }
+  
   func getStoredDirectory(imageName: String) -> String? {
-    if let dir: URL
-        = try? FileManager.default.url(for: .downloadsDirectory,
-                                       in: .userDomainMask,
-                                       appropriateFor: nil,
-                                       create: false){
+    if let dir = makeDefaultPath() {
       let path: String
       = URL(fileURLWithPath: dir.absoluteString)
         .appendingPathComponent(imageName).path
@@ -107,16 +109,6 @@ private extension ImageManager {
     return nil
   }
   
-  func makePath(with url: URL) -> URL? {
-    guard let directory = try? FileManager.default.url(for: .downloadsDirectory,
-                                                       in: .userDomainMask,
-                                                       appropriateFor: nil,
-                                                       create: true) as URL
-    else {
-      return nil
-    }
-    return directory
-  }
 
   func makeImageData(image: UIImage?) -> Data? {
     guard let image = image,
