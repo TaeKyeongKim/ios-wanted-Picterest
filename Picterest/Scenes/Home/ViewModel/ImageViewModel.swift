@@ -1,23 +1,23 @@
 //
-//  ImageEntity.swift
+//  ImageViewModel.swift
 //  Picterest
 //
-//  Created by Kai Kim on 2022/07/25.
+//  Created by Kai Kim on 2022/08/24.
 //
 
-import UIKit
+import Foundation
 
-struct ImageEntity: Identifiable {
+final class ImageViewModel: Identifiable {
   
   let id: String
   let imageURL: URL
-  private(set) var width: CGFloat?
-  private(set) var height: CGFloat?
+  private(set) var width: Float?
+  private(set) var height: Float?
   private(set) var isLiked: Bool
   private(set) var memo: String?
-  private(set) var image: UIImage?
+  private(set) var imageData: Data?
   
-  init(id:String, imageURL:URL, isLiked: Bool, width: CGFloat, height: CGFloat) {
+  init(id:String, imageURL:URL, isLiked: Bool, width: Float, height: Float) {
     self.id = id
     self.isLiked = isLiked
     self.imageURL = imageURL

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B72B5AE928B3B57300D83260 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B5AE828B3B57300D83260 /* Image.swift */; };
+		B72B5AEB28B54D0600D83260 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */; };
 		B78A0B4E288E504300DAC63C /* EndPointable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4D288E504300DAC63C /* EndPointable.swift */; };
 		B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4F288E504E00DAC63C /* Requestable.swift */; };
 		B78A0B52288E505700DAC63C /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B51288E505700DAC63C /* EndPoint.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		B72B5AE828B3B57300D83260 /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
+		B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		B78A0B4D288E504300DAC63C /* EndPointable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointable.swift; sourceTree = "<group>"; };
 		B78A0B4F288E504E00DAC63C /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		B78A0B51288E505700DAC63C /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */,
+				B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -407,6 +410,7 @@
 				B78A0B52288E505700DAC63C /* EndPoint.swift in Sources */,
 				B78A0B80288ECE7700DAC63C /* FlowLayoutManager.swift in Sources */,
 				B78A0B6B288E732800DAC63C /* ImageDTO.swift in Sources */,
+				B72B5AEB28B54D0600D83260 /* ImageViewModel.swift in Sources */,
 				B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */,
 				B72B5AE928B3B57300D83260 /* Image.swift in Sources */,
 				B78A0B962892DA4C00DAC63C /* CoreData.xcdatamodeld in Sources */,
