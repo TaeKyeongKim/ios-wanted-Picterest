@@ -39,13 +39,12 @@ final class CoreDataManager {
     return nil
   }
   
-  func insert(_ model: ImageEntity) {
+  func insert(_ model: ImageViewModel) {
     if let entity = imageData {
       let managedObject = NSManagedObject(entity: entity, insertInto: context)
       managedObject.setValue(model.id, forKey: "id")
       managedObject.setValue(model.memo, forKey: "memo")
       managedObject.setValue(model.imageURL, forKey: "imageURL")
-//      managedObject.setValue(model.storedDirectory, forKey: "storedDirectory")
       save()
     }
   }

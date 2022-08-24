@@ -16,38 +16,43 @@ final class ImageManager {
   
   private init(){}
   
-  func loadImage(urlSource: ImageEntity, completion: @escaping (Data?) -> Void) {
+  func loadImage(urlSource: URL, completion: @escaping (Result<Data, Error>) -> Void) {
+    let urlAsString = urlSource.lastPathComponent
+    
     //MARK: Search Data in Memory
-    if let data = imageCache.object(forKey: urlSource.imageURL.lastPathComponent as NSString) {
-      completion(data as Data)
+    if let data = imageCache.object(forKey: urlAsString as NSString) {
+      completion(.success(data as Data))
       return
     }
     
     //MARK: Search Image data in Disk
-    if let image = getSavedImage(named: urlSource.imageURL.lastPathComponent) {
-      completion(makeImageData(image: image))
+    if let data = getSavedImage(named: urlAsString) {
+      completion(.success(data))
       return
     }
     
-    let URLRequest = URLRequest(url: urlSource.imageURL)
+    let URLRequest = URLRequest(url: urlSource)
     NetworkService.request(on: URLRequest) {[weak self] result in
       switch result{
       case .success(let data):
-        completion(data)
-        self?.imageCache.setObject(data as NSData, forKey: urlSource.imageURL.lastPathComponent as NSString)
-      case .failure(_):
-        completion(nil)
+        completion(.success(data))
+        self?.imageCache.setObject(data as NSData, forKey: urlAsString as NSString)
+      case .failure(let error):
+        completion(.failure(error))
       }
     }
   }
 
   
-  func saveImage(_ imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func saveImage(_ model: ImageViewModel, completion: @escaping ((Error?) -> Void)) {
+    //I want to save image as PNG or JPEG and when i get these Image out, i'd like to convert it into
+    //Data type.
     guard let directory = makeDefaultPath(),
-          let imageData = makeImageData(image: imageEntity.image) else {return}
+          let imageData = model.imageData
+    else {return}
     do {
-      try imageData.write(to: directory.appendingPathComponent(imageEntity.imageURL.lastPathComponent))
-      coreDataManager.insert(imageEntity)
+      try imageData.write(to: directory.appendingPathComponent(model.imageURL.lastPathComponent))
+      coreDataManager.insert(model)
       completion(nil)
     } catch {
       completion(error)
@@ -84,7 +89,7 @@ final class ImageManager {
     })
   }
   
-  func getSavedImage(named: String) -> UIImage? {
+  func getSavedImage(named: String) -> Data? {
     guard let path = getStoredDirectory(imageName: named) else {return nil}
     let image: UIImage? = UIImage(contentsOfFile: path)
     return image
@@ -109,13 +114,13 @@ private extension ImageManager {
     return nil
   }
   
-
-  func makeImageData(image: UIImage?) -> Data? {
-    guard let image = image,
-          let data = image.jpegData(compressionQuality: 1) ?? image.pngData()
-    else {
-      return nil
-    }
-    return data
-  }
+//  func convertDataToPng(imageData: Data?) -> Data? {
+//    guard let data = imageData,
+//          let image = UIImage(data: data),
+//          let pngData = image.pngData()
+//    else {
+//      return nil
+//    }
+//    return pngData
+//  }
 }

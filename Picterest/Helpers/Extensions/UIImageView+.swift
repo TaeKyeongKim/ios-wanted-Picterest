@@ -9,7 +9,7 @@ import UIKit
 
 extension UIImageView {
   
-  func setImage(urlSource: ImageEntity, completion: @escaping (UIImage) -> Void){
+  func setImage(urlSource: URL, completion: @escaping (UIImage) -> Void){
     ImageManager.shared.loadImage(urlSource: urlSource) { result in
       
       switch result {
