@@ -244,4 +244,6 @@ public class ImageData: NSManagedObject {
 
 → `storedDirectory` 를 지우고, 실행 때마다 fileManager 가 가르키고 있는 GUID 디렉토리 주소로 이미지 id 를 사용해서 디스크 캐싱 처리를 해주었습니다.   
 
-
+## 버그 및 에러  노트 
+- [첫번째 페이지에서 두번째 페이지로 넘어갈때 Footer 가 생기지 않는 현상](https://github.com/TaeKyeongKim/ios-wanted-Picterest/issues/2)
+- [Save 화면 전환시 CGRectNull 에러] (https://github.com/TaeKyeongKim/ios-wanted-Picterest/issues/3)
