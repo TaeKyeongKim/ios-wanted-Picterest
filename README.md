@@ -211,7 +211,7 @@ public class ImageData: NSManagedObject {
 
 > 문제 
 
-**`한 페이지에는 15개의 사진을 배치합니다.`**
+요구사항 = **`한 페이지에는 15개의 사진을 배치합니다.`**
 
 > 해결 
 
@@ -219,21 +219,110 @@ public class ImageData: NSManagedObject {
 
 → `Observable` 패턴을 사용해 fetch 되는 item 마다 collectionView 에 insert 해주도록 구현했습니다.
 
+> 문제 
+`collectionView.reloadData()` 를 사용함으로써 화면이 깜빡이는 현상을 자연스럽게 바꾸어 사용자의 UX 를 개선 시킬수 있을까?
+
+> 해결 
+
+→ `reload()` 하는대신 `insertItems()` 를 사용해줌으로써 UX 를 개선 시킬수 있었습니다. 
+→ 한꺼번에 15개의 cell 이 Insert 되므로 `performBatchUpdate()` 를 사용했습니다. (Invalid Update Error 방지)
+
+
 ### 3.0 CustomCollectionViewLayout 구현
 
 > 문제
 - `2개의 열을 가진 가변형 높이의 Cell을 가진 레이아웃으로 구성합니다.`
-- `추가`: CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러올때 CollectionView 끝에 Loading Indicator 를 보여줍니다.
 
 > 해결 
 
-→ Custom CollectionViewLayout 을 사용하여 높이 가변 Cell 및 Loading Indicator Footer 를 구현 하였습니다. 
+1.0 `SceneLayoutDelegate` 의 collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat 를 사용하여 원본이미지의 종횡비율을 계산하여 Prepare() 에서 사용되도록 하였습니다.
+`((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio` 공식은 
+현재 화면 과 collectionView 의 Column 개수, 각 cell 의 leading, trailing space 를 고려한 비율을 계산합니다. 
 
-→ 가변 Height 는 각 이미지의 종횡비율 을 구합니다.
+```swift 
+func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
+    guard let image = viewModel[indexPath],
+          let width = image.width,
+          let height = image.height
+    else {return 0}
+    let widthRatio = width / height
+    //→ 가변 Height 는 각 이미지의 종횡비율 을 구합니다.
+    //ex) 1980 x  1080 ⇒ 이미지 ratio = 1980 / 1080 = 1.7777…
+    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
+  }
+```
+  
+2.0 Custom CollectionViewLayout 을 사용하여 높이 가변 Cell 구현 하고 각 cell 의 `UICollectionViewLayoutAttributes` 의 frame 를 계산하는 로직을 추가했습니다. 
 
-> ex) 1980 x  1080 ⇒ 이미지 ratio = 1980 / 1080 = 1.7777…
+```swift 
+//@SceneLayout, prepare()
+for item in 0..<collectionView.numberOfItems(inSection: 0) {
+      let indexPath = IndexPath(item: item, section: 0)
+      
+      //9
+      let photoHeight = delegate?.collectionView(
+        collectionView, heightForPhotoAtIndexPath: indexPath) ?? 0
+      let height = cellPadding * 2 + photoHeight
+      
+      let frame = CGRect(x: xOffset[column],
+                         y: yOffset[column],
+                         width: columnWidth,
+                         height: height)
+      let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
+      
+      //10
+      let attributes = UICollectionViewLayoutAttributes(forCellWith:
+                                                          indexPath)
+      attributes.frame = insetFrame
+      guard var itemAttribute = cache[.items]
+      else {
+        return
+      }
+      itemAttribute.append(attributes)
+      cache.updateValue(itemAttribute, forKey: .items)
+      
+      //11
+      contentHeight = max(contentHeight, frame.maxY)
+      yOffset[column] = yOffset[column] + height
+```     
 
-→ 따라서 CustomLayout 의 item height 설정을 `prepare()` 에서 계산하고, `UICollectionViewLayoutAttributes` 을 생성해주었습니다.
+3.0 이전 Cell frame 이 옆 컬럼의 frame 값보다 작다면, 같은 컬럼에서 Cell 을 추가 하도록 구현했습니다.
+
+```swift 
+let otherCol = column == 0 ? 1:0
+column = yOffset[column] < yOffset[otherCol] ? column : otherCol
+```
+
+> 문제
+CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러올때 CollectionView 끝에 Loading Indicator 를 보여줍니다.
+
+> 해결 
+→ `UICollectionViewLayoutAttributes` 의 종류를 
+`Cache` 라는 변수를 이용해 item, footer 로 나누어 관리했습니다. `Layout` 의 `prepare()` 메서드에서 footer 의 업데이트가 언제 되고 collectionView 내부의 footer 위치를 설정해주는 로직을 추가했습니다. 
+
+```swift 
+  private var cache: [cacheType: [UICollectionViewLayoutAttributes]] = [.items:[], .footer:[]]
+  ... 
+  //@Prepare()
+   if ((item + 1) % 15 == 0) {
+        let footerAtrributes = UICollectionViewLayoutAttributes(
+          forSupplementaryViewOfKind:
+            UICollectionView.elementKindSectionFooter,
+          with: 
+            IndexPath(
+              item: item,
+              section: 0)
+        )
+        footerAtrributes.frame = CGRect(x: 0, y: max(contentHeight, frame.maxY),
+                                        width: UIScreen.main.bounds.width, height: 50)
+        
+        
+        guard var footerAttribute = cache[.footer] else {return}
+        footerAttribute.removeAll()
+        footerAttribute.append(footerAtrributes)
+        cache.updateValue(footerAttribute, forKey: .footer)
+```
+
 
 ### 4.0 이미지 Disk Caching 
 
