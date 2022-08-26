@@ -26,8 +26,8 @@ final class ImageManager {
     }
     
     //MARK: Search Image data in Disk
-    if let data = getSavedImage(named: urlAsString) {
-      completion(.success(data))
+    if let imageData = getSavedImage(named: urlAsString) {
+      completion(.success(imageData))
       return
     }
     
@@ -44,19 +44,26 @@ final class ImageManager {
   }
 
   
-  func saveImage(_ model: ImageViewModel, completion: @escaping ((Error?) -> Void)) {
+  func saveImage(_ model: Image, completion: @escaping ((Error?) -> Void)) {
     //I want to save image as PNG or JPEG and when i get these Image out, i'd like to convert it into
     //Data type.
-    guard let directory = makeDefaultPath(),
-          let imageData = model.imageData
-    else {return}
-    do {
-      try imageData.write(to: directory.appendingPathComponent(model.imageURL.lastPathComponent))
-      coreDataManager.insert(model)
-      completion(nil)
-    } catch {
-      completion(error)
+    guard let directory = makeDefaultPath() else {return}
+    
+    loadImage(urlSource: model.imageURL) { [weak self] result in
+      switch result {
+      case .success(let imageData):
+        do {
+          try imageData.write(to: directory.appendingPathComponent(model.imageURL.lastPathComponent))
+          self?.coreDataManager.insert(model)
+          completion(nil)
+        } catch {
+          completion(error)
+        }
+      case .failure(let error):
+        completion(error)
+      }
     }
+    
   }
   
   func loadSavedImage() -> [ImageData] {
@@ -64,7 +71,7 @@ final class ImageManager {
     return data
   }
   
-  func deleteSavedImage(imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func deleteSavedImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
     guard let storedDirectory = getStoredDirectory(imageName: imageEntity.imageURL.lastPathComponent) else {return}
     do {
       try fileManager.removeItem(atPath: storedDirectory)
@@ -92,7 +99,8 @@ final class ImageManager {
   func getSavedImage(named: String) -> Data? {
     guard let path = getStoredDirectory(imageName: named) else {return nil}
     let image: UIImage? = UIImage(contentsOfFile: path)
-    return image
+    let imageData = image?.jpegData(compressionQuality: 1)
+    return imageData
   }
 }
 
@@ -114,13 +122,4 @@ private extension ImageManager {
     return nil
   }
   
-//  func convertDataToPng(imageData: Data?) -> Data? {
-//    guard let data = imageData,
-//          let image = UIImage(data: data),
-//          let pngData = image.pngData()
-//    else {
-//      return nil
-//    }
-//    return pngData
-//  }
 }

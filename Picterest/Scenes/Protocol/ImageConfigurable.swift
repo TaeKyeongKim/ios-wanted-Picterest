@@ -8,11 +8,11 @@
 import Foundation
 
 protocol ImageConfigurable {
-  var imageList: Observable<[ImageEntity]> {get set}
+  var imageList: Observable<[Image]> {get set}
   func fetchImages()
   func resetList()
   func updateLikeStatus()
   func resetLikeStatus()
-  func toogleLikeState(item entity: ImageEntity, completion: @escaping ((Error?) -> Void))
-  subscript(index: IndexPath) -> ImageEntity? { get }
+  func toogleLikeState(item entity: Image, completion: @escaping ((Error?) -> Void))
+  subscript(index: IndexPath) -> Image? { get }
 }

@@ -116,7 +116,7 @@ private extension SaveViewController {
     }
   }
   
-  func handleAlert(_ model: ImageEntity) {
+  func handleAlert(_ model: Image) {
     guard let memo = model.memo else {return}
     _ = MemoAlert.makeAlertController(title: nil,
                                       message: "선택하신 메모 '\(memo)' 를 지우시겠습니까?",

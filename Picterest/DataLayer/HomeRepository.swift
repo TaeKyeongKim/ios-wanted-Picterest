@@ -9,13 +9,13 @@ import Foundation
 
 struct HomeRepository {
   
-  func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[ImageEntity], NetworkError>) -> Void) {
+  func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
     NetworkService.request(on: request.value) { result in
       switch result {
       case .success(let data):
         let decorder = Decoder<[ImageDTO]>()
-        var tempList:[ImageEntity] = []
+        var tempList:[Image] = []
         guard let decodedData = decorder.decode(data: data) else {return}
         for item in decodedData {
           let imageEntity = item.toDomain()
@@ -33,7 +33,7 @@ struct HomeRepository {
   }
   
   
-  func saveImage(imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
     ImageManager.shared.saveImage(imageEntity){ error in
       if let error = error {
         completion(error)
@@ -43,7 +43,7 @@ struct HomeRepository {
     }
   }
   
-  func deleteImage(imageEntity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func deleteImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
     ImageManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
       if let error = error {
         completion(error)

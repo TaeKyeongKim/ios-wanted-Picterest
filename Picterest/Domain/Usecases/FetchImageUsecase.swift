@@ -9,12 +9,12 @@ import Foundation
 
 protocol FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[ImageEntity],NetworkError>) -> Void)
+               completion: @escaping (Result<[Image],NetworkError>) -> Void)
 }
 
 struct FetchImageUsecaseRequestValue {
   let page: Int
-  let imagesPerPage: Int
+  let imagesPerPage: Int = 15
 }
 
 final class DefaultFetchImageUsecase: FetchImageUsecase {
@@ -27,7 +27,7 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   
   //TODO: Consider cached data as ImageEntity. Not only Image itself.
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[ImageEntity], NetworkError>) -> Void) {
+               completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
     let endPoint = EndPoint(path: .showList,
                             query: .imagesPerPage(pageNumber: requestValue.page,
@@ -37,8 +37,6 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
       completion(result)
     }
   }
-  
-  
 }
 
 

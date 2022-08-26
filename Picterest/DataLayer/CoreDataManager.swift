@@ -39,7 +39,7 @@ final class CoreDataManager {
     return nil
   }
   
-  func insert(_ model: ImageViewModel) {
+  func insert(_ model: Image) {
     if let entity = imageData {
       let managedObject = NSManagedObject(entity: entity, insertInto: context)
       managedObject.setValue(model.id, forKey: "id")
@@ -56,7 +56,7 @@ final class CoreDataManager {
     return true
   }
   
-  func delete(_ model: ImageEntity) {
+  func delete(_ model: Image) {
     guard let fetchResults = fetchImages(),
           let targetModel = fetchResults.filter({$0.id == model.id}).first
     else {return}

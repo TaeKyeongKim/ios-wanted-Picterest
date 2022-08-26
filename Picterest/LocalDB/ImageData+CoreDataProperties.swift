@@ -19,9 +19,9 @@ extension ImageData {
 
 extension ImageData : Identifiable {
   
-  func toDomain() -> ImageEntity? {
+  func toDomain() -> Image? {
     guard let memo = self.memo else {return nil}
-    return ImageEntity(id: self.id, imageURL: self.imageURL, isLiked: true, memo: memo)
+    return Image(id: self.id, imageURL: self.imageURL, isLiked: true, memo: memo)
   }
   
 }
