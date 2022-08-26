@@ -247,9 +247,9 @@ func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPat
           let width = image.width,
           let height = image.height
     else {return 0}
-    let widthRatio = width / height
     //→ 가변 Height 는 각 이미지의 종횡비율 을 구합니다.
     //ex) 1980 x  1080 ⇒ 이미지 ratio = 1980 / 1080 = 1.7777…
+    let widthRatio = width / height
     return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
 ```
