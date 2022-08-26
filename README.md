@@ -302,6 +302,7 @@ CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러�
 > 해결 
 
 → `UICollectionViewLayoutAttributes` 의 종류를 `Cache` 라는 변수를 이용해 item, footer 로 나누어 관리했습니다. 
+
 →`Layout` 의 `prepare()` 메서드에서 footer 의 업데이트가 언제 되고 collectionView 내부의 footer 위치를 설정해주는 로직을 추가했습니다. 
 
 ```swift 
