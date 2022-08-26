@@ -10,10 +10,10 @@ import Foundation
 final class SaveViewModel: ImageConfigurable {
 
   var didUpdateLikeStatusAt: ((Int) -> Void)?
-  var imageList: Observable<[ImageEntity]> = Observable([])
+  var imageList: Observable<[Image]> = Observable([])
   let repository = HomeRepository()
 
-  subscript(index: IndexPath) -> ImageEntity? {
+  subscript(index: IndexPath) -> Image? {
     return imageList.value[index.row]
   }
   
@@ -40,7 +40,7 @@ final class SaveViewModel: ImageConfigurable {
   
   func fetchImages() {
     let data = repository.fetchSavedImageData()
-    var tempList: [ImageEntity] = []
+    var tempList: [Image] = []
     data.forEach({
       guard let imageEntity = $0.toDomain() else {return}
       tempList.append(imageEntity)
@@ -48,7 +48,7 @@ final class SaveViewModel: ImageConfigurable {
     imageList.value = tempList
   }
   
-  func toogleLikeState(item entity: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func toogleLikeState(item entity: Image, completion: @escaping ((Error?) -> Void)) {
     if entity.isLiked == true {
       repository.deleteImage(imageEntity: entity){ error in
         if let error = error {

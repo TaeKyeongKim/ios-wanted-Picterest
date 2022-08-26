@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ChangeImageLikeStateUsecase {
-  func execute(item: ImageEntity, completion: @escaping ((Error?)-> Void))
+  func execute(item: Image, completion: @escaping ((Error?)-> Void))
 }
 
 
@@ -20,9 +20,9 @@ final class LikeImageUsecase: ChangeImageLikeStateUsecase {
     self.repository = repository
   }
   
-  func execute(item: ImageEntity, completion: @escaping ((Error?) -> Void)) {
-    item.toogleLikeStates()
-    repository.saveImage(imageEntity: item){ error in
+  func execute(item: Image, completion: @escaping ((Error?) -> Void)) {
+    
+    repository.saveImage(imageEntity: item) { error in
       if let error = error {
         completion(error)
       }else {
@@ -41,7 +41,7 @@ final class UndoLikeImageUsecase: ChangeImageLikeStateUsecase {
     self.repository = repository
   }
   
-  func execute(item: ImageEntity, completion: @escaping ((Error?) -> Void)) {
+  func execute(item: Image, completion: @escaping ((Error?) -> Void)) {
     repository.deleteImage(imageEntity: item) { error in
       if let error = error {
         completion(error)

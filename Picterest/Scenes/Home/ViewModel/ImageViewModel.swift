@@ -9,43 +9,42 @@ import Foundation
 
 final class ImageViewModel: Identifiable {
   
-  let id: String
-  let imageURL: URL
-  private(set) var width: Float?
-  private(set) var height: Float?
+//  let id: String
+//  let imageURL: URL
+//  private(set) var width: Float
+//  private(set) var height: Float
+  private(set) var memo: String
   private(set) var isLiked: Bool
-  private(set) var memo: String?
   private(set) var imageData: Data?
-  
-  init(id:String, imageURL:URL, isLiked: Bool, width: Float, height: Float) {
-    self.id = id
-    self.isLiked = isLiked
-    self.imageURL = imageURL
-    self.width = width
-    self.height = height
+
+  //I've gotta keep track on the isLiked Status --> Upon user's interaction on changing like state,
+  //this particular entity
+  //I just have to show if the image is liked or not -> so there will be no isliked status in Image Entity
+  //Image Entity will only consist of DTO data
+
+  init (model: Image, index: Int) {
+    self.isLiked = model.isLiked
+    self.memo = model.memo ?? "\(index + 1) 번째 사진"
   }
-  
-  init(id:String, imageURL:URL, isLiked: Bool, memo: String) {
-    self.id = id
-    self.isLiked = isLiked
-    self.imageURL = imageURL
-    self.memo = memo
-  }
-  
 }
 
-extension ImageEntity {
+extension ImageViewModel {
   
   func toogleLikeStates() {
     self.isLiked = !isLiked
   }
   
-  func configureMemo(memo: String) {
+  func setMemo(memo: String) {
     self.memo = memo
   }
   
-  func saveImage(image:UIImage) {
-    self.image = image
+  func saveImageData(imageData: Data) {
+    self.imageData = imageData
   }
-
 }
+
+//extension ImageViewModel: Equatable {
+//    static func == (lhs: ImageViewModel, rhs: ImageViewModel) -> Bool {
+//        return lhs.query == rhs.query
+//    }
+//}

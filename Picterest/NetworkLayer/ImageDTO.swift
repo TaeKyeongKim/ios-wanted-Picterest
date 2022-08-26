@@ -5,7 +5,7 @@
 //  Created by Kai Kim on 2022/07/25.
 //
 
-import UIKit
+import Foundation
 
 struct ImageDTO: Decodable {
   let id: String
@@ -27,12 +27,13 @@ struct ImageURL: Decodable {
 
 extension ImageDTO {
   
-  func toDomain() -> ImageEntity {
-    return ImageEntity(id: self.id,
-                       imageURL: self.imageURL.url,
-                       isLiked: false,
-                       width: CGFloat(self.width),
-                       height: CGFloat(self.height))
+  func toDomain() -> Image {
+    return .init(id: self.id,
+                 imageURL: self.imageURL.url,
+                 width: Float(self.width),
+                 height: Float(self.height),
+                 memo: "",
+                 isliked: false)
   }
   
 }

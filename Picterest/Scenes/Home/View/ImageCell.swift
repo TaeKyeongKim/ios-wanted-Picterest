@@ -94,7 +94,7 @@ final class ImageCell: UICollectionViewCell {
     likeButton.setImage(defaultLikeImage, for: .normal)
   }
   
-  private func setCellToHomeState(model: ImageEntity, index: Int) {
+  private func setCellToHomeState(model: Image, index: Int) {
     setMemoLabel(index: index)
     if model.isLiked == true {
       setLikeButtonToOn()
@@ -103,7 +103,7 @@ final class ImageCell: UICollectionViewCell {
     }
   }
   
-  private func setCellToSaveState(model: ImageEntity) {
+  private func setCellToSaveState(model: Image) {
     setLikeButtonToOn()
     self.memoLabel.text = model.memo
   }
@@ -130,7 +130,7 @@ final class ImageCell: UICollectionViewCell {
 
 extension ImageCell {
   
-  func configure(model: ImageEntity, indexPath: IndexPath, sceneType: SceneType) {
+  func configure(model: Image, indexPath: IndexPath, sceneType: SceneType) {
     self.model = model
     self.imageView.setImage(urlSource: model){ image in
       model.saveImage(image: image)
