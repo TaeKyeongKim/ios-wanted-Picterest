@@ -231,11 +231,13 @@ public class ImageData: NSManagedObject {
 ### 3.0 CustomCollectionViewLayout 구현
 
 > 문제
+
 - `2개의 열을 가진 가변형 높이의 Cell을 가진 레이아웃으로 구성합니다.`
 
 > 해결 
 
 1.0 `SceneLayoutDelegate` 의 collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat 를 사용하여 원본이미지의 종횡비율을 계산하여 Prepare() 에서 사용되도록 하였습니다.
+
 `((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio` 공식은 
 현재 화면 과 collectionView 의 Column 개수, 각 cell 의 leading, trailing space 를 고려한 비율을 계산합니다. 
 
@@ -294,11 +296,13 @@ column = yOffset[column] < yOffset[otherCol] ? column : otherCol
 ```
 
 > 문제
+
 CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러올때 CollectionView 끝에 Loading Indicator 를 보여줍니다.
 
 > 해결 
-→ `UICollectionViewLayoutAttributes` 의 종류를 
-`Cache` 라는 변수를 이용해 item, footer 로 나누어 관리했습니다. `Layout` 의 `prepare()` 메서드에서 footer 의 업데이트가 언제 되고 collectionView 내부의 footer 위치를 설정해주는 로직을 추가했습니다. 
+
+→ `UICollectionViewLayoutAttributes` 의 종류를 `Cache` 라는 변수를 이용해 item, footer 로 나누어 관리했습니다. 
+→`Layout` 의 `prepare()` 메서드에서 footer 의 업데이트가 언제 되고 collectionView 내부의 footer 위치를 설정해주는 로직을 추가했습니다. 
 
 ```swift 
   private var cache: [cacheType: [UICollectionViewLayoutAttributes]] = [.items:[], .footer:[]]
