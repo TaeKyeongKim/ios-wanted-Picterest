@@ -28,7 +28,7 @@ struct HomeRepository {
     }
   }
   
-  func fetchSavedImageData() -> [ImageData] {
+  func fetchSavedImageData() -> [ImageEntity] {
     return ImageManager.shared.loadSavedImage()
   }
   
