@@ -29,9 +29,9 @@ final class CoreDataManager {
     return  NSEntityDescription.entity(forEntityName: "ImageData", in: context)
   }
   
-  func fetchImages() -> [ImageData]? {
+  func fetchImages() -> [ImageEntity]? {
     do {
-      let data = try context.fetch(ImageData.fetchRequest()) as! [ImageData]
+      let data = try context.fetch(ImageEntity.fetchRequest()) as! [ImageEntity]
       return data
     }catch{
       print(error.localizedDescription)

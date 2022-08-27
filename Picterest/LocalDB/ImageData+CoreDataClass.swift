@@ -9,9 +9,12 @@
 import Foundation
 import CoreData
 
-@objc(ImageData)
-public class ImageData: NSManagedObject {
+@objc(ImageEntity)
+public class ImageEntity: NSManagedObject {
   @NSManaged public var id: String
   @NSManaged public var memo: String?
   @NSManaged public var imageURL: URL
+  @NSManaged public var isLiked: Bool
+  @NSManaged public var width: Float
+  @NSManaged public var height: Float
 }

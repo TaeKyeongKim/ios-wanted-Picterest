@@ -9,19 +9,23 @@
 import Foundation
 import CoreData
 
-extension ImageData {
+extension ImageEntity {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<ImageData> {
-        return NSFetchRequest<ImageData>(entityName: "ImageData")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<ImageEntity> {
+        return NSFetchRequest<ImageEntity>(entityName: "ImageEntity")
     }
 
 }
 
-extension ImageData : Identifiable {
+extension ImageEntity : Identifiable {
   
   func toDomain() -> Image? {
-    guard let memo = self.memo else {return nil}
-    return Image(id: self.id, imageURL: self.imageURL, isLiked: true, memo: memo)
+    return .init(id: self.id,
+                 imageURL: self.imageURL,
+                 width: self.width,
+                 height: self.height,
+                 memo: self.memo,
+                 isliked: self.isLiked)
   }
   
 }

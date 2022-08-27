@@ -66,7 +66,7 @@ final class ImageManager {
     
   }
   
-  func loadSavedImage() -> [ImageData] {
+  func loadSavedImage() -> [ImageEntity] {
     guard let data = coreDataManager.fetchImages() else {return []}
     return data
   }

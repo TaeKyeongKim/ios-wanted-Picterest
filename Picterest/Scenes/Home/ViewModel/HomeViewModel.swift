@@ -44,9 +44,7 @@ final class HomeViewModel {
     imageList = []
     items.value = []
   }
-  
-  
-  
+
   func updateLikeStatus() {
     let storedModels = fetchImageUsecase.fetchSavedImageData()
     items.value.forEach({ imageEntity in
