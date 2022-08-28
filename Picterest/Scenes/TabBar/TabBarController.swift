@@ -14,7 +14,7 @@ final class TabBarController: UITabBarController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-      self.viewControllers = setTabBarItems(tarBarItems: .home, .save)
+      self.viewControllers = setTabBarItems(tarBarItems: .home)
     }
 }
 
@@ -32,14 +32,15 @@ private extension TabBarController {
 
   enum TabBarItemComponent {
     case home
-    case save
+//    case save
     
     var viewController: UIViewController {
       switch self {
       case .home:
-        return HomeViewController(viewModel: HomeViewModel())
-      case .save:
-        return SaveViewController(viewModel: SaveViewModel())
+        return HomeViewController(viewModel: HomeViewModel(fetchImageUsecase: DefaultFetchImageUsecase(imageRespository: DefualtImageRepository()), likeImageUsecase: LikeImageUsecase(repository: DefualtImageRepository())))
+//      case .save:
+          print("TBI")
+//        return SaveViewController(viewModel: SaveViewModel())
       }
     }
     
@@ -47,8 +48,8 @@ private extension TabBarController {
       switch self {
       case .home:
         return UIImage(systemName: "photo.on.rectangle.angled")
-      case .save:
-        return UIImage(systemName: "heart")
+//      case .save:
+//        return UIImage(systemName: "heart")
       }
     }
     
@@ -56,8 +57,8 @@ private extension TabBarController {
       switch self {
       case .home:
         return "Images"
-      case .save:
-        return "Saved"
+//      case .save:
+//        return "Saved"
       }
     }
   }

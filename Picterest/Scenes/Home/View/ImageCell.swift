@@ -10,7 +10,7 @@ import UIKit
 final class ImageCell: UICollectionViewCell {
   
   static let id = "ImageCell"
-//  private var model: ImageEntity?
+  //  private var model: ImageEntity?
   private var model: ImageViewModel?
   var saveDidTap: ((ImageViewModel) -> Void)?
   
@@ -86,21 +86,8 @@ final class ImageCell: UICollectionViewCell {
     }
   }
   
-//  private func setMemoLabel(index: Int) {
-//    self.memoLabel.text = "\(index + 1)번째 사진"
-//  }
-  
   private func setLikeButtonToUndoLike() {
     likeButton.setImage(defaultLikeImage, for: .normal)
-  }
-  
-  private func setCellToHomeState(model: Image, index: Int) {
-    setMemoLabel(index: index)
-    if model.isLiked == true {
-      setLikeButtonToOn()
-    }else {
-      setLikeButtonToUndoLike()
-    }
   }
   
   private func setCellToSaveState(model: Image) {
@@ -125,30 +112,14 @@ final class ImageCell: UICollectionViewCell {
     memoLabel.text = nil
     likeButton.setImage(defaultLikeImage, for: .normal)
   }
-
+  
 }
 
 extension ImageCell {
   
-  func configure(model: Image, indexPath: IndexPath, sceneType: SceneType) {
+  func configureAsHomeCell(model: ImageViewModel) {
     self.model = model
-    self.imageView.setImage(urlSource: model){ image in
-      model.saveImage(image: image)
-    }
-    
-    switch sceneType {
-    case .save:
-      setCellToSaveState(model: model)
-    case .home:
-      setCellToHomeState(model: model, index: indexPath.item)
-    }
-  }
-  
-  func configureAsHomeCell(model: ImageViewModel, index: Int) {
-    self.model = model
-    self.imageView.setImage(urlSource: model.imageURL){ image in
-      model.saveImage(image: image)
-    }
+    self.imageView.setImage(urlSource: model.imageURL)
     self.memoLabel.text =  model.memo
     if model.isLiked == true {
       setLikeButtonToOn()
@@ -159,13 +130,10 @@ extension ImageCell {
   
   func configureAsSaveCell(model: ImageViewModel) {
     self.model = model
-    self.imageView.setImage(urlSource: model.imageURL){ image in
-      model.saveImage(image: image)
-    }
+    self.imageView.setImage(urlSource: model.imageURL)
     setLikeButtonToOn()
     self.memoLabel.text = model.memo
   }
-  
   
   func setLikeButtonToOn() {
     likeButton.setImage(likeImage, for: .normal)

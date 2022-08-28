@@ -7,13 +7,13 @@ import UIKit
 
 class HomeViewController: UIViewController {
   
-  var viewModel: ImageConfigurable
+  var viewModel: HomeViewModel
   let layoutProvider = SceneLayout(scene: .home, cellPadding: 6)
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
   
-  init(viewModel: ImageConfigurable) {
+  init(viewModel: HomeViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -69,13 +69,13 @@ private extension HomeViewController {
   }
   
   func fetchImage() {
-    if viewModel.imageList.value.isEmpty {
+    if viewModel.items.value.isEmpty {
       viewModel.fetchImages()
     }
   }
   
   func setDataBinding() {
-    self.viewModel.imageList.bind({ list in
+    self.viewModel.items.bind({ list in
       let group = DispatchGroup()
       DispatchQueue.global().async {
         if list.count > 0 {
@@ -122,14 +122,15 @@ private extension HomeViewController {
                                                 message: "이미지를 저장 하시겠습니까?",
                                                 actions: .ok({
         guard let memo = $0 else {return}
-        selectedImageEntity.configureMemo(memo: memo)
-        self.viewModel.toogleLikeState(item: selectedImageEntity) { error in
-          if let error = error {
-            print(error.localizedDescription)
-          }else {
-            cell.setLikeButtonToOn()
-          }
-        }
+        print("\(memo) is to be saved!")
+//        selectedImageEntity.configureMemo(memo: memo)
+//        self.viewModel.toogleLikeState(item: selectedImageEntity) { error in
+//          if let error = error {
+//            print(error.localizedDescription)
+//          }else {
+//            cell.setLikeButtonToOn()
+//          }
+//        }
       }),
                                                 .cancel,
                                                 from: self)
@@ -156,27 +157,21 @@ private extension HomeViewController {
 extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, UICollectionViewDelegate {
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    let count = viewModel.imageList.value.count
+    let count = viewModel.items.value.count
     return count
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell,
-          let model = viewModel[indexPath]
-    else {
-      return UICollectionViewCell()
-    }
-    cell.configure(model: model, indexPath: indexPath, sceneType: .home)
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell else { return UICollectionViewCell()}
+    let viewModel = viewModel.items.value[indexPath.item]
+    cell.configureAsHomeCell(model: viewModel)
     didReceiveToogleLikeStatus(on: cell)
     return cell
   }
   
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-    guard let image = viewModel[indexPath],
-          let width = image.width,
-          let height = image.height
-    else {return 0}
-    let widthRatio = width / height
+    guard let image = viewModel[indexPath] else {return 0}
+    let widthRatio = CGFloat(image.width) / CGFloat(image.height)
     return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
   
@@ -193,7 +188,6 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    print("viewForSupplementaryElementOfKind")
     guard let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: Footer.id, for: indexPath) as? Footer else {
       return UICollectionReusableView()
     }

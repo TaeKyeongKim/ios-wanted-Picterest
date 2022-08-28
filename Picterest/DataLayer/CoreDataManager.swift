@@ -36,6 +36,7 @@ final class CoreDataManager {
     }catch{
       print(error.localizedDescription)
     }
+    return []
   }
   
   func insert(_ model: Image) {
@@ -49,22 +50,20 @@ final class CoreDataManager {
   }
   
   func isSaved(id: String) -> Bool {
-    guard let fetchResults = fetchImages(),
-          let _ = fetchResults.filter({$0.id == id}).first
+    guard let _ =  fetchImages().filter({$0.id == id}).first
     else {return false}
     return true
   }
   
   func delete(_ model: Image) {
-    guard let fetchResults = fetchImages(),
-          let targetModel = fetchResults.filter({$0.id == model.id}).first
+    guard let targetModel = fetchImages().filter({$0.id == model.id}).first
     else {return}
     context.delete(targetModel)
     save()
   }
   
   func deleteAll(){
-    guard let fetchResults = fetchImages()else {return}
+    let fetchResults = fetchImages()
     for item in fetchResults {
       context.delete(item)
     }

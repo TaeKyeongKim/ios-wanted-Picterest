@@ -67,8 +67,8 @@ final class ImageManager {
   }
   
   func loadSavedImage() -> [ImageEntity] {
-    guard let data = coreDataManager.fetchImages() else {return []}
-    return data
+//    guard let data = coreDataManager.fetchImages() else {return []}
+    coreDataManager.fetchImages()
   }
   
   func deleteSavedImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
@@ -84,7 +84,7 @@ final class ImageManager {
   
   func clearStorage(completion: @escaping ((Error?) -> Void)) {
     let storedModels = coreDataManager.fetchImages()
-    storedModels?.forEach({
+    storedModels.forEach({
       do {
         guard let storedDirectory = getStoredDirectory(imageName: $0.imageURL.lastPathComponent) else {return}
         try fileManager.removeItem(atPath: storedDirectory)

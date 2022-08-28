@@ -24,7 +24,7 @@
 		B78A0B73288E779200DAC63C /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B72288E779200DAC63C /* Image.swift */; };
 		B78A0B75288E8B9700DAC63C /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */; };
 		B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B76288E8CCF00DAC63C /* Observable.swift */; };
-		B78A0B7A288E8D8200DAC63C /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B79288E8D8200DAC63C /* ImageRepository.swift */; };
+		B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */; };
 		B78A0B7C288E8DE400DAC63C /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7B288E8DE400DAC63C /* ImageManager.swift */; };
 		B78A0B7E288E8DED00DAC63C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */; };
 		B78A0B80288ECE7700DAC63C /* FlowLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7F288ECE7700DAC63C /* FlowLayoutManager.swift */; };
@@ -68,7 +68,7 @@
 		B78A0B72288E779200DAC63C /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
 		B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		B78A0B76288E8CCF00DAC63C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
-		B78A0B79288E8D8200DAC63C /* ImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRepository.swift; sourceTree = "<group>"; };
+		B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageRepository.swift; sourceTree = "<group>"; };
 		B78A0B7B288E8DE400DAC63C /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 		B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		B78A0B7F288ECE7700DAC63C /* FlowLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayoutManager.swift; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 		B78A0B78288E8D6600DAC63C /* DataLayer */ = {
 			isa = PBXGroup;
 			children = (
-				B78A0B79288E8D8200DAC63C /* ImageRepository.swift */,
+				B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */,
 				B78A0B7B288E8DE400DAC63C /* ImageManager.swift */,
 				B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */,
 			);
@@ -396,7 +396,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B78A0B8C28913E5A00DAC63C /* Footer.swift in Sources */,
-				B78A0B7A288E8D8200DAC63C /* ImageRepository.swift in Sources */,
+				B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */,
 				B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */,
 				B78A0B8E2892CB6F00DAC63C /* TabBarController.swift in Sources */,
 				B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */,

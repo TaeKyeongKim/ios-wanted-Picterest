@@ -11,8 +11,8 @@ struct Image: Identifiable {
   
   let id: String
   let imageURL: URL
-  private(set) var width: Float?
-  private(set) var height: Float?
+  private(set) var width: Float
+  private(set) var height: Float
   private(set) var memo: String?
   private(set) var isLiked: Bool
   
