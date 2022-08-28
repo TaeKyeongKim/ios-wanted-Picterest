@@ -7,9 +7,20 @@
 
 import Foundation
 
-struct HomeRepository {
+//Infrastructure layer has to be reconstructed. 
+final class DefualtImageRepository {
+
+//  private let dataTransferService: NetworkService?
+//  private let
   
-  func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[Image], NetworkError>) -> Void) {
+  
+}
+
+extension DefualtImageRepository: ImageRepository {
+  
+  func fetchImages(endPoint: EndPoint,
+                   completion: @escaping (Result<[Image], NetworkError>) -> Void) {
+    
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
     NetworkService.request(on: request.value) { result in
       switch result {
@@ -28,11 +39,10 @@ struct HomeRepository {
     }
   }
   
-  func fetchSavedImageData() -> [ImageEntity] {
-    return ImageManager.shared.loadSavedImage()
+  func fetchSavedImage(cached: @escaping ([Image]) -> Void) {
+    cached(ImageManager.shared.loadSavedImage().map({$0.toDomain()}))
   }
-  
-  
+    
   func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
     ImageManager.shared.saveImage(imageEntity){ error in
       if let error = error {

@@ -29,14 +29,13 @@ final class CoreDataManager {
     return  NSEntityDescription.entity(forEntityName: "ImageData", in: context)
   }
   
-  func fetchImages() -> [ImageEntity]? {
+  func fetchImages() -> [ImageEntity] {
     do {
       let data = try context.fetch(ImageEntity.fetchRequest()) as! [ImageEntity]
       return data
     }catch{
       print(error.localizedDescription)
     }
-    return nil
   }
   
   func insert(_ model: Image) {

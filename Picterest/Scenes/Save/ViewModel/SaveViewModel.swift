@@ -11,7 +11,7 @@ final class SaveViewModel: ImageConfigurable {
 
   var didUpdateLikeStatusAt: ((Int) -> Void)?
   var imageList: Observable<[Image]> = Observable([])
-  let repository = HomeRepository()
+  let repository = ImageRepository()
 
   subscript(index: IndexPath) -> Image? {
     return imageList.value[index.row]

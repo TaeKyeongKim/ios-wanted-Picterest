@@ -9,7 +9,7 @@ import Foundation
 
 protocol ImageRepository {
   func fetchImages(endPoint: EndPoint, completion: @escaping (Result<[Image], NetworkError>) -> Void)
-  func fetchSavedImageData() -> [ImageEntity]
+  func fetchSavedImage(cached: @escaping ([Image]) -> Void)
   func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void))
   func deleteImage(imageEntity: Image, completion: @escaping ((Error?) -> Void))
   func resetRepository(completion: @escaping ((Error?) -> Void))
