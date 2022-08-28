@@ -29,9 +29,7 @@
 - 사용자에게 업데이트된 화면을 보여주고, 이벤트 핸들링 을 담당합니다.
 
 ### [ViewModel]
-
-- 현재 어플리케이션에 적용된 ViewModel 의 계념은 1:M 의 ViewModel:ViewController 로 설정하였습니다. (한개의 ViewModel 이 여러개의 ViewController 에서 사용될수 있습니다.)
-- 필요한 데이터를 가공, 찾아서 View 에 전달합니다.
+- 필요한 데이터를 가공 및 받아와 View 에 전달합니다.
 - 데이터의 모든 변화는 ViewModel 에서 처리됩니다.
 - ViewController 에서 부터 전달받은 특정한 이벤트 에 필요한 **데이터** 를 찾아서 전해줍니다.
 - 필요시 Repository 에 요청을 보내서 데이터를 fetch 해옵니다.
