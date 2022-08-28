@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol ChangeImageLikeStateUsecase {
-  func execute(item: Image, completion: @escaping ((Error?)-> Void))
+protocol UpdateImageLikeStateUsecase {
+  func execute(on item: Image, completion: @escaping ((Error?)-> Void))
 }
 
 
-final class LikeImageUsecase: ChangeImageLikeStateUsecase {
+final class LikeImageUsecase: UpdateImageLikeStateUsecase {
   
   private var repository: ImageRepository
   
@@ -20,8 +20,7 @@ final class LikeImageUsecase: ChangeImageLikeStateUsecase {
     self.repository = repository
   }
   
-  func execute(item: Image, completion: @escaping ((Error?) -> Void)) {
-    
+  func execute(on item: Image, completion: @escaping ((Error?) -> Void)) {
     repository.saveImage(imageEntity: item) { error in
       if let error = error {
         completion(error)
@@ -33,15 +32,15 @@ final class LikeImageUsecase: ChangeImageLikeStateUsecase {
   
 }
 
-final class UndoLikeImageUsecase: ChangeImageLikeStateUsecase {
+final class UndoLikeImageUsecase: UpdateImageLikeStateUsecase {
   
-  private var repository: HomeRepository
+  private var repository: ImageRepository
   
-  init (repository: HomeRepository){
+  init (repository: ImageRepository){
     self.repository = repository
   }
   
-  func execute(item: Image, completion: @escaping ((Error?) -> Void)) {
+  func execute(on item: Image, completion: @escaping ((Error?) -> Void)) {
     repository.deleteImage(imageEntity: item) { error in
       if let error = error {
         completion(error)

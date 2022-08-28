@@ -19,7 +19,7 @@ extension ImageEntity {
 
 extension ImageEntity : Identifiable {
   
-  func toDomain() -> Image? {
+  func toDomain() -> Image {
     return .init(id: self.id,
                  imageURL: self.imageURL,
                  width: self.width,

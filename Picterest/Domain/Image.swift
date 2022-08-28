@@ -25,5 +25,8 @@ struct Image: Identifiable {
     self.isLiked = isliked
   }
 
+  mutating func changeLikeState(to state: Bool){
+    self.isLiked = state
+  }
 }
 
