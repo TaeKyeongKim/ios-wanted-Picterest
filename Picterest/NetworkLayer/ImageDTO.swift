@@ -32,7 +32,7 @@ extension ImageDTO {
                  imageURL: self.imageURL.url,
                  width: Float(self.width),
                  height: Float(self.height),
-                 memo: "",
+                 memo: nil,
                  isliked: false)
   }
   

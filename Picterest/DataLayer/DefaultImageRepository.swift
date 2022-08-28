@@ -18,6 +18,11 @@ final class DefualtImageRepository {
 
 extension DefualtImageRepository: ImageRepository {
   
+  func resetRepository(completion: @escaping ((Error?) -> Void)) {
+    print("TBD")
+  }
+  
+  
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
@@ -63,12 +68,12 @@ extension DefualtImageRepository: ImageRepository {
     }
   }
   
-  func resetRepository(completion: @escaping ((Error?) -> Void)) {
-    ImageManager.shared.clearStorage(){ result in
-      if case let .failure(error) = result {
-        completion(error)
-      }
-    }
-  }
+//  func resetRepository(completion: @escaping ((Error?) -> Void)) {
+//    ImageManager.shared.clearStorage(){ result in
+//      if case let .failure(error) = result {
+//        completion(error)
+//      }
+//    }
+//  }
   
 }

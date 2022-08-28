@@ -28,7 +28,10 @@ final class HomeViewModel {
     self.likeImageUsecase = likeImageUsecase
   }
   
+
+  
   subscript(index: IndexPath) -> Image? {
+    print(index.item)
     return imageList[index.row]
   }
   
@@ -36,11 +39,12 @@ final class HomeViewModel {
 //사용자가 스크롤을 하고 새로운 데이터가 fetching 되어 올때, `appendList(Image)` 함수는 새로운 데이터가 이미 저장되어있는 데이터인지 확인하는 로직을 가지고 있다. 이미 저장된 데이터가 있다면, 그 데이터의 `isLiked` 상태를 `true` 로 바꾸어서 `ViewModel` 을 생성해준다.
   private func appendList(Images: [Image]) {
     print("현재 페이지는 = \(currentPage) 입니다")
-    
     imageList += Images
+    var tempViewModel: [ImageViewModel] = []
     for (index, value) in imageList.enumerated() {
-      items.value.append(ImageViewModel(model: value, index: index))
+        tempViewModel.append(ImageViewModel(model: value, index: index))
     }
+    items.value += tempViewModel
   }
   
   //MARK: 2.0 updateList(

@@ -9,17 +9,14 @@ import UIKit
 
 extension UIImageView {
   
-  func setImage(urlSource: URL, completion: @escaping (UIImage) -> Void){
+  func setImage(urlSource: URL){
     ImageManager.shared.loadImage(urlSource: urlSource) { result in
-      
       switch result {
       case .success(let data):
-        guard let data = data,
-              let loadedImage = UIImage(data: data)
-        else {return}
+        guard let loadedImage = UIImage(data: data) else {return}
         DispatchQueue.main.async {
           self.image = loadedImage
-          completion(loadedImage)
+//          completion(loadedImage)
         }
                 
       case .failure(let error):

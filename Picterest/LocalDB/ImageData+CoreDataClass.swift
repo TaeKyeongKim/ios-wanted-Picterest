@@ -18,3 +18,6 @@ public class ImageEntity: NSManagedObject {
   @NSManaged public var width: Float
   @NSManaged public var height: Float
 }
+
+
+//Multiple commands produce '/Users/kaikim/Library/Developer/Xcode/DerivedData/Picterest-bbmlhyhklakdqigyqavceupkuwyq/Build/Intermediates.noindex/Picterest.build/Debug-iphonesimulator/Picterest.build/Objects-normal/arm64/ImageRepository.stringsdata'
