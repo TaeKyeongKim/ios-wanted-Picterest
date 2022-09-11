@@ -42,13 +42,10 @@ final class ImageManager {
       }
     }
   }
-
+  
   
   func saveImage(_ model: Image, completion: @escaping ((Error?) -> Void)) {
-    //I want to save image as PNG or JPEG and when i get these Image out, i'd like to convert it into
-    //Data type.
     guard let directory = makeDefaultPath() else {return}
-    
     loadImage(urlSource: model.imageURL) { [weak self] result in
       switch result {
       case .success(let imageData):
@@ -63,11 +60,9 @@ final class ImageManager {
         completion(error)
       }
     }
-    
   }
   
   func loadSavedImage() -> [ImageEntity] {
-//    guard let data = coreDataManager.fetchImages() else {return []}
     coreDataManager.fetchImages()
   }
   
@@ -83,17 +78,17 @@ final class ImageManager {
   }
   
   func clearStorage(completion: @escaping ((Error?) -> Void)) {
-    let storedModels = coreDataManager.fetchImages()
-    storedModels.forEach({
+    let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let directoryURL = documentsURL.appendingPathComponent("picteresting")
+    if fileManager.fileExists(atPath: directoryURL.path) {
       do {
-        guard let storedDirectory = getStoredDirectory(imageName: $0.imageURL.lastPathComponent) else {return}
-        try fileManager.removeItem(atPath: storedDirectory)
+        try fileManager.removeItem(at: directoryURL)
         coreDataManager.deleteAll()
       }
       catch{
         completion(error)
       }
-    })
+    }
   }
   
   func getSavedImage(named: String) -> Data? {
@@ -107,9 +102,17 @@ final class ImageManager {
 private extension ImageManager {
   
   func makeDefaultPath() -> URL? {
-    if let directory = fileManager.urls(for: .documentDirectory,
-                                        in: .userDomainMask).first {return directory}
-    return nil
+    guard var directory = fileManager.urls(for: .documentDirectory,
+                                           in: .userDomainMask).first else {return nil}
+    directory.appendPathComponent("picteresting")
+    if !fileManager.fileExists(atPath: directory.path){
+      do {
+        try fileManager.createDirectory(at: directory, withIntermediateDirectories: false)
+      }catch {
+        print(error.localizedDescription)
+      }
+    }
+    return directory
   }
   
   func getStoredDirectory(imageName: String) -> String? {
@@ -122,4 +125,5 @@ private extension ImageManager {
     return nil
   }
   
+
 }

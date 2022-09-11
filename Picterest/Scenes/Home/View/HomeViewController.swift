@@ -7,13 +7,13 @@ import UIKit
 
 class HomeViewController: UIViewController {
   
-  var viewModel: HomeViewModel
+  var viewModel: DefaultHomeViewModel
   let layoutProvider = SceneLayout(scene: .home, cellPadding: 6)
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
   
-  init(viewModel: HomeViewModel) {
+  init(viewModel: DefaultHomeViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -43,6 +43,10 @@ class HomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
+    ImageManager.shared.clearStorage { e in
+      print(e?.localizedDescription)
+    }
+    bindErrorMessage()
     setDataBinding()
     setConstraints()
   }
@@ -50,28 +54,32 @@ class HomeViewController: UIViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    resetData()
+    viewModel.viewWillDisappear()
+    
   }
   
 }
 
 private extension HomeViewController {
   
-  func resetData(){
-    viewModel.resetLikeStatus()
-  }
-  
   func updateData() {
-    viewModel.updateLikeStatus()
+    viewModel.viewWillAppear()
     DispatchQueue.main.async {
       self.collectionView.reloadSections(IndexSet(integer: 0))
     }
   }
+
   
   func fetchImage() {
     if viewModel.items.value.isEmpty {
-      viewModel.fetchImages()
+      viewModel.didLoadNextPage()
     }
+  }
+  
+  func bindErrorMessage() {
+    self.viewModel.error.bind({ errorMessage in
+      print(errorMessage)
+    })
   }
   
   func setDataBinding() {
@@ -123,14 +131,8 @@ private extension HomeViewController {
                                                 actions: .ok({
         guard let memo = $0 else {return}
         print("\(memo) is to be saved!")
-//        selectedImageEntity.configureMemo(memo: memo)
-//        self.viewModel.toogleLikeState(item: selectedImageEntity) { error in
-//          if let error = error {
-//            print(error.localizedDescription)
-//          }else {
-//            cell.setLikeButtonToOn()
-//          }
-//        }
+        self.viewModel.didLikeImage(id: selectedImageEntity.id)
+        cell.setLikeButtonToOn()
       }),
                                                 .cancel,
                                                 from: self)
@@ -164,6 +166,7 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell else { return UICollectionViewCell()}
     let viewModel = viewModel.items.value[indexPath.item]
+//    print("\(indexPath.item + 1) 번째 이미지는 \(viewModel.isLiked) 상태 입니다.")
     cell.configureAsHomeCell(model: viewModel)
     didReceiveToogleLikeStatus(on: cell)
     return cell
@@ -181,7 +184,7 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
       guard !self.isLoading else { return }
       self.isLoading = true
       DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        self.viewModel.fetchImages()
+        self.viewModel.didLoadNextPage()
         self.isLoading = false
       }
     }
