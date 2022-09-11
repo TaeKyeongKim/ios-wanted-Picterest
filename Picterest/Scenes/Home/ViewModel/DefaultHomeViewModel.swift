@@ -7,20 +7,34 @@
 
 import UIKit
 
-
-final class HomeViewModel {
+protocol HomeViewModelInput {
+  func didLoadNextPage()
+  func didLikeImage(id: String)
+  func viewWillAppear()
+  func viewWillDisappear()
   
-  var didUpdateLikeStatusAt: ((Int) -> Void)?
-  private var imageList: [Image] = [] //This ImageList is used for setting the height ratio of each cells.
+}
+
+protocol HomeViewModelOutput {
+  var items: Observable<[ImageViewModel]> { get }
+  var error: Observable<String> { get }
+}
+
+protocol HomeViewModel: HomeViewModelInput, HomeViewModelOutput {}
+
+final class DefaultHomeViewModel: HomeViewModel {
+
+  
+  private var imageList: [Image] = []
   private let fetchImageUsecase: DefaultFetchImageUsecase
   private let likeImageUsecase: UpdateImageLikeStateUsecase
-  //  private let likeImageRepository
   private(set) var imagesPerPage = 15
   private var currentPage: Int {
     return self.imageList.count / imagesPerPage
   }
   
   var items: Observable<[ImageViewModel]> = Observable([])
+  var error = Observable<String>("")
   
   init(fetchImageUsecase: DefaultFetchImageUsecase,
        likeImageUsecase: LikeImageUsecase) {
@@ -28,21 +42,19 @@ final class HomeViewModel {
     self.likeImageUsecase = likeImageUsecase
   }
   
-
-  
   subscript(index: IndexPath) -> Image? {
-    print(index.item)
     return imageList[index.row]
   }
   
-//MARK: 1.0 appendList(Image):
-//사용자가 스크롤을 하고 새로운 데이터가 fetching 되어 올때, `appendList(Image)` 함수는 새로운 데이터가 이미 저장되어있는 데이터인지 확인하는 로직을 가지고 있다. 이미 저장된 데이터가 있다면, 그 데이터의 `isLiked` 상태를 `true` 로 바꾸어서 `ViewModel` 을 생성해준다.
-  private func appendList(Images: [Image]) {
-    print("현재 페이지는 = \(currentPage) 입니다")
-    imageList += Images
+  //MARK: 1.0 appendList(Image):
+  //사용자가 스크롤을 하고 새로운 데이터가 fetching 되어 올때, `appendList(Image)` 함수는 새로운 데이터가 이미
+  //저장되어있는 데이터인지 확인하는 로직을 가지고 있다. 이미 저장된 데이터가 있다면, 그 데이터의 `isLiked` 상태를 `true` 로 바꾸어서 `ViewModel` 을 생성해준다.
+  private func appendList(images: [Image]) {
     var tempViewModel: [ImageViewModel] = []
-    for (index, value) in imageList.enumerated() {
-        tempViewModel.append(ImageViewModel(model: value, index: index))
+    for value in images {
+      if items.value.contains(where: {$0.id == value.id}) {continue}
+      imageList.append(value)
+      tempViewModel.append(ImageViewModel(model: value, index: imageList.count))
     }
     items.value += tempViewModel
   }
@@ -60,16 +72,16 @@ final class HomeViewModel {
     })
   }
   
-  func resetList() {
+  private func resetList() {
     imageList = []
     items.value = []
   }
-
-  func updateLikeStatus() {
+  
+  private func updateLikeStatus() {
     fetchImageUsecase.execute(cached: updateImageList)
   }
   
-  func resetLikeStatus() {
+  private func resetLikeStatus() {
     items.value.forEach({ imageEntity in
       if imageEntity.isLiked == true {
         imageEntity.toogleLikeStates()
@@ -77,21 +89,20 @@ final class HomeViewModel {
     })
   }
   
-  func fetchImages() {
-    let requestValue = FetchImageUsecaseRequestValue(page: currentPage + 1)
-    fetchImageUsecase.execute(requestValue: requestValue,
+  private func fetchImages(_ request: FetchImageUsecaseRequestValue) {
+    fetchImageUsecase.execute(requestValue: request,
                               completion: { [weak self] result in
       switch result {
       case .success(let newImages):
-        self?.appendList(Images: newImages)
+        self?.appendList(images: newImages)
       case .failure(let error):
-        print(error)
+        self?.error.value = error.localizedDescription
       }
     })
   }
   
-  func saveImage(item: Image, completion: @escaping ((Error?) -> Void)) {
-    likeImageUsecase.execute(on: item){[unowned self] error in
+  private func saveImage(item: Image, completion: @escaping ((Error?) -> Void)) {
+    likeImageUsecase.execute(on: item){ error in
       if let error = error {
         completion(error)
       }else {
@@ -101,6 +112,32 @@ final class HomeViewModel {
           }
         }
         completion(nil)
+      }
+    }
+  }
+  
+}
+
+extension DefaultHomeViewModel {
+  
+  func viewWillAppear() {
+    updateLikeStatus()
+  }
+  
+  func viewWillDisappear() {
+    resetList()
+  }
+  
+  func didLoadNextPage() {
+    let request = FetchImageUsecaseRequestValue(page: currentPage+1)
+    fetchImages(request)
+  }
+  
+  func didLikeImage(id: String) {
+    guard let model = imageList.firstIndex(where: {$0.id == id}) else {return}
+    saveImage(item: imageList[model]) { error in
+      if let error = error {
+        self.error.value = error.localizedDescription
       }
     }
   }

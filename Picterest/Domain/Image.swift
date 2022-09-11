@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Image: Identifiable {
+final class Image: Identifiable {
   
   let id: String
   let imageURL: URL
@@ -25,7 +25,7 @@ struct Image: Identifiable {
     self.isLiked = isliked
   }
 
-  mutating func changeLikeState(to state: Bool){
+  func changeLikeState(to state: Bool){
     self.isLiked = state
   }
 }

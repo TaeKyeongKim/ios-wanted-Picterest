@@ -22,7 +22,7 @@
 		B78A0B69288E731200DAC63C /* Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B68288E731200DAC63C /* Decoder.swift */; };
 		B78A0B6B288E732800DAC63C /* ImageDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B6A288E732800DAC63C /* ImageDTO.swift */; };
 		B78A0B73288E779200DAC63C /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B72288E779200DAC63C /* Image.swift */; };
-		B78A0B75288E8B9700DAC63C /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */; };
+		B78A0B75288E8B9700DAC63C /* DefaultHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B74288E8B9700DAC63C /* DefaultHomeViewModel.swift */; };
 		B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B76288E8CCF00DAC63C /* Observable.swift */; };
 		B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */; };
 		B78A0B7C288E8DE400DAC63C /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7B288E8DE400DAC63C /* ImageManager.swift */; };
@@ -66,7 +66,7 @@
 		B78A0B68288E731200DAC63C /* Decoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoder.swift; sourceTree = "<group>"; };
 		B78A0B6A288E732800DAC63C /* ImageDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDTO.swift; sourceTree = "<group>"; };
 		B78A0B72288E779200DAC63C /* Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
-		B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		B78A0B74288E8B9700DAC63C /* DefaultHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHomeViewModel.swift; sourceTree = "<group>"; };
 		B78A0B76288E8CCF00DAC63C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageRepository.swift; sourceTree = "<group>"; };
 		B78A0B7B288E8DE400DAC63C /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
@@ -186,7 +186,7 @@
 		B78A0B6F288E74D900DAC63C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				B78A0B74288E8B9700DAC63C /* HomeViewModel.swift */,
+				B78A0B74288E8B9700DAC63C /* DefaultHomeViewModel.swift */,
 				B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */,
 			);
 			path = ViewModel;
@@ -401,7 +401,7 @@
 				B78A0B8E2892CB6F00DAC63C /* TabBarController.swift in Sources */,
 				B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */,
 				B78A0B61288E560500DAC63C /* NetworkService.swift in Sources */,
-				B78A0B75288E8B9700DAC63C /* HomeViewModel.swift in Sources */,
+				B78A0B75288E8B9700DAC63C /* DefaultHomeViewModel.swift in Sources */,
 				B78A0BA4289544D400DAC63C /* EmptyIndicatorView.swift in Sources */,
 				B78A0BA22893E0A700DAC63C /* SaveViewModel.swift in Sources */,
 				B78A0B52288E505700DAC63C /* EndPoint.swift in Sources */,

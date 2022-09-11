@@ -18,7 +18,7 @@ final class ImageViewModel: Identifiable {
     self.id = model.id
     self.imageURL = model.imageURL
     self.isLiked = model.isLiked
-    self.memo = model.memo ?? "\(index + 1) 번째 사진"
+    self.memo = model.memo ?? "\(index) 번째 사진"
   }
 }
 
