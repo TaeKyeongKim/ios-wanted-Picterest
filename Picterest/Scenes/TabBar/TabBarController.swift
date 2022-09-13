@@ -37,7 +37,7 @@ private extension TabBarController {
     var viewController: UIViewController {
       switch self {
       case .home:
-        return HomeViewController(viewModel: DefaultHomeViewModel(fetchImageUsecase: DefaultFetchImageUsecase(imageRespository: DefualtImageRepository()), likeImageUsecase: LikeImageUsecase(repository: DefualtImageRepository())))
+        return HomeViewController(viewModel: DefaultHomeViewModel(fetchImageUsecase: DefaultFetchImageUsecase(imageRespository: DefualtImageRepository(cache: CoreDataManager())), likeImageUsecase: LikeImageUsecase(repository: DefualtImageRepository(cache: CoreDataManager()))))
 //      case .save:
           print("TBI")
 //        return SaveViewController(viewModel: SaveViewModel())
