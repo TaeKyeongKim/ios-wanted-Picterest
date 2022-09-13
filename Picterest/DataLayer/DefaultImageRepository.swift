@@ -10,10 +10,13 @@ import Foundation
 //Infrastructure layer has to be reconstructed. 
 final class DefualtImageRepository {
 
-//  private let dataTransferService: NetworkService?
-//  private let
-  
-  
+//  private let dataTransferService: DataTransferService
+  private let cache: ImageStorage
+
+  init(cache: ImageStorage) {
+//      self.dataTransferService = dataTransferService
+      self.cache = cache
+  }
 }
 
 extension DefualtImageRepository: ImageRepository {
@@ -26,18 +29,21 @@ extension DefualtImageRepository: ImageRepository {
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
+    let savedImages = ImageCacheManager.shared.loadSavedImage()
+    let decorder = Decoder<[ImageDTO]>()
+    
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
     NetworkService.request(on: request.value) { result in
       switch result {
       case .success(let data):
-        let decorder = Decoder<[ImageDTO]>()
-        var tempList:[Image] = []
         guard let decodedData = decorder.decode(data: data) else {return}
-        for item in decodedData {
-          let imageEntity = item.toDomain()
-          tempList.append(imageEntity)
+        let imageList = decodedData.map({$0.toDomain()})
+        for savedImage in savedImages {
+          if let matchedIndex = imageList.firstIndex(where: {$0.id == savedImage.id}) {
+            imageList[matchedIndex].changeLikeState(to: savedImage.isLiked)
+          }
         }
-        completion(.success(tempList))
+        completion(.success(imageList))
       case .failure(let error):
         completion(.failure(error))
       }
@@ -45,11 +51,11 @@ extension DefualtImageRepository: ImageRepository {
   }
   
   func fetchSavedImage(cached: @escaping ([Image]) -> Void) {
-    cached(ImageManager.shared.loadSavedImage().map({$0.toDomain()}))
+    cached(ImageCacheManager.shared.loadSavedImage())
   }
     
   func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
-    ImageManager.shared.saveImage(imageEntity){ error in
+    ImageCacheManager.shared.saveImage(imageEntity){ error in
       if let error = error {
         completion(error)
       }else {
@@ -59,7 +65,7 @@ extension DefualtImageRepository: ImageRepository {
   }
   
   func deleteImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
-    ImageManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
+    ImageCacheManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
       if let error = error {
         completion(error)
       }else {

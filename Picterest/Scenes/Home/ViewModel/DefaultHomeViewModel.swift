@@ -10,7 +10,7 @@ import UIKit
 protocol HomeViewModelInput {
   func didLoadNextPage()
   func didLikeImage(id: String)
-  func viewWillAppear()
+//  func viewWillAppear()
   func viewWillDisappear()
   
 }
@@ -23,7 +23,6 @@ protocol HomeViewModelOutput {
 protocol HomeViewModel: HomeViewModelInput, HomeViewModelOutput {}
 
 final class DefaultHomeViewModel: HomeViewModel {
-
   
   private var imageList: [Image] = []
   private let fetchImageUsecase: DefaultFetchImageUsecase
@@ -47,12 +46,9 @@ final class DefaultHomeViewModel: HomeViewModel {
   }
   
   //MARK: 1.0 appendList(Image):
-  //사용자가 스크롤을 하고 새로운 데이터가 fetching 되어 올때, `appendList(Image)` 함수는 새로운 데이터가 이미
-  //저장되어있는 데이터인지 확인하는 로직을 가지고 있다. 이미 저장된 데이터가 있다면, 그 데이터의 `isLiked` 상태를 `true` 로 바꾸어서 `ViewModel` 을 생성해준다.
   private func appendList(images: [Image]) {
     var tempViewModel: [ImageViewModel] = []
     for value in images {
-      if items.value.contains(where: {$0.id == value.id}) {continue}
       imageList.append(value)
       tempViewModel.append(ImageViewModel(model: value, index: imageList.count))
     }
@@ -60,26 +56,27 @@ final class DefaultHomeViewModel: HomeViewModel {
   }
   
   //MARK: 2.0 updateList(
-  //사용자가 `Save` 화면에서 어떤 이미지를 삭제 하고 `Home` 화면으로 전환할때 `updateList(Image)` 는 저장된 이미지의 `isliked` 상태를 확인하고 해당 `ImageViewModel` 의 상태를 바꾸어준다.
-  //아 어떻게 해주지..
-  //이 함수의 매개변수로 전해져오는 images 의 값들은 core data 에 저장되어있는 이미지 데이터들임
-  //반대로 여기에 없다면 저장해제가 되었다는 뜻이다.
-  private func updateImageList(images: [Image]) {
-    items.value.forEach({ imageViewModel in
-      if images.contains(where: {$0.id != imageViewModel.id}) {
-        imageViewModel.toogleLikeStates()
-      }
-    })
-  }
+  //저장된것을 가져오는거랑 fetch 할때 캐싱에 되어 있던 DTO 를 가져오는건 다르지않나?
+  //그럼 fetch 해올때 id 와 같은 image 가 있으면 Coredata 에서 가져오는게 맞지않을까? 라는 생각..
+//  private func updateImageList(images: [Image]) {
+//    var tempViewModel: [ImageViewModel] = []
+//    images.forEach({ [weak self] image in
+//      if !items.value.contains(where: {$0.id == image.id}) {
+//        self?.imageList.append(image)
+//        tempViewModel.append(ImageViewModel(model: image, index: imageList.count))
+//      }
+//    })
+//    items.value += tempViewModel
+//  }
   
   private func resetList() {
     imageList = []
     items.value = []
   }
   
-  private func updateLikeStatus() {
-    fetchImageUsecase.execute(cached: updateImageList)
-  }
+//  private func updateLikeStatus() {
+//    fetchImageUsecase.execute(cached: updateImageList)
+//  }
   
   private func resetLikeStatus() {
     items.value.forEach({ imageEntity in
@@ -101,28 +98,26 @@ final class DefaultHomeViewModel: HomeViewModel {
     })
   }
   
-  private func saveImage(item: Image, completion: @escaping ((Error?) -> Void)) {
+  private func saveImage(item: Image, completion: @escaping ((Result<ImageViewModel,Error>) -> Void)) {
     likeImageUsecase.execute(on: item){ error in
       if let error = error {
-        completion(error)
+        completion(.failure(error))
       }else {
-        for imageViewModel in self.items.value {
-          if imageViewModel.id == item.id {
-            imageViewModel.toogleLikeStates()
-          }
-        }
-        completion(nil)
+        guard let imageViewModel = self.items.value.first(where: {$0.id == item.id}) else {return}
+        imageViewModel.toogleLikeStates()
+        completion(.success(imageViewModel))
       }
     }
   }
-  
 }
+
+
 
 extension DefaultHomeViewModel {
   
-  func viewWillAppear() {
-    updateLikeStatus()
-  }
+//  func viewWillAppear() {
+//    updateLikeStatus()
+//  }
   
   func viewWillDisappear() {
     resetList()
@@ -134,9 +129,13 @@ extension DefaultHomeViewModel {
   }
   
   func didLikeImage(id: String) {
-    guard let model = imageList.firstIndex(where: {$0.id == id}) else {return}
-    saveImage(item: imageList[model]) { error in
-      if let error = error {
+    guard let modelIndex = imageList.firstIndex(where: {$0.id == id}) else {return}
+    let item = imageList[modelIndex]
+    saveImage(item: item) { result in
+      switch result {
+      case .success(let imageViewModel):
+        item.changeLikeState(to: imageViewModel.isLiked)
+      case .failure(let error):
         self.error.value = error.localizedDescription
       }
     }

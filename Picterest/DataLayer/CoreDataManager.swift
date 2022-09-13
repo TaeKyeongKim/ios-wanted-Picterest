@@ -8,7 +8,12 @@
 import Foundation
 import CoreData
 
-final class CoreDataManager {
+protocol ImageStorage {
+  func fetchStoredImages() -> [ImageEntity]
+}
+
+final class CoreDataManager: ImageStorage {
+  
   static var shared: CoreDataManager = CoreDataManager()
   
   lazy var persistentContainer: NSPersistentContainer = {
@@ -26,10 +31,10 @@ final class CoreDataManager {
   }
   
   var imageData: NSEntityDescription? {
-    return  NSEntityDescription.entity(forEntityName: "ImageData", in: context)
+    return  NSEntityDescription.entity(forEntityName: "ImageEntity", in: context)
   }
   
-  func fetchImages() -> [ImageEntity] {
+  func fetchStoredImages() -> [ImageEntity] {
     do {
       let data = try context.fetch(ImageEntity.fetchRequest()) as! [ImageEntity]
       return data
@@ -45,25 +50,26 @@ final class CoreDataManager {
       managedObject.setValue(model.id, forKey: "id")
       managedObject.setValue(model.memo, forKey: "memo")
       managedObject.setValue(model.imageURL, forKey: "imageURL")
+      managedObject.setValue(true, forKey: "isLiked")
       save()
     }
   }
   
   func isSaved(id: String) -> Bool {
-    guard let _ =  fetchImages().filter({$0.id == id}).first
+    guard let _ =  fetchStoredImages().filter({$0.id == id}).first
     else {return false}
     return true
   }
   
   func delete(_ model: Image) {
-    guard let targetModel = fetchImages().filter({$0.id == model.id}).first
+    guard let targetModel = fetchStoredImages().filter({$0.id == model.id}).first
     else {return}
     context.delete(targetModel)
     save()
   }
   
   func deleteAll(){
-    let fetchResults = fetchImages()
+    let fetchResults = fetchStoredImages()
     for item in fetchResults {
       context.delete(item)
     }

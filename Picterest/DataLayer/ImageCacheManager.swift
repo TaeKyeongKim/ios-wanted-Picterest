@@ -7,9 +7,9 @@
 
 import UIKit
 
-final class ImageManager {
+final class ImageCacheManager {
   
-  static let shared = ImageManager()
+  static let shared = ImageCacheManager()
   private let fileManager =  FileManager.default
   private let coreDataManager = CoreDataManager.shared
   private var imageCache = NSCache<NSString,NSData>()
@@ -62,8 +62,8 @@ final class ImageManager {
     }
   }
   
-  func loadSavedImage() -> [ImageEntity] {
-    coreDataManager.fetchImages()
+  func loadSavedImage() -> [Image] {
+    return coreDataManager.fetchStoredImages().map({$0.toDomain()})
   }
   
   func deleteSavedImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
@@ -99,7 +99,7 @@ final class ImageManager {
   }
 }
 
-private extension ImageManager {
+private extension ImageCacheManager {
   
   func makeDefaultPath() -> URL? {
     guard var directory = fileManager.urls(for: .documentDirectory,

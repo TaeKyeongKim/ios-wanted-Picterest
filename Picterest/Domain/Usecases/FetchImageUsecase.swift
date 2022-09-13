@@ -41,7 +41,7 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   }
   
   func execute(cached: @escaping ([Image]) -> Void) {
-    return imageRepository.fetchSavedImage(cached: cached)
+//    return imageRepository.fetchSavedImage(cached: cached)
   }
   
 }

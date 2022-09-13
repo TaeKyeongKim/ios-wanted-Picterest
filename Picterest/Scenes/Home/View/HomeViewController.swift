@@ -36,16 +36,12 @@ class HomeViewController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    updateData()
     fetchImage()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
-    ImageManager.shared.clearStorage { e in
-      print(e?.localizedDescription)
-    }
     bindErrorMessage()
     setDataBinding()
     setConstraints()
@@ -54,8 +50,7 @@ class HomeViewController: UIViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    viewModel.viewWillDisappear()
-    
+    viewModel.viewWillDisappear() 
   }
   
 }
@@ -166,7 +161,6 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell else { return UICollectionViewCell()}
     let viewModel = viewModel.items.value[indexPath.item]
-//    print("\(indexPath.item + 1) 번째 이미지는 \(viewModel.isLiked) 상태 입니다.")
     cell.configureAsHomeCell(model: viewModel)
     didReceiveToogleLikeStatus(on: cell)
     return cell
