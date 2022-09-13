@@ -58,7 +58,6 @@ class HomeViewController: UIViewController {
 private extension HomeViewController {
   
   func updateData() {
-    viewModel.viewWillAppear()
     DispatchQueue.main.async {
       self.collectionView.reloadSections(IndexSet(integer: 0))
     }
@@ -79,20 +78,12 @@ private extension HomeViewController {
   
   func setDataBinding() {
     self.viewModel.items.bind({ list in
-      let group = DispatchGroup()
-      DispatchQueue.global().async {
-        if list.count > 0 {
-          group.enter()
           DispatchQueue.main.async {
             let indexPathArray = self.makeIndexPathArray(list: list.count)
             self.collectionView.performBatchUpdates {
               self.collectionView.insertItems(at: indexPathArray)
             }
-            group.leave()
           }
-        }
-        group.wait()
-      }
     })
   }
   
