@@ -444,6 +444,27 @@ CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러�
 - ImageCacheManager 의 loadImage() 에 매개변수로 들어온 이미지URL 주소로 데이터 요청을 보내기전 NSCache, 또는 disk 에 저장이 되어 있는지 먼저 확인합니다. 
 - ImageCacheManager 를 싱글톤으로 구현하여 UIIMageView 의 이미지가 setImage(url: URL) 을 통하여 할당될시 ImageCacheManager 을 거쳐서 캐싱이 되어있는 이미지인지 확인한뒤에 없다면 네트워크 요청을 보내는 방식으로 구현했습니다. 
 
+### 6.0 사용자의 상호작용에 따른 DTO, Entity, CoreData 데이터 흐름
+
+<img width="1690" alt="image" src="https://user-images.githubusercontent.com/36659877/190572103-6b08abe4-3fc4-4e89-a88f-711b49ccbc3f.png">
+
+1.0 서버에서 부터 raw 한 데이터들을 ImageDTO 를 사용하여 받는다. 
+
+2.0 실제 Cell 에 사용될 타입 과 디폴트 데이터들을 ImageDTO 에서 Image 로 맵핑한다. 
+
+3.0 ImageViewModel 에 실제로 화면에 보여지는 데이터 를 Image 를 사용해서 초기화/업데이트 한다. 
+
+4.0 Cell 에 ImageViewModel 을 맵핑 한다.
+
+5.0 Cell 은 사용자에게 이미지에 대한 정보를 보여준다. 
+
+6.0 사용자가 Cell 를 터치하여 input 이벤트를 발생시킨다. 
+
+7.0 사용자의 input 에 따라 Cell index 에 해당하는 Image 데이터 를 가지고 CoreData 에 변경된 정보를 저장/업데이트 한다. 
+
+8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
+
+9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
 
 ## 버그 및 에러  노트 
 - [첫번째 페이지에서 두번째 페이지로 넘어갈때 Footer 가 생기지 않는 현상](https://github.com/TaeKyeongKim/ios-wanted-Picterest/issues/2)
