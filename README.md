@@ -468,6 +468,7 @@ CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러�
 
 ### 6.0 MVVM + Clean Architecture 리팩토링 과정 
 1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
+
 2.0 [Presentation Layer](https://live-a-life.tistory.com/60) 
 
 
