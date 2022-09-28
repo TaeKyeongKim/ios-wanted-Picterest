@@ -466,6 +466,11 @@ CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러�
 
 9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
 
+### 6.0 MVVM + Clean Architecture 리팩토링 과정 
+1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
+2.0 [Presentation Layer](https://live-a-life.tistory.com/60) 
+
+
 ## 버그 및 에러  노트 
 - [첫번째 페이지에서 두번째 페이지로 넘어갈때 Footer 가 생기지 않는 현상](https://github.com/TaeKyeongKim/ios-wanted-Picterest/issues/2)
 - [Save 화면 전환시 CGRectNull 에러](https://github.com/TaeKyeongKim/ios-wanted-Picterest/issues/3)
