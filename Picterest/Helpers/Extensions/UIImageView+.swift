@@ -9,16 +9,19 @@ import UIKit
 
 extension UIImageView {
   
+  private var dataTransferService: DataTransferService {
+    return NetworkService()
+  }
+  
   func setImage(urlSource: URL){
-    NetworkService.request(on: URLRequest(url: urlSource)){ result in
+    dataTransferService.request(on: URLRequest(url: urlSource)){ result in
+      
       switch result {
       case .success(let data):
         guard let loadedImage = UIImage(data: data) else {return}
         DispatchQueue.main.async {
           self.image = loadedImage
-//          completion(loadedImage)
         }
-                
       case .failure(let error):
         print(error.localizedDescription)
       } 

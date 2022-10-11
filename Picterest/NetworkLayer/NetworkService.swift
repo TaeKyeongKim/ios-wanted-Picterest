@@ -7,9 +7,13 @@
 
 import Foundation
 
-struct NetworkService {
+protocol DataTransferService {
+  func request(on endPoint: URLRequest, completion: @escaping (Result<Data, NetworkError>) -> Void)
+}
+
+struct NetworkService: DataTransferService {
   
-  static func request(on endPoint: URLRequest, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+  func request(on endPoint: URLRequest, completion: @escaping (Result<Data, NetworkError>) -> Void) {
     
     URLSession.shared.dataTask(with: endPoint) { data, response, error in
       if let error = error {

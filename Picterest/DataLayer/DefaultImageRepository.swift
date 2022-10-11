@@ -10,11 +10,11 @@ import Foundation
 //Infrastructure layer has to be reconstructed. 
 final class DefualtImageRepository {
 
-//  private let dataTransferService: DataTransferService
+  private let dataTransferService: DataTransferService
   private let cache: ImageStorage
 
-  init(cache: ImageStorage) {
-//      self.dataTransferService = dataTransferService
+  init(cache: ImageStorage, dataTransferService: DataTransferService = NetworkService()) {
+      self.dataTransferService = dataTransferService
       self.cache = cache
   }
 }
@@ -33,7 +33,7 @@ extension DefualtImageRepository: ImageRepository {
     let decorder = Decoder<[ImageDTO]>()
     
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
-    NetworkService.request(on: request.value) { result in
+    dataTransferService.request(on: request.value) { result in
       switch result {
       case .success(let data):
         guard let decodedData = decorder.decode(data: data) else {return}
