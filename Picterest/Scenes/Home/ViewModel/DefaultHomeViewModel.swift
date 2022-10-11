@@ -10,7 +10,6 @@ import UIKit
 protocol HomeViewModelInput {
   func didLoadNextPage()
   func didLikeImage(id: String)
-//  func viewWillAppear()
   func viewWillDisappear()
   
 }
@@ -114,10 +113,6 @@ final class DefaultHomeViewModel: HomeViewModel {
 
 
 extension DefaultHomeViewModel {
-  
-//  func viewWillAppear() {
-//    updateLikeStatus()
-//  }
   
   func viewWillDisappear() {
     resetList()

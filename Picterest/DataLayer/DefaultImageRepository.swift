@@ -29,7 +29,7 @@ extension DefualtImageRepository: ImageRepository {
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
-    let savedImages = ImageCacheManager.shared.loadSavedImage()
+    let savedImages = cache.fetchStoredImages()
     let decorder = Decoder<[ImageDTO]>()
     
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
@@ -51,27 +51,27 @@ extension DefualtImageRepository: ImageRepository {
   }
   
   func fetchSavedImage(cached: @escaping ([Image]) -> Void) {
-    cached(ImageCacheManager.shared.loadSavedImage())
+//    cached(ImageCacheManager.shared.loadSavedImage())
   }
     
   func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
-    ImageCacheManager.shared.saveImage(imageEntity){ error in
-      if let error = error {
-        completion(error)
-      }else {
-        completion(nil)
-      }
-    }
+//    ImageCacheManager.shared.saveImage(imageEntity){ error in
+//      if let error = error {
+//        completion(error)
+//      }else {
+//        completion(nil)
+//      }
+//    }
   }
   
   func deleteImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
-    ImageCacheManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
-      if let error = error {
-        completion(error)
-      }else {
-        completion(nil)
-      }
-    }
+//    ImageCacheManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
+//      if let error = error {
+//        completion(error)
+//      }else {
+//        completion(nil)
+//      }
+//    }
   }
   
 //  func resetRepository(completion: @escaping ((Error?) -> Void)) {

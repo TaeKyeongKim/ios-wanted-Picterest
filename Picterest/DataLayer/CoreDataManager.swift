@@ -10,12 +10,11 @@ import CoreData
 
 protocol ImageStorage {
   func fetchStoredImages() -> [ImageEntity]
+  
 }
 
 final class CoreDataManager: ImageStorage {
-  
-  static var shared: CoreDataManager = CoreDataManager()
-  
+    
   lazy var persistentContainer: NSPersistentContainer = {
     let container = NSPersistentContainer(name: "CoreData")
     container.loadPersistentStores(completionHandler: { (storeDescription, error) in
