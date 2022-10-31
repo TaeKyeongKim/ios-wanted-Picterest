@@ -6,20 +6,24 @@
 //
 //
 
+import Foundation
 import CoreData
 
 @objc(ImageEntity)
 public class ImageEntity: NSManagedObject {
-  
-}
-
-extension ImageEntity {
   func toDomain() -> Image {
-    return .init(id: id,
-                 imageURL: imageURL,
-                 width: width,
-                 height: height,
-                 memo: memo,
-                 isliked: isLiked)
+    return .init(id: self.id,
+                 imageURL: self.imageURL,
+                 width: self.width,
+                 height: self.height,
+                 memo: self.memo,
+                 isliked: self.isLiked)
   }
 }
+
+//let id: String
+//let imageURL: URL
+//private(set) var width: Float
+//private(set) var height: Float
+//private(set) var memo: String?
+//private(set) var isLiked: Bool
