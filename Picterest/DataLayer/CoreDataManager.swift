@@ -10,7 +10,7 @@ import CoreData
 
 protocol ImageStorage {
   func fetchStoredImages() -> [ImageEntity]
-  
+//  func saveImage() -> 
 }
 
 final class CoreDataManager: ImageStorage {
@@ -35,6 +35,7 @@ final class CoreDataManager: ImageStorage {
   
   func fetchStoredImages() -> [ImageEntity] {
     do {
+  
       let data = try context.fetch(ImageEntity.fetchRequest()) as! [ImageEntity]
       return data
     }catch{
@@ -78,7 +79,11 @@ final class CoreDataManager: ImageStorage {
   
   private func save() {
     do {
+      let startTime = CFAbsoluteTimeGetCurrent()
       try context.save()
+      let endTime = CFAbsoluteTimeGetCurrent()
+      let elapsedTime = endTime-startTime * 1000
+      print(elapsedTime)
     }catch{
       print(error.localizedDescription)
     }

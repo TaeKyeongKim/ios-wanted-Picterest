@@ -17,6 +17,7 @@ final class DefualtImageRepository {
       self.dataTransferService = dataTransferService
       self.cache = cache
   }
+  
 }
 
 extension DefualtImageRepository: ImageRepository {
@@ -25,7 +26,6 @@ extension DefualtImageRepository: ImageRepository {
     print("TBD")
   }
   
-  
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
@@ -33,16 +33,20 @@ extension DefualtImageRepository: ImageRepository {
     let decorder = Decoder<[ImageDTO]>()
     
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
+    
     dataTransferService.request(on: request.value) { result in
       switch result {
       case .success(let data):
         guard let decodedData = decorder.decode(data: data) else {return}
         let imageList = decodedData.map({$0.toDomain()})
+        
+      
         for savedImage in savedImages {
           if let matchedIndex = imageList.firstIndex(where: {$0.id == savedImage.id}) {
             imageList[matchedIndex].changeLikeState(to: savedImage.isLiked)
           }
         }
+        
         completion(.success(imageList))
       case .failure(let error):
         completion(.failure(error))
@@ -50,12 +54,12 @@ extension DefualtImageRepository: ImageRepository {
     }
   }
   
-  func fetchSavedImage(cached: @escaping ([Image]) -> Void) {
-//    cached(ImageCacheManager.shared.loadSavedImage())
+  func fetchSavedImage(completion: @escaping ([Image]) -> Void) {
+    completion(cache.fetchStoredImages().map({$0.toDomain()}))
   }
     
   func saveImage(imageEntity: Image, completion: @escaping ((Error?) -> Void)) {
-//    ImageCacheManager.shared.saveImage(imageEntity){ error in
+//    cache.insert(imageEntity){ error in
 //      if let error = error {
 //        completion(error)
 //      }else {

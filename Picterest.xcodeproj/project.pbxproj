@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B72B5AEB28B54D0600D83260 /* ImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */; };
+		B74832AA28F6E36400C8FBC2 /* FetchLikedImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74832A928F6E36400C8FBC2 /* FetchLikedImageUsecase.swift */; };
 		B78A0B4E288E504300DAC63C /* EndPointable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4D288E504300DAC63C /* EndPointable.swift */; };
 		B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4F288E504E00DAC63C /* Requestable.swift */; };
 		B78A0B52288E505700DAC63C /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B51288E505700DAC63C /* EndPoint.swift */; };
@@ -33,8 +34,6 @@
 		B78A0B8E2892CB6F00DAC63C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B8D2892CB6F00DAC63C /* TabBarController.swift */; };
 		B78A0B932892CBB700DAC63C /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B922892CBB700DAC63C /* SaveViewController.swift */; };
 		B78A0B962892DA4C00DAC63C /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B942892DA4C00DAC63C /* CoreData.xcdatamodeld */; };
-		B78A0B992892DBA900DAC63C /* ImageData+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B972892DBA900DAC63C /* ImageData+CoreDataClass.swift */; };
-		B78A0B9A2892DBA900DAC63C /* ImageData+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B982892DBA900DAC63C /* ImageData+CoreDataProperties.swift */; };
 		B78A0B9E2892F57100DAC63C /* MemoAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B9D2892F57100DAC63C /* MemoAlert.swift */; };
 		B78A0BA22893E0A700DAC63C /* SaveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA12893E0A700DAC63C /* SaveViewModel.swift */; };
 		B78A0BA4289544D400DAC63C /* EmptyIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA3289544D300DAC63C /* EmptyIndicatorView.swift */; };
@@ -42,6 +41,8 @@
 		B78A0BAF28AB720100DAC63C /* FetchImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */; };
 		B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */; };
 		B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB628AC950900DAC63C /* ImageRepository.swift */; };
+		B7C2D5CB291001F300F98BFF /* ImageEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */; };
+		B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */; };
 		DE15E65C28604278003DD2F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65B28604278003DD2F5 /* AppDelegate.swift */; };
 		DE15E65E28604278003DD2F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65D28604278003DD2F5 /* SceneDelegate.swift */; };
 		DE15E66028604278003DD2F5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65F28604278003DD2F5 /* HomeViewController.swift */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		B72B5AEA28B54D0600D83260 /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
+		B74832A928F6E36400C8FBC2 /* FetchLikedImageUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchLikedImageUsecase.swift; sourceTree = "<group>"; };
 		B78A0B4D288E504300DAC63C /* EndPointable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointable.swift; sourceTree = "<group>"; };
 		B78A0B4F288E504E00DAC63C /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		B78A0B51288E505700DAC63C /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
@@ -76,8 +78,6 @@
 		B78A0B8D2892CB6F00DAC63C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		B78A0B922892CBB700DAC63C /* SaveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
 		B78A0B952892DA4C00DAC63C /* CoreData.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreData.xcdatamodel; sourceTree = "<group>"; };
-		B78A0B972892DBA900DAC63C /* ImageData+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageData+CoreDataClass.swift"; sourceTree = "<group>"; };
-		B78A0B982892DBA900DAC63C /* ImageData+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageData+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B78A0B9D2892F57100DAC63C /* MemoAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoAlert.swift; sourceTree = "<group>"; };
 		B78A0BA12893E0A700DAC63C /* SaveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveViewModel.swift; sourceTree = "<group>"; };
 		B78A0BA3289544D300DAC63C /* EmptyIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyIndicatorView.swift; sourceTree = "<group>"; };
@@ -85,6 +85,8 @@
 		B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchImageUsecase.swift; sourceTree = "<group>"; };
 		B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateImageLikeStateUsecase.swift; sourceTree = "<group>"; };
 		B78A0BB628AC950900DAC63C /* ImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRepository.swift; sourceTree = "<group>"; };
+		B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		DE15E65828604278003DD2F5 /* Picterest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Picterest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE15E65B28604278003DD2F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE15E65D28604278003DD2F5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -238,9 +240,9 @@
 		B78A0B9B2892DBB500DAC63C /* LocalDB */ = {
 			isa = PBXGroup;
 			children = (
+				B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */,
+				B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */,
 				B78A0B942892DA4C00DAC63C /* CoreData.xcdatamodeld */,
-				B78A0B972892DBA900DAC63C /* ImageData+CoreDataClass.swift */,
-				B78A0B982892DBA900DAC63C /* ImageData+CoreDataProperties.swift */,
 			);
 			path = LocalDB;
 			sourceTree = "<group>";
@@ -265,6 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */,
+				B74832A928F6E36400C8FBC2 /* FetchLikedImageUsecase.swift */,
 				B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */,
 			);
 			path = Usecases;
@@ -394,9 +397,12 @@
 			files = (
 				B78A0B8C28913E5A00DAC63C /* Footer.swift in Sources */,
 				B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */,
+				B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */,
 				B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */,
 				B78A0B8E2892CB6F00DAC63C /* TabBarController.swift in Sources */,
+				B74832AA28F6E36400C8FBC2 /* FetchLikedImageUsecase.swift in Sources */,
 				B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */,
+				B7C2D5CB291001F300F98BFF /* ImageEntity+CoreDataClass.swift in Sources */,
 				B78A0B61288E560500DAC63C /* NetworkService.swift in Sources */,
 				B78A0B75288E8B9700DAC63C /* DefaultHomeViewModel.swift in Sources */,
 				B78A0BA4289544D400DAC63C /* EmptyIndicatorView.swift in Sources */,
@@ -407,7 +413,6 @@
 				B72B5AEB28B54D0600D83260 /* ImageViewModel.swift in Sources */,
 				B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */,
 				B78A0B962892DA4C00DAC63C /* CoreData.xcdatamodeld in Sources */,
-				B78A0B992892DBA900DAC63C /* ImageData+CoreDataClass.swift in Sources */,
 				DE15E66028604278003DD2F5 /* HomeViewController.swift in Sources */,
 				B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */,
 				B78A0B7E288E8DED00DAC63C /* CoreDataManager.swift in Sources */,
@@ -421,7 +426,6 @@
 				DE15E65E28604278003DD2F5 /* SceneDelegate.swift in Sources */,
 				B78A0BAF28AB720100DAC63C /* FetchImageUsecase.swift in Sources */,
 				B78A0B65288E562A00DAC63C /* NetworkError.swift in Sources */,
-				B78A0B9A2892DBA900DAC63C /* ImageData+CoreDataProperties.swift in Sources */,
 				B78A0B57288E509A00DAC63C /* ServerPath.swift in Sources */,
 				B78A0B82288ED55D00DAC63C /* ImageCell.swift in Sources */,
 				B78A0B69288E731200DAC63C /* Decoder.swift in Sources */,

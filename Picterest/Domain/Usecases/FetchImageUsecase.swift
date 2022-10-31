@@ -26,7 +26,6 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
     self.imageRepository = imageRespository
   }
   
-  //TODO: Consider cached data as ImageEntity. Not only Image itself.
   func execute(requestValue: FetchImageUsecaseRequestValue,
                completion: @escaping (Result<[Image], NetworkError>) -> Void) {
     
@@ -41,9 +40,7 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   }
   
   func execute(cached: @escaping ([Image]) -> Void) {
-//    return imageRepository.fetchSavedImage(cached: cached)
+    return imageRepository.fetchSavedImage(completion: cached)
   }
   
 }
-
-
