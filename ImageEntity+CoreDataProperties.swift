@@ -15,10 +15,10 @@ extension ImageEntity {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<ImageEntity> {
         return NSFetchRequest<ImageEntity>(entityName: "ImageEntity")
     }
-
+  
     @NSManaged public var height: Float
-    @NSManaged public var id: String?
-    @NSManaged public var imageURL: URL?
+    @NSManaged public var id: String
+    @NSManaged public var imageURL: URL
     @NSManaged public var isLiked: Bool
     @NSManaged public var memo: String?
     @NSManaged public var width: Float

@@ -26,7 +26,7 @@
 		B78A0B75288E8B9700DAC63C /* DefaultHomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B74288E8B9700DAC63C /* DefaultHomeViewModel.swift */; };
 		B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B76288E8CCF00DAC63C /* Observable.swift */; };
 		B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */; };
-		B78A0B7E288E8DED00DAC63C /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */; };
+		B78A0B7E288E8DED00DAC63C /* PersistentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7D288E8DED00DAC63C /* PersistentManager.swift */; };
 		B78A0B80288ECE7700DAC63C /* FlowLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B7F288ECE7700DAC63C /* FlowLayoutManager.swift */; };
 		B78A0B82288ED55D00DAC63C /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B81288ED55D00DAC63C /* ImageCell.swift */; };
 		B78A0B84288EDA5600DAC63C /* UIImageView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B83288EDA5600DAC63C /* UIImageView+.swift */; };
@@ -43,6 +43,7 @@
 		B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB628AC950900DAC63C /* ImageRepository.swift */; };
 		B7C2D5CB291001F300F98BFF /* ImageEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */; };
 		B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */; };
+		B7C2D5D52910E16C00F98BFF /* CoreDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5D42910E16C00F98BFF /* CoreDataStorage.swift */; };
 		DE15E65C28604278003DD2F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65B28604278003DD2F5 /* AppDelegate.swift */; };
 		DE15E65E28604278003DD2F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65D28604278003DD2F5 /* SceneDelegate.swift */; };
 		DE15E66028604278003DD2F5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE15E65F28604278003DD2F5 /* HomeViewController.swift */; };
@@ -70,7 +71,7 @@
 		B78A0B74288E8B9700DAC63C /* DefaultHomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultHomeViewModel.swift; sourceTree = "<group>"; };
 		B78A0B76288E8CCF00DAC63C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 		B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageRepository.swift; sourceTree = "<group>"; };
-		B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		B78A0B7D288E8DED00DAC63C /* PersistentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentManager.swift; sourceTree = "<group>"; };
 		B78A0B7F288ECE7700DAC63C /* FlowLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayoutManager.swift; sourceTree = "<group>"; };
 		B78A0B81288ED55D00DAC63C /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		B78A0B83288EDA5600DAC63C /* UIImageView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+.swift"; sourceTree = "<group>"; };
@@ -87,6 +88,7 @@
 		B78A0BB628AC950900DAC63C /* ImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRepository.swift; sourceTree = "<group>"; };
 		B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		B7C2D5D42910E16C00F98BFF /* CoreDataStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStorage.swift; sourceTree = "<group>"; };
 		DE15E65828604278003DD2F5 /* Picterest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Picterest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE15E65B28604278003DD2F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE15E65D28604278003DD2F5 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -205,8 +207,9 @@
 		B78A0B78288E8D6600DAC63C /* DataLayer */ = {
 			isa = PBXGroup;
 			children = (
-				B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */,
-				B78A0B7D288E8DED00DAC63C /* CoreDataManager.swift */,
+				B7C2D5CF2910E0CC00F98BFF /* Repositories */,
+				B7C2D5D02910E0E000F98BFF /* PersistentStorage */,
+				B78A0B4C288E502D00DAC63C /* NetworkLayer */,
 			);
 			path = DataLayer;
 			sourceTree = "<group>";
@@ -289,6 +292,31 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		B7C2D5CF2910E0CC00F98BFF /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		B7C2D5D02910E0E000F98BFF /* PersistentStorage */ = {
+			isa = PBXGroup;
+			children = (
+				B78A0B7D288E8DED00DAC63C /* PersistentManager.swift */,
+				B7C2D5D32910E15400F98BFF /* CoreDataStorage */,
+			);
+			path = PersistentStorage;
+			sourceTree = "<group>";
+		};
+		B7C2D5D32910E15400F98BFF /* CoreDataStorage */ = {
+			isa = PBXGroup;
+			children = (
+				B7C2D5D42910E16C00F98BFF /* CoreDataStorage.swift */,
+			);
+			path = CoreDataStorage;
+			sourceTree = "<group>";
+		};
 		DE15E64F28604278003DD2F5 = {
 			isa = PBXGroup;
 			children = (
@@ -312,7 +340,6 @@
 				B78A0B5C288E547F00DAC63C /* Helpers */,
 				B78A0B71288E775C00DAC63C /* Domain */,
 				B78A0B78288E8D6600DAC63C /* DataLayer */,
-				B78A0B4C288E502D00DAC63C /* NetworkLayer */,
 				B78A0B6C288E74BB00DAC63C /* Scenes */,
 				DE15E65B28604278003DD2F5 /* AppDelegate.swift */,
 				DE15E65D28604278003DD2F5 /* SceneDelegate.swift */,
@@ -398,6 +425,7 @@
 				B78A0B8C28913E5A00DAC63C /* Footer.swift in Sources */,
 				B78A0B7A288E8D8200DAC63C /* DefaultImageRepository.swift in Sources */,
 				B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */,
+				B7C2D5D52910E16C00F98BFF /* CoreDataStorage.swift in Sources */,
 				B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */,
 				B78A0B8E2892CB6F00DAC63C /* TabBarController.swift in Sources */,
 				B74832AA28F6E36400C8FBC2 /* FetchLikedImageUsecase.swift in Sources */,
@@ -415,7 +443,7 @@
 				B78A0B962892DA4C00DAC63C /* CoreData.xcdatamodeld in Sources */,
 				DE15E66028604278003DD2F5 /* HomeViewController.swift in Sources */,
 				B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */,
-				B78A0B7E288E8DED00DAC63C /* CoreDataManager.swift in Sources */,
+				B78A0B7E288E8DED00DAC63C /* PersistentManager.swift in Sources */,
 				B78A0B932892CBB700DAC63C /* SaveViewController.swift in Sources */,
 				B78A0B67288E567900DAC63C /* URLRequest+.swift in Sources */,
 				DE15E65C28604278003DD2F5 /* AppDelegate.swift in Sources */,

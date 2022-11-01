@@ -125,7 +125,7 @@ extension DefaultHomeViewModel {
   
   func didLikeImage(id: String) {
     guard let modelIndex = imageList.firstIndex(where: {$0.id == id}) else {return}
-    let item = imageList[modelIndex]
+    var item = imageList[modelIndex]
     saveImage(item: item) { result in
       switch result {
       case .success(let imageViewModel):

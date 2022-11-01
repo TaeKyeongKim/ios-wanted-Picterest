@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UpdateImageLikeStateUsecase {
-  func execute(on item: Image, completion: @escaping ((Error?)-> Void))
+  func execute(on image: Image, completion: @escaping ((Error?)-> Void))
 }
 
 
@@ -20,14 +20,8 @@ final class LikeImageUsecase: UpdateImageLikeStateUsecase {
     self.repository = repository
   }
   
-  func execute(on item: Image, completion: @escaping ((Error?) -> Void)) {
-    repository.saveImage(imageEntity: item) { error in
-      if let error = error {
-        completion(error)
-      }else {
-        completion(nil)
-      }
-    }
+  func execute(on image: Image, completion: @escaping ((Error?) -> Void)) {
+    repository.saveImage(image)
   }
   
 }
@@ -40,8 +34,8 @@ final class UndoLikeImageUsecase: UpdateImageLikeStateUsecase {
     self.repository = repository
   }
   
-  func execute(on item: Image, completion: @escaping ((Error?) -> Void)) {
-    repository.deleteImage(imageEntity: item) { error in
+  func execute(on image: Image, completion: @escaping ((Error?) -> Void)) {
+    repository.deleteImage(image) { error in
       if let error = error {
         completion(error)
       }else {

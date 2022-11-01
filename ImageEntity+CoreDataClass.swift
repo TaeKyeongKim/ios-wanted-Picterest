@@ -11,6 +11,10 @@ import CoreData
 
 @objc(ImageEntity)
 public class ImageEntity: NSManagedObject {
+  
+}
+
+extension ImageEntity {
   func toDomain() -> Image {
     return .init(id: self.id,
                  imageURL: self.imageURL,
@@ -20,10 +24,3 @@ public class ImageEntity: NSManagedObject {
                  isliked: self.isLiked)
   }
 }
-
-//let id: String
-//let imageURL: URL
-//private(set) var width: Float
-//private(set) var height: Float
-//private(set) var memo: String?
-//private(set) var isLiked: Bool

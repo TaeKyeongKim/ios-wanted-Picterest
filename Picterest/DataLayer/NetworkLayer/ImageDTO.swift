@@ -26,7 +26,6 @@ struct ImageURL: Decodable {
 }
 
 extension ImageDTO {
-  
   func toDomain() -> Image {
     return .init(id: self.id,
                  imageURL: self.imageURL.url,
@@ -35,5 +34,4 @@ extension ImageDTO {
                  memo: nil,
                  isliked: false)
   }
-  
 }

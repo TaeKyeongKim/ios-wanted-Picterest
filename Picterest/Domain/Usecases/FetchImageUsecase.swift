@@ -10,7 +10,7 @@ import Foundation
 protocol FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
                completion: @escaping (Result<[Image],NetworkError>) -> Void)
-  func execute(cached: @escaping ([Image]) -> Void)
+//  func execute(cached: @escaping ([Image]) -> Void)
 }
 
 struct FetchImageUsecaseRequestValue {
@@ -39,8 +39,8 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
     })
   }
   
-  func execute(cached: @escaping ([Image]) -> Void) {
-    return imageRepository.fetchSavedImage(completion: cached)
-  }
+//  func execute(cached: @escaping ([Image]) -> Void) {
+//    return imageRepository.fetchImage(completion: cached)
+//  }
   
 }
