@@ -7,13 +7,17 @@ import UIKit
 
 class HomeViewController: UIViewController {
   
-  var viewModel: DefaultHomeViewModel
+  var viewModel: HomeViewModel
   let layoutProvider = SceneLayout(scene: .home, cellPadding: 6)
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
   
-  init(viewModel: DefaultHomeViewModel) {
+  deinit {
+    print("deinit!")
+  }
+  
+  init(viewModel: HomeViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -33,12 +37,6 @@ class HomeViewController: UIViewController {
   }()
   
   
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    fetchImage()
-  }
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
@@ -47,11 +45,12 @@ class HomeViewController: UIViewController {
     setConstraints()
   }
   
-
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    viewModel.viewWillDisappear() 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    fetchImage()
   }
+  
+  //TODO: Implement Scroll down to refresh.
   
 }
 
@@ -88,6 +87,7 @@ private extension HomeViewController {
   }
   
   func makeIndexPathArray(list: Int) -> [IndexPath] {
+    guard list > self.collectionView.numberOfItems(inSection: 0) else {return []}
     var indexPathArray:[IndexPath] = []
     for i in self.collectionView.numberOfItems(inSection: 0)..<list {
       indexPathArray.append(IndexPath(item: i, section: 0))
@@ -117,7 +117,7 @@ private extension HomeViewController {
                                                 actions: .ok({
         guard let memo = $0 else {return}
         print("\(memo) is to be saved!")
-        self.viewModel.didLikeImage(id: selectedImageEntity.id)
+        self.viewModel.didLikeImage(imageViewModel: selectedImageEntity)
         cell.setLikeButtonToOn()
       }),
                                                 .cancel,

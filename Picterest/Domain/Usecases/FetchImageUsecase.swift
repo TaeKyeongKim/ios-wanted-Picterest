@@ -9,8 +9,8 @@ import Foundation
 
 protocol FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[Image],NetworkError>) -> Void)
-//  func execute(cached: @escaping ([Image]) -> Void)
+               completion: @escaping (Result<[Image],Error>) -> Void)
+  func execute(comepletion: @escaping (Result<[ImageEntity], Error>) -> Void)
 }
 
 struct FetchImageUsecaseRequestValue {
@@ -19,6 +19,8 @@ struct FetchImageUsecaseRequestValue {
 }
 
 final class DefaultFetchImageUsecase: FetchImageUsecase {
+
+  
   
   private let imageRepository: ImageRepository
   
@@ -27,20 +29,18 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   }
   
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[Image], NetworkError>) -> Void) {
+               completion: @escaping (Result<[Image], Error>) -> Void) {
     
     let endPoint = EndPoint(path: .showList,
                             query: .imagesPerPage(pageNumber: requestValue.page,
                                                   perPage: requestValue.imagesPerPage))
     //TODO: repository
     return imageRepository.fetchImages(endPoint: endPoint,
-                                       completion: { result in
-      completion(result)
-    })
+                                       completion: completion)
   }
   
-//  func execute(cached: @escaping ([Image]) -> Void) {
-//    return imageRepository.fetchImage(completion: cached)
-//  }
   
+  func execute(comepletion: @escaping (Result<[ImageEntity], Error>) -> Void) {
+    imageRepository.fetchSavedImage(completion: comepletion)
+  }
 }

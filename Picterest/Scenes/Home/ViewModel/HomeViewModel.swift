@@ -9,14 +9,14 @@ import UIKit
 
 protocol HomeViewModelInput {
   func didLoadNextPage()
-  func didLikeImage(id: String)
+  func didLikeImage(imageViewModel: ImageViewModel)
   func viewWillDisappear()
-  
 }
 
 protocol HomeViewModelOutput {
   var items: Observable<[ImageViewModel]> { get }
   var error: Observable<String> { get }
+  subscript(index: IndexPath) -> Image? { get }
 }
 
 protocol HomeViewModel: HomeViewModelInput, HomeViewModelOutput {}
@@ -53,37 +53,13 @@ final class DefaultHomeViewModel: HomeViewModel {
     }
     items.value += tempViewModel
   }
-  
-  //MARK: 2.0 updateList(
-  //저장된것을 가져오는거랑 fetch 할때 캐싱에 되어 있던 DTO 를 가져오는건 다르지않나?
-  //그럼 fetch 해올때 id 와 같은 image 가 있으면 Coredata 에서 가져오는게 맞지않을까? 라는 생각..
-//  private func updateImageList(images: [Image]) {
-//    var tempViewModel: [ImageViewModel] = []
-//    images.forEach({ [weak self] image in
-//      if !items.value.contains(where: {$0.id == image.id}) {
-//        self?.imageList.append(image)
-//        tempViewModel.append(ImageViewModel(model: image, index: imageList.count))
-//      }
-//    })
-//    items.value += tempViewModel
-//  }
-  
+
   private func resetList() {
     imageList = []
     items.value = []
   }
   
-//  private func updateLikeStatus() {
-//    fetchImageUsecase.execute(cached: updateImageList)
-//  }
-  
-  private func resetLikeStatus() {
-    items.value.forEach({ imageEntity in
-      if imageEntity.isLiked == true {
-        imageEntity.toogleLikeStates()
-      }
-    })
-  }
+
   
   private func fetchImages(_ request: FetchImageUsecaseRequestValue) {
     fetchImageUsecase.execute(requestValue: request,
@@ -97,16 +73,27 @@ final class DefaultHomeViewModel: HomeViewModel {
     })
   }
   
-  private func saveImage(item: Image, completion: @escaping ((Result<ImageViewModel,Error>) -> Void)) {
-    likeImageUsecase.execute(on: item){ error in
-      if let error = error {
-        completion(.failure(error))
-      }else {
-        guard let imageViewModel = self.items.value.first(where: {$0.id == item.id}) else {return}
-        imageViewModel.toogleLikeStates()
-        completion(.success(imageViewModel))
+  private func saveImage(viewModel: ImageViewModel) {
+    guard let imageModelIndex = imageList.firstIndex(where: {$0.id == viewModel.id})else {return}
+    let imageModel = imageList[imageModelIndex]
+    likeImageUsecase.execute(on: imageModel) { result in
+        switch result {
+        case .success(var image):
+          image.changeLikeState(to: true) //I have to check wheather the image status within the ImageList changed..
+          viewModel.update(model: image)
+        case .failure(let error):
+          self.error.value = error.localizedDescription
+        }
       }
-    }
+      
+//      if let error = error {
+//        completion(.failure(error))
+//      }else {
+//        guard let imageViewModel = self.items.value.first(where: {$0.id == item.id}) else {return}
+//        imageViewModel.toogleLikeStates()
+//        completion(.success(imageViewModel))
+//      }
+//    }
   }
 }
 
@@ -123,17 +110,8 @@ extension DefaultHomeViewModel {
     fetchImages(request)
   }
   
-  func didLikeImage(id: String) {
-    guard let modelIndex = imageList.firstIndex(where: {$0.id == id}) else {return}
-    var item = imageList[modelIndex]
-    saveImage(item: item) { result in
-      switch result {
-      case .success(let imageViewModel):
-        item.changeLikeState(to: imageViewModel.isLiked)
-      case .failure(let error):
-        self.error.value = error.localizedDescription
-      }
-    }
+  func didLikeImage(imageViewModel: ImageViewModel) {
+    saveImage(viewModel: imageViewModel)
   }
   
 }

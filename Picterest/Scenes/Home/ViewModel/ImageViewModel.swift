@@ -24,12 +24,9 @@ final class ImageViewModel: Identifiable {
 
 extension ImageViewModel {
   
-  func toogleLikeStates() {
-    self.isLiked = !isLiked
-  }
-  
-  func setMemo(memo: String) {
-    self.memo = memo
+  func update(model: Image) {
+    self.isLiked = model.isLiked
+    self.memo = model.memo ?? "\(String(describing: index)) 번째 사진"
   }
 
 }

@@ -23,45 +23,49 @@ final class DefualtImageRepository {
 
 extension DefualtImageRepository: ImageRepository {
 
-  func resetRepository(completion: @escaping ((Error?) -> Void)) {
-    print("TBD")
-  }
+
+//
+//  func resetRepository(completion: @escaping ((Error?) -> Void)) {
+//    print("TBD")
+//  }
   
   func fetchImages(endPoint: EndPoint,
-                   completion: @escaping (Result<[Image], NetworkError>) -> Void) {
+                   completion: @escaping (Result<[Image], Error>) -> Void) {
     let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
 
-   self.fetchSavedImage { savedImages in
-      let savedImageSets = Set(savedImages)
+   self.fetchSavedImage { result in
      
-      self.dataTransferService.request(on: request.value) {[weak self] result in
-        switch result {
-        case .success(let data):
-          guard let decodedData = self?.decorder.decode(data: data) else {return}
-          var images = decodedData.map({$0.toDomain()})
-          for i in 0..<images.count {
-            if savedImageSets.contains(images[i]) {
-              images[i].changeLikeState(to: true)
-            }
-          }
-          completion(.success(images))
-        case .failure(let error):
-          completion(.failure(error))
-        }
-      }
-     
+     if case let .success(savedImageEntities) = result {
+       let savedImageSets = Set(savedImageEntities.map({$0.toDomain()}))
+       
+       self.dataTransferService.request(on: request.value) {[weak self] result in
+         switch result {
+         case .success(let data):
+           guard let decodedData = self?.decorder.decode(data: data) else {return}
+           var images = decodedData.map({$0.toDomain()})
+           for i in 0..<images.count {
+             if savedImageSets.contains(images[i]) {
+               images[i].changeLikeState(to: true)
+             }
+           }
+           completion(.success(images))
+         case .failure(let error):
+           completion(.failure(error))
+         }
+       }
+     }
     }
   }
   
-  func fetchSavedImage(completion: @escaping (([Image]) -> Void)) {
-    persistentManager.fetchStoredImages(completion: { images in
-      completion(images.map({$0.toDomain()}))
-    })
+  func fetchSavedImage(completion: @escaping (Result<[ImageEntity], Error>) -> Void) {
+    persistentManager.fetchStoredImages(completion: completion)
   }
 
-  func saveImage(_ image: Image) {
-    persistentManager.insertImage(image)
+  func saveImage(_ image: Image, completion: @escaping (Result<Image, Error>) -> Void) {
+    persistentManager.insertImage(image, completion: completion)
   }
+
+  
   
   func deleteImage(_ image: Image, completion: @escaping ((Error?) -> Void)) {
 //    ImageCacheManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in

@@ -5,14 +5,12 @@
 //  Created by Kai Kim on 2022/07/25.
 //
 
-import Foundation
+
 import CoreData
-import UIKit
 
 protocol PersistentManager {
-  func fetchStoredImages(completion: @escaping ([ImageEntity]) -> Void)
-  func insertImage(_ model: Image)
-//  func saveImage() -> 
+  func fetchStoredImages(completion: @escaping (Result<[ImageEntity],Error>) -> Void)
+  func insertImage(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void)
 }
 
 final class CoreDataManager: PersistentManager {
@@ -23,18 +21,18 @@ final class CoreDataManager: PersistentManager {
     self.storage = coredataStorage
   }
 
-  func fetchStoredImages(completion: @escaping ([ImageEntity]) -> Void) {
+  func fetchStoredImages(completion: @escaping (Result<[ImageEntity],Error>) -> Void) {
     storage.performBackgroundTask { context in
       do {
         let data = try context.fetch(ImageEntity.fetchRequest())
-        completion(data)
+        completion(.success(data))
       }catch{
-        print(error.localizedDescription)
+        completion(.failure(CoreDataStorageError.readError(error)))
       }
     }
   }
   
-  func insertImage(_ model: Image) {
+  func insertImage(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void) {
     storage.performBackgroundTask { context in
       do {
         let managedObject = ImageEntity(context: context)
@@ -43,8 +41,10 @@ final class CoreDataManager: PersistentManager {
         managedObject.imageURL = model.imageURL
         managedObject.isLiked = model.isLiked
         try context.save()
+        
+        completion(.success(model))
       }catch let Error {
-        print(Error)
+        completion(.failure(CoreDataStorageError.saveError(Error)))
       }
     }
   }

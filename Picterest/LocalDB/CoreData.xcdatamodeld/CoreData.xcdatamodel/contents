@@ -9,6 +9,6 @@
         <attribute name="width" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="ImageEntity" positionX="-63" positionY="-18" width="128" height="119"/>
+        <element name="ImageEntity" positionX="-101665.1484375" positionY="9226.80859375" width="128" height="119"/>
     </elements>
 </model>
