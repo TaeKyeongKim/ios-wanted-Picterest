@@ -57,7 +57,7 @@ final class DefaultSaveViewModel {
     fetchImageUsecase.execute { result in
       switch result {
       case.success(let imageEntity):
-        self.imageList = imageEntity.map({$0.toDomain()})
+        self.appendList(images: imageEntity.map({$0.toDomain()}))
       case .failure(let error):
         self.error.value = NSLocalizedString("Fetching Error", comment: error.localizedDescription)
       }

@@ -14,7 +14,7 @@ protocol PersistentManager {
 }
 
 final class CoreDataManager: PersistentManager {
-  
+
   private var storage = CoreDataStorage.shared
     
   init(coredataStorage: CoreDataStorage = CoreDataStorage.shared) {
@@ -37,6 +37,8 @@ final class CoreDataManager: PersistentManager {
       do {
         let managedObject = ImageEntity(context: context)
         managedObject.id = model.id
+        managedObject.width = model.width
+        managedObject.height = model.height
         managedObject.memo = model.memo
         managedObject.imageURL = model.imageURL
         managedObject.isLiked = model.isLiked

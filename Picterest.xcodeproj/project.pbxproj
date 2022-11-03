@@ -160,7 +160,6 @@
 			children = (
 				B78A0BA828954C5400DAC63C /* TabBar */,
 				B78A0BA528954C2100DAC63C /* Protocol */,
-				B78A0B8F2892CB8E00DAC63C /* Save */,
 				B78A0B6D288E74CB00DAC63C /* Home */,
 			);
 			path = Scenes;
@@ -181,6 +180,7 @@
 				B78A0B81288ED55D00DAC63C /* ImageCell.swift */,
 				DE15E65F28604278003DD2F5 /* HomeViewController.swift */,
 				B78A0B8B28913E5A00DAC63C /* Footer.swift */,
+				B78A0B8F2892CB8E00DAC63C /* Save */,
 			);
 			path = View;
 			sourceTree = "<group>";

@@ -143,8 +143,8 @@ extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
     else {
       return UICollectionViewCell()
     }
-    let model = viewModel.items.value[indexPath.item]
-    cell.configureAsSaveCell(model: model)
+    let viewModel = viewModel.items.value[indexPath.item]
+    cell.updateViewModel(viewModel: viewModel)
     return cell
   }
   

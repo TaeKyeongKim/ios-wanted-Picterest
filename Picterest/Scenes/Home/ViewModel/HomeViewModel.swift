@@ -9,12 +9,12 @@ import UIKit
 
 protocol HomeViewModelInput {
   func didLoadNextPage()
-  func didLikeImage(imageViewModel: ImageViewModel)
+  func didLikeImage(itemIndex: IndexPath, memo: String?, completion: @escaping (Result<Void,Error>) -> Void)
   func viewWillDisappear()
 }
 
 protocol HomeViewModelOutput {
-  var items: Observable<[ImageViewModel]> { get }
+  var items: Observable<[Image:ImageViewModel]> { get }
   var error: Observable<String> { get }
   subscript(index: IndexPath) -> Image? { get }
 }
@@ -31,7 +31,7 @@ final class DefaultHomeViewModel: HomeViewModel {
     return self.imageList.count / imagesPerPage
   }
   
-  var items: Observable<[ImageViewModel]> = Observable([])
+  var items: Observable<[Image:ImageViewModel]> = Observable([:])
   var error = Observable<String>("")
   
   init(fetchImageUsecase: DefaultFetchImageUsecase,
@@ -46,18 +46,17 @@ final class DefaultHomeViewModel: HomeViewModel {
   
   //MARK: 1.0 appendList(Image):
   private func appendList(images: [Image]) {
-    var tempViewModel: [ImageViewModel] = []
-    for value in images {
-      imageList.append(value)
-      tempViewModel.append(ImageViewModel(model: value, index: imageList.count))
+    for image in images {
+      imageList.append(image)
+      items.value.updateValue(ImageViewModel(model: image, index: imageList.count), forKey: image)
+//      tempViewModel.append(ImageViewModel(model: value, index: imageList.count))
     }
-    items.value += tempViewModel
   }
 
-  private func resetList() {
-    imageList = []
-    items.value = []
-  }
+//  private func resetList() {
+//    imageList = []
+//    items.value = []
+//  }
   
 
   
@@ -73,27 +72,18 @@ final class DefaultHomeViewModel: HomeViewModel {
     })
   }
   
-  private func saveImage(viewModel: ImageViewModel) {
-    guard let imageModelIndex = imageList.firstIndex(where: {$0.id == viewModel.id})else {return}
-    let imageModel = imageList[imageModelIndex]
-    likeImageUsecase.execute(on: imageModel) { result in
+  private func saveImage(newImage: Image, memo: String?, completion: @escaping (Result<Void,Error>) -> Void) {
+  
+    likeImageUsecase.execute(on: newImage) { [unowned self] result in
         switch result {
-        case .success(var image):
-          image.changeLikeState(to: true) //I have to check wheather the image status within the ImageList changed..
-          viewModel.update(model: image)
+        case .success(_):
+          self.items.value[newImage]?.changeLikeState(to: newImage.isLiked)
+          completion(.success(()))
         case .failure(let error):
           self.error.value = error.localizedDescription
+          completion(.failure(error))
         }
       }
-      
-//      if let error = error {
-//        completion(.failure(error))
-//      }else {
-//        guard let imageViewModel = self.items.value.first(where: {$0.id == item.id}) else {return}
-//        imageViewModel.toogleLikeStates()
-//        completion(.success(imageViewModel))
-//      }
-//    }
   }
 }
 
@@ -102,7 +92,7 @@ final class DefaultHomeViewModel: HomeViewModel {
 extension DefaultHomeViewModel {
   
   func viewWillDisappear() {
-    resetList()
+//    resetList()
   }
   
   func didLoadNextPage() {
@@ -110,8 +100,10 @@ extension DefaultHomeViewModel {
     fetchImages(request)
   }
   
-  func didLikeImage(imageViewModel: ImageViewModel) {
-    saveImage(viewModel: imageViewModel)
+  func didLikeImage(itemIndex: IndexPath, memo: String?,completion: @escaping (Result<Void,Error>) -> Void) {
+    var newImage = imageList[itemIndex.item] //got width, height, like state = false
+    newImage.changeLikeState(to: true)
+    newImage.makeMemo(with: memo)
+    saveImage(newImage: newImage, memo: memo, completion: completion)
   }
-  
 }

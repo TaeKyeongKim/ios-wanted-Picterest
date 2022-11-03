@@ -27,6 +27,10 @@ struct Image: Identifiable {
   mutating func changeLikeState(to state: Bool){
     self.isLiked = state
   }
+  
+  mutating func makeMemo(with memo: String?) {
+    self.memo = memo
+  }
 }
 
 extension Image: Hashable {

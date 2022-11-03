@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import CloudKit
 
 class HomeViewController: UIViewController {
   
@@ -82,8 +83,9 @@ private extension HomeViewController {
             self.collectionView.performBatchUpdates {
               self.collectionView.insertItems(at: indexPathArray)
             }
-          }
+        }
     })
+
   }
   
   func makeIndexPathArray(list: Int) -> [IndexPath] {
@@ -110,15 +112,18 @@ private extension HomeViewController {
     ])
   }
   
-  func didReceiveToogleLikeStatus(on cell: ImageCell) {
-    cell.saveDidTap = { selectedImageEntity in
+  func didReceiveToogleLikeStatus(on index: IndexPath) {
       let alert = MemoAlert.makeAlertController(title: nil,
                                                 message: "이미지를 저장 하시겠습니까?",
                                                 actions: .ok({
         guard let memo = $0 else {return}
-        print("\(memo) is to be saved!")
-        self.viewModel.didLikeImage(imageViewModel: selectedImageEntity)
-        cell.setLikeButtonToOn()
+        self.viewModel.didLikeImage(itemIndex: index, memo: memo){ result in
+          if case .success() = result {
+            DispatchQueue.main.async {
+              self.collectionView.reloadItems(at: [index])
+            }
+          }
+        }
       }),
                                                 .cancel,
                                                 from: self)
@@ -128,7 +133,7 @@ private extension HomeViewController {
       })
       alert.actions[0].isEnabled = false
       self.alertController = alert
-    }
+
   }
   
   @objc func textChanged(_ sender:UITextField) {
@@ -150,12 +155,19 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell else { return UICollectionViewCell()}
-    let viewModel = viewModel.items.value[indexPath.item]
-    cell.configureAsHomeCell(model: viewModel)
-    didReceiveToogleLikeStatus(on: cell)
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell,
+          let image = viewModel[indexPath] else { return UICollectionViewCell()}
+    if let viewModel = viewModel.items.value[image] {
+      cell.updateViewModel(viewModel: viewModel)
+    }
     return cell
   }
+  
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    didReceiveToogleLikeStatus(on: indexPath)
+
+  }
+  
   
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
     guard let image = viewModel[indexPath] else {return 0}
