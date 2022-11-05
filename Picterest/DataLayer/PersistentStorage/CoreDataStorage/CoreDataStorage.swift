@@ -16,6 +16,7 @@ enum CoreDataStorageError: Error {
 final class CoreDataStorage {
   
   static let shared = CoreDataStorage()
+  
   private init() {}
   
   lazy var persistentContainer: NSPersistentContainer = {
@@ -42,10 +43,8 @@ final class CoreDataStorage {
     }
   }
   
-  //i can use this to fetch, edit, delete, save data.
   func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Void) {
     persistentContainer.performBackgroundTask(block)
-  
   }
 
 }

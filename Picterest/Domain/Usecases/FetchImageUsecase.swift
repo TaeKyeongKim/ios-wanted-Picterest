@@ -15,11 +15,14 @@ protocol FetchImageUsecase {
 
 struct FetchImageUsecaseRequestValue {
   let page: Int
-  let imagesPerPage: Int = 15
+  let imagesPerPage: Int
+  init(page: Int, imagesPerPage: Int) {
+    self.page = page
+    self.imagesPerPage = imagesPerPage
+  }
 }
 
 final class DefaultFetchImageUsecase: FetchImageUsecase {
-
   
   
   private let imageRepository: ImageRepository
@@ -41,6 +44,6 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   
   
   func execute(comepletion: @escaping (Result<[ImageEntity], Error>) -> Void) {
-    imageRepository.fetchSavedImage(completion: comepletion)
+    return imageRepository.fetchSavedImage(completion: comepletion)
   }
 }

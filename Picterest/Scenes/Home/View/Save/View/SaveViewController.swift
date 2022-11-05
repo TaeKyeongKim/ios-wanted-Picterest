@@ -9,10 +9,11 @@ import UIKit
 
 class SaveViewController: UIViewController {
   let viewModel: SaveViewModel
-  let layoutProvider = SceneLayout(scene: .save, cellPadding: 6)
+  let collectionViewCustomLayout: CustomLayout
   
-  init(viewModel: SaveViewModel) {
+  init(viewModel: SaveViewModel, collectionViewCustomLayout: CustomLayout) {
     self.viewModel = viewModel
+    self.collectionViewCustomLayout = collectionViewCustomLayout
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -21,7 +22,7 @@ class SaveViewController: UIViewController {
   }
   
   private lazy var collectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layoutProvider)
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewCustomLayout)
     collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.id)
     collectionView.translatesAutoresizingMaskIntoConstraints = false
     return collectionView
@@ -78,7 +79,7 @@ private extension SaveViewController {
     view.addSubview(collectionView)
     view.addSubview(defaultView)
     
-    if let layout = collectionView.collectionViewLayout as? SceneLayout {
+    if let layout = collectionView.collectionViewLayout as? CustomLayout {
       layout.delegate = self
     }
     
@@ -131,7 +132,7 @@ private extension SaveViewController {
   
 }
 
-extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, UIGestureRecognizerDelegate {
+extension SaveViewController: UICollectionViewDataSource, CustomLayoutDelegate, UIGestureRecognizerDelegate {
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     let count = viewModel.items.value.count
@@ -148,11 +149,10 @@ extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
     return cell
   }
   
-  func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-    
+  func collectionView(_ collectionView: UICollectionView, didSetWidthRatioAt indexPath: IndexPath) -> CGFloat {
     guard let image = viewModel[indexPath] else {return 0}
-    let widthRatio = CGFloat(image.width) / CGFloat(image.height)
-    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
+    return CGFloat(image.width) / CGFloat(image.height)
+//    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
 
 }

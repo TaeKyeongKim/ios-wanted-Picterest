@@ -29,7 +29,7 @@ final class DefaultHomeViewModel: HomeViewModel {
   private var imageList: [Image] = []
   private let fetchImageUsecase: DefaultFetchImageUsecase
   private let likeImageUsecase: UpdateImageLikeStateUsecase
-  let imagesPerPage = 15
+  let imagesPerPage: Int
   private var currentPage: Int {
     return self.imageList.count / imagesPerPage
   }
@@ -38,32 +38,23 @@ final class DefaultHomeViewModel: HomeViewModel {
   var error = Observable<String>("")
   
   init(fetchImageUsecase: DefaultFetchImageUsecase,
-       likeImageUsecase: LikeImageUsecase) {
+       likeImageUsecase: LikeImageUsecase,
+       imagesPerPage: Int) {
     self.fetchImageUsecase = fetchImageUsecase
     self.likeImageUsecase = likeImageUsecase
+    self.imagesPerPage = imagesPerPage
   }
   
 
-  
-  //MARK: 1.0 appendList(Image):
   private func appendList(images: [Image]) {
     var tempViewModel: [ImageViewModel] = []
     for image in images {
       imageList.append(image)
-//      items.value.updateValue(ImageViewModel(model: image, index: imageList.count), forKey: image)
       tempViewModel.append(ImageViewModel(model: image, index: imageList.count))
     }
     items.value += tempViewModel
-//    (imageList.map({[$0:ImageViewModel(model: $0, index: "d")]}))
   }
 
-//  private func resetList() {
-//    imageList = []
-//    items.value = []
-//  }
-  
-
-  
   private func fetchImages(_ request: FetchImageUsecaseRequestValue) {
     fetchImageUsecase.execute(requestValue: request,
                               completion: { [weak self] result in
@@ -77,7 +68,6 @@ final class DefaultHomeViewModel: HomeViewModel {
   }
   
   private func saveImage(newImage: Image, memo: String?, completion: @escaping (Result<Void,Error>) -> Void) {
-  
     likeImageUsecase.execute(on: newImage) { [unowned self] result in
         switch result {
         case .success(_):
@@ -91,7 +81,6 @@ final class DefaultHomeViewModel: HomeViewModel {
       }
   }
   
- 
 }
 
 
@@ -107,11 +96,11 @@ extension DefaultHomeViewModel {
   }
   
   func fetchData() {
-    fetchImages(FetchImageUsecaseRequestValue(page: 0))
+    fetchImages(FetchImageUsecaseRequestValue(page: 0, imagesPerPage: imagesPerPage))
   }
   
   func didLoadNextPage() {
-    let request = FetchImageUsecaseRequestValue(page: currentPage+1)
+    let request = FetchImageUsecaseRequestValue(page: currentPage+1, imagesPerPage: imagesPerPage)
     fetchImages(request)
   }
   

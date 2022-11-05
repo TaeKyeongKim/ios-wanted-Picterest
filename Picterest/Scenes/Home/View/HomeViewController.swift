@@ -4,18 +4,18 @@
 //
 
 import UIKit
-import CloudKit
 
 class HomeViewController: UIViewController {
   
-  var viewModel: HomeViewModel
-  let layoutProvider = SceneLayout(scene: .home, cellPadding: 6)
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
-
-  init(viewModel: HomeViewModel) {
+  let viewModel: HomeViewModel
+  let collectionViewCustomLayout: CustomLayout
+  
+  init(viewModel: HomeViewModel, collectionViewCustomLayout: CustomLayout) {
     self.viewModel = viewModel
+    self.collectionViewCustomLayout = collectionViewCustomLayout
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -24,7 +24,7 @@ class HomeViewController: UIViewController {
   }
   
   private lazy var collectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layoutProvider)
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewCustomLayout)
     collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.id)
     collectionView.register(Footer.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -37,18 +37,11 @@ class HomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
-    bindErrorMessage()
     setConstraints()
+    bind(to: viewModel)
     fetchData()
   }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    setDataBinding()
-  }
-
-  //TODO: Implement Scroll down to refresh.
-  
+    
 }
 
 private extension HomeViewController {
@@ -63,37 +56,39 @@ private extension HomeViewController {
     }
   }
   
-  func bindErrorMessage() {
-    self.viewModel.error.bind({ errorMessage in
-      print(errorMessage)
+  
+  func bind(to viewModel: HomeViewModel) {
+    viewModel.items.bind({ [weak self] newImages in
+      self?.updateItems(currentImageCount: newImages.count)
     })
+    viewModel.error.bind({ [weak self] in self?.showError($0)})
+  }
+
+
+  func showError(_ error: String) {
+    guard !error.isEmpty else { return }
+    print(error)
   }
   
-  func setDataBinding() {
-    self.viewModel.items.bind({ [weak self] newImages in
-      guard let self = self else {return}
-          DispatchQueue.main.async {
-              self.collectionView.performBatchUpdates {
-                self.collectionView.insertItems(at: self.makeIndexPathArray(currentImageCount: newImages.count))
-              }
-        }
-    })
-  }
-  
+
   //15 개의 새로운 image 만 IndexPath 로 만들어서 insert 해주어야함.
-  func makeIndexPathArray(currentImageCount: Int) -> [IndexPath] {
-    guard currentImageCount >= self.collectionView.numberOfItems(inSection: 0) else {return []}
-    var indexPathArray:[IndexPath] = []
-    for i in self.collectionView.numberOfItems(inSection: 0)..<currentImageCount {
-      indexPathArray.append(IndexPath(item: i, section: 0))
+  func updateItems(currentImageCount: Int){
+    DispatchQueue.main.async {
+      guard currentImageCount >= self.collectionView.numberOfItems(inSection: 0) else {return}
+      var indexPathArray:[IndexPath] = []
+      for i in self.collectionView.numberOfItems(inSection: 0)..<currentImageCount {
+        indexPathArray.append(IndexPath(item: i, section: 0))
+      }
+      self.collectionView.performBatchUpdates {
+        self.collectionView.insertItems(at:indexPathArray)
+      }
     }
-    return indexPathArray
   }
   
   
   func setConstraints() {
     view.addSubview(collectionView)
-    if let layout = collectionView.collectionViewLayout as? SceneLayout {
+    if let layout = collectionView.collectionViewLayout as? CustomLayout {
       layout.delegate = self
     }
     collectionView.delegate = self
@@ -140,7 +135,7 @@ private extension HomeViewController {
   }
 }
 
-extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, UICollectionViewDelegate {
+extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, UICollectionViewDelegate {  
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     let count = viewModel.items.value.count
@@ -154,11 +149,6 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
     if let imageViewModel = viewModel.searchImageViewModel(on: image) {
       cell.updateViewModel(viewModel: imageViewModel)
     }
-    
-    if indexPath.row == viewModel.items.value.count - 1 {
-        viewModel.didLoadNextPage()
-    }
-    
     return cell
   }
   
@@ -167,10 +157,9 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   
-  func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
+  func collectionView(_ collectionView: UICollectionView, didSetWidthRatioAt indexPath: IndexPath) -> CGFloat {
     let imageViewModel = viewModel[indexPath]
-    let widthRatio = CGFloat(imageViewModel.width) / CGFloat(imageViewModel.height)
-    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
+    return CGFloat(imageViewModel.width) / CGFloat(imageViewModel.height)
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -179,7 +168,7 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
       guard !self.isLoading else { return }
       self.isLoading = true
       DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//        self.viewModel.didLoadNextPage()
+        self.viewModel.didLoadNextPage()
         self.isLoading = false
       }
     }

@@ -8,14 +8,14 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-      self.viewControllers = setTabBarItems(tarBarItems: .home, .save)
-    }
+  override func viewDidLoad() {
+    super.viewDidLoad()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.viewControllers = setTabBarItems(tarBarItems: .home, .save)
+  }
 }
 
 private extension TabBarController {
@@ -29,41 +29,50 @@ private extension TabBarController {
     }
     return items
   }
+  
+}
 
-  enum TabBarItemComponent {
-    case home
-    case save
-    
-    var viewController: UIViewController {
-      switch self {
-      case .home:
-        return HomeViewController(viewModel:
-                                    DefaultHomeViewModel(fetchImageUsecase:
-                                                          DefaultFetchImageUsecase(imageRespository: DefualtImageRepository(persistentManager: CoreDataManager())),
-                                                         likeImageUsecase:
-                                                          LikeImageUsecase(repository:
-                                                                            DefualtImageRepository(persistentManager: CoreDataManager()))))
-      case .save:
-        return SaveViewController(viewModel: DefaultSaveViewModel(fetchImageUsecase: DefaultFetchImageUsecase(imageRespository: DefualtImageRepository(persistentManager: CoreDataManager())), likeImageUescase: UndoLikeImageUsecase(repository: DefualtImageRepository(persistentManager: CoreDataManager()))))
-      }
+enum TabBarItemComponent {
+  case home
+  case save
+  var viewController: UIViewController {
+    switch self {
+    case .home:
+      return HomeViewController(viewModel:
+                                  DefaultHomeViewModel(fetchImageUsecase:
+                                                        DefaultFetchImageUsecase(imageRespository:
+                                                                                  DefualtImageRepository(persistentManager: CoreDataManager())),likeImageUsecase:
+                                                        LikeImageUsecase(repository:
+                                                                          DefualtImageRepository(persistentManager: CoreDataManager())), imagesPerPage: HomeSection.mainContent.numberOfItemsPerPage),
+                                collectionViewCustomLayout:
+                                  CustomLayout(layoutConfigurator:
+                                                LayoutConfigurator(numberOfColumns: HomeSection.mainContent.numberOfColumns, section: HomeSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items,.footer], numberOfItemsPerPage: HomeSection.mainContent.numberOfItemsPerPage)))
+    case .save:
+      return SaveViewController(viewModel: DefaultSaveViewModel(fetchImageUsecase:
+                                                                  DefaultFetchImageUsecase(imageRespository:
+                                                                                            DefualtImageRepository(persistentManager: CoreDataManager())), likeImageUescase:
+                                                                  UndoLikeImageUsecase(repository: DefualtImageRepository(persistentManager: CoreDataManager()))), collectionViewCustomLayout:
+                                  CustomLayout(layoutConfigurator:
+                                                LayoutConfigurator(numberOfColumns:
+                                                                    SaveSection.mainContent.numberOfColumns, section: SaveSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items], numberOfItemsPerPage: SaveSection.mainContent.numberOfItemsPerPage)))
     }
-    
-    var image: UIImage? {
-      switch self {
-      case .home:
-        return UIImage(systemName: "photo.on.rectangle.angled")
-      case .save:
-        return UIImage(systemName: "heart")
-      }
+  }
+  
+  var image: UIImage? {
+    switch self {
+    case .home:
+      return UIImage(systemName: "photo.on.rectangle.angled")
+    case .save:
+      return UIImage(systemName: "heart")
     }
-    
-    var title: String{
-      switch self {
-      case .home:
-        return "Images"
-      case .save:
-        return "Saved"
-      }
+  }
+  
+  var title: String{
+    switch self {
+    case .home:
+      return "Images"
+    case .save:
+      return "Saved"
     }
   }
 }
