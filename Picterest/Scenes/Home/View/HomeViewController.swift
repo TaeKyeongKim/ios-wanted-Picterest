@@ -13,11 +13,7 @@ class HomeViewController: UIViewController {
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
-  
-  deinit {
-    print("deinit!")
-  }
-  
+
   init(viewModel: HomeViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
@@ -42,31 +38,28 @@ class HomeViewController: UIViewController {
     super.viewDidLoad()
     collectionView.dataSource = self
     bindErrorMessage()
-    setDataBinding()
     setConstraints()
+    fetchData()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    fetchImage()
+    setDataBinding()
   }
-  
+
   //TODO: Implement Scroll down to refresh.
   
 }
 
 private extension HomeViewController {
-  
-  func updateData() {
-    DispatchQueue.main.async {
-      self.collectionView.reloadSections(IndexSet(integer: 0))
-    }
+    
+  func fetchData() {
+    viewModel.fetchData()
   }
-
   
-  func fetchImage() {
-    if viewModel.items.value.isEmpty {
-      viewModel.didLoadNextPage()
+  func reload() {
+    DispatchQueue.main.async {
+      self.collectionView.reloadData()
     }
   }
   
@@ -77,21 +70,21 @@ private extension HomeViewController {
   }
   
   func setDataBinding() {
-    self.viewModel.items.bind({ list in
+    self.viewModel.items.bind({ [weak self] newImages in
+      guard let self = self else {return}
           DispatchQueue.main.async {
-            let indexPathArray = self.makeIndexPathArray(list: list.count)
-            self.collectionView.performBatchUpdates {
-              self.collectionView.insertItems(at: indexPathArray)
-            }
+              self.collectionView.performBatchUpdates {
+                self.collectionView.insertItems(at: self.makeIndexPathArray(currentImageCount: newImages.count))
+              }
         }
     })
-
   }
   
-  func makeIndexPathArray(list: Int) -> [IndexPath] {
-    guard list > self.collectionView.numberOfItems(inSection: 0) else {return []}
+  //15 개의 새로운 image 만 IndexPath 로 만들어서 insert 해주어야함.
+  func makeIndexPathArray(currentImageCount: Int) -> [IndexPath] {
+    guard currentImageCount >= self.collectionView.numberOfItems(inSection: 0) else {return []}
     var indexPathArray:[IndexPath] = []
-    for i in self.collectionView.numberOfItems(inSection: 0)..<list {
+    for i in self.collectionView.numberOfItems(inSection: 0)..<currentImageCount {
       indexPathArray.append(IndexPath(item: i, section: 0))
     }
     return indexPathArray
@@ -155,23 +148,28 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell,
-          let image = viewModel[indexPath] else { return UICollectionViewCell()}
-    if let viewModel = viewModel.items.value[image] {
-      cell.updateViewModel(viewModel: viewModel)
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell
+           else { return UICollectionViewCell()}
+    let image = viewModel[indexPath]
+    if let imageViewModel = viewModel.searchImageViewModel(on: image) {
+      cell.updateViewModel(viewModel: imageViewModel)
     }
+    
+    if indexPath.row == viewModel.items.value.count - 1 {
+        viewModel.didLoadNextPage()
+    }
+    
     return cell
   }
   
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     didReceiveToogleLikeStatus(on: indexPath)
-
   }
   
   
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-    guard let image = viewModel[indexPath] else {return 0}
-    let widthRatio = CGFloat(image.width) / CGFloat(image.height)
+    let imageViewModel = viewModel[indexPath]
+    let widthRatio = CGFloat(imageViewModel.width) / CGFloat(imageViewModel.height)
     return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
   
@@ -181,7 +179,7 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
       guard !self.isLoading else { return }
       self.isLoading = true
       DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        self.viewModel.didLoadNextPage()
+//        self.viewModel.didLoadNextPage()
         self.isLoading = false
       }
     }

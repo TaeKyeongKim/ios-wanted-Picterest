@@ -149,14 +149,10 @@ extension SaveViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-//    guard let model = viewModel[indexPath],
-//          let image = ImageManager.shared.getSavedImage(named: model.imageURL.lastPathComponent) //이부분 ViewModel 로 빼야한다.
-//    else {
-//      CoreDataManager.shared.delete(viewModel[indexPath]!)
-//      return 0}
-//    let widthRatio = image.size.width / image.size.height
-//    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
-    return 0
+    
+    guard let image = viewModel[indexPath] else {return 0}
+    let widthRatio = CGFloat(image.width) / CGFloat(image.height)
+    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
 
 }
