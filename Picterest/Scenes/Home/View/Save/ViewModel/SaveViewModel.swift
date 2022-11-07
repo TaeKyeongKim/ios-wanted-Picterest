@@ -29,10 +29,10 @@ final class DefaultSaveViewModel {
 
   var didUpdateLikeStatusAt: ((Int) -> Void)?
   private var imageList: [Image] = []
-  private let fetchImageUsecase: DefaultFetchImageUsecase
+  private let fetchImageUsecase: FetchImageUsecase
   private let likeImageUsecase: UpdateImageLikeStateUsecase
   
-  init(fetchImageUsecase: DefaultFetchImageUsecase, likeImageUescase: UpdateImageLikeStateUsecase) {
+  init(fetchImageUsecase: FetchImageUsecase, likeImageUescase: UpdateImageLikeStateUsecase) {
     self.fetchImageUsecase = fetchImageUsecase
     self.likeImageUsecase = likeImageUescase
   }

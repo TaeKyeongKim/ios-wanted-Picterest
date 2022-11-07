@@ -8,12 +8,12 @@
 
 import CoreData
 
-protocol PersistentManager {
+protocol ImagePersistentStorage {
   func fetchStoredImages(completion: @escaping (Result<[ImageEntity],Error>) -> Void)
   func insertImage(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void)
 }
 
-final class CoreDataManager: PersistentManager {
+final class CoreDataImagePersistentStorage: ImagePersistentStorage {
 
   private var storage = CoreDataStorage.shared
     

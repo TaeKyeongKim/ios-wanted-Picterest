@@ -27,7 +27,7 @@ protocol HomeViewModel: HomeViewModelInput, HomeViewModelOutput {}
 final class DefaultHomeViewModel: HomeViewModel {
   
   private var imageList: [Image] = []
-  private let fetchImageUsecase: DefaultFetchImageUsecase
+  private let fetchImageUsecase: FetchImageUsecase
   private let likeImageUsecase: UpdateImageLikeStateUsecase
   let imagesPerPage: Int
   private var currentPage: Int {
@@ -37,8 +37,8 @@ final class DefaultHomeViewModel: HomeViewModel {
   var items: Observable<[ImageViewModel]> = Observable([])
   var error = Observable<String>("")
   
-  init(fetchImageUsecase: DefaultFetchImageUsecase,
-       likeImageUsecase: LikeImageUsecase,
+  init(fetchImageUsecase: FetchImageUsecase,
+       likeImageUsecase: UpdateImageLikeStateUsecase,
        imagesPerPage: Int) {
     self.fetchImageUsecase = fetchImageUsecase
     self.likeImageUsecase = likeImageUsecase

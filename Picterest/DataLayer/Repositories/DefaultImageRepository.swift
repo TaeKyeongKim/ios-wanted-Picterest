@@ -11,12 +11,12 @@ import Foundation
 final class DefualtImageRepository {
 
   private let defaultNetworkService: NetworkService
-  private let persistentManager: PersistentManager
+  private let persistenStorage: ImagePersistentStorage
   private let decorder = Decoder<[ImageDTO]>()
   
-  init(persistentManager: PersistentManager, defaultNetworkService: NetworkService) {
+  init(persistenStorage: ImagePersistentStorage, defaultNetworkService: NetworkService) {
       self.defaultNetworkService = defaultNetworkService
-      self.persistentManager = persistentManager
+      self.persistenStorage = persistenStorage
   }
   
 }
@@ -57,11 +57,11 @@ extension DefualtImageRepository: ImageRepository {
   }
   
   func fetchSavedImage(completion: @escaping (Result<[ImageEntity], Error>) -> Void) {
-    persistentManager.fetchStoredImages(completion: completion)
+    persistenStorage.fetchStoredImages(completion: completion)
   }
 
   func saveImage(_ image: Image, completion: @escaping (Result<Image, Error>) -> Void) {
-    persistentManager.insertImage(image, completion: completion)
+    persistenStorage.insertImage(image, completion: completion)
   }
 
   

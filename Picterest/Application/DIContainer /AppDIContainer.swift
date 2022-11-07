@@ -25,7 +25,7 @@ final class AppDIContainer {
   //MARK: Scene dependencies
   func makeSceneDIContainer() -> SceneDIContainer {
     let dependencies = SceneDIContainer.Dependencies(defaultNetworkSerivce: defaultNetworkSerivce)
-    return SceneDIContainer
+    return SceneDIContainer(dependencies: dependencies)
   }
   
   
