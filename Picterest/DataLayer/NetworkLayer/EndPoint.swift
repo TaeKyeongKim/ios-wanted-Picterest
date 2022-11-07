@@ -7,29 +7,32 @@
 
 import Foundation
 
+enum HTTPRequest: String {
+  case get = "GET"
+  case post = "POST"
+}
+
+enum ServerPath: String {
+  case showList = "/photos"
+}
+
+enum Query: String {
+  case clientID = "client_id"
+  case pageNumber = "page"
+  case perPage = "per_page"
+}
+
+
 struct EndPoint: EndPointable {
+  
+  var method: HTTPRequest
   let path: ServerPath
   var queryItems: [URLQueryItem]?
   
-  init(path: ServerPath, query: QueryFactory){
+  init(method: HTTPRequest, path: ServerPath, query: QueryFactory){
     self.path = path
     self.queryItems = query.queryItems
-  }
-}
-
-extension EndPoint {
-  var url: URL {
-    var urlComponent = URLComponents()
-    urlComponent.scheme = scheme
-    urlComponent.host = host
-    urlComponent.path = path.rawValue
-    urlComponent.queryItems = queryItems
-    guard let url = urlComponent.url
-    else
-    {
-      preconditionFailure("Invalid URL components: \(urlComponent)")
-    }
-    return url
+    self.method = method
   }
 }
 

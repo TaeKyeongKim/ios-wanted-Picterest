@@ -152,7 +152,6 @@ extension SaveViewController: UICollectionViewDataSource, CustomLayoutDelegate, 
   func collectionView(_ collectionView: UICollectionView, didSetWidthRatioAt indexPath: IndexPath) -> CGFloat {
     guard let image = viewModel[indexPath] else {return 0}
     return CGFloat(image.width) / CGFloat(image.height)
-//    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
   }
 
 }

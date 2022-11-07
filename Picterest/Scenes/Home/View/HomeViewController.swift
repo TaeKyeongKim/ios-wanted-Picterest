@@ -121,7 +121,6 @@ private extension HomeViewController {
       })
       alert.actions[0].isEnabled = false
       self.alertController = alert
-
   }
   
   @objc func textChanged(_ sender:UITextField) {

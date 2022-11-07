@@ -10,12 +10,12 @@ import Foundation
 //Infrastructure layer has to be reconstructed. 
 final class DefualtImageRepository {
 
-  private let dataTransferService: DataTransferService
+  private let defaultNetworkService: NetworkService
   private let persistentManager: PersistentManager
   private let decorder = Decoder<[ImageDTO]>()
   
-  init(persistentManager: PersistentManager, dataTransferService: DataTransferService = NetworkService()) {
-      self.dataTransferService = dataTransferService
+  init(persistentManager: PersistentManager, defaultNetworkService: NetworkService) {
+      self.defaultNetworkService = defaultNetworkService
       self.persistentManager = persistentManager
   }
   
@@ -30,14 +30,14 @@ extension DefualtImageRepository: ImageRepository {
   
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], Error>) -> Void) {
-    let request = Requset(requestType: .get, body: nil, endPoint: endPoint)
+    let request = RequsetComponent(endPoint: endPoint)
 
    self.fetchSavedImage { result in
      
      if case let .success(savedImageEntities) = result {
        let savedImageSets = Set(savedImageEntities.map({$0.toDomain()}))
        
-       self.dataTransferService.request(on: request.value) {[weak self] result in
+       self.defaultNetworkService.request(on: request) {[weak self] result in
          switch result {
          case .success(let data):
            guard let decodedData = self?.decorder.decode(data: data) else {return}

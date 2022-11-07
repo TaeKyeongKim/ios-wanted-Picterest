@@ -45,9 +45,11 @@ final class DefaultSaveViewModel {
   //MARK: 1.0 appendList(Image):
   private func appendList(images: [Image]) {
     var tempViewModel: [ImageViewModel] = []
-    for value in images {
-      imageList.append(value)
-      tempViewModel.append(ImageViewModel(model: value, index: imageList.count))
+    for image in images {
+      if !imageList.contains(image){
+        imageList.append(image)
+        tempViewModel.append(ImageViewModel(model: image, index: imageList.count))
+      }
     }
     items.value += tempViewModel
   }

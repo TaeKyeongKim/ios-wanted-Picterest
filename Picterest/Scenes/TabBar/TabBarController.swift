@@ -30,49 +30,89 @@ private extension TabBarController {
     return items
   }
   
+  
+  
+  enum TabBarItemComponent {
+    case home
+    case save
+    var viewController: UIViewController {
+      switch self {
+      case .home:
+        return HomeViewController(viewModel:
+                                    DefaultHomeViewModel(fetchImageUsecase:
+                                                          DefaultFetchImageUsecase(imageRespository:
+                                                                                    DefualtImageRepository(persistentManager: CoreDataManager())),likeImageUsecase:
+                                                          LikeImageUsecase(repository:
+                                                                            DefualtImageRepository(persistentManager: CoreDataManager())), imagesPerPage: HomeSection.mainContent.numberOfItemsPerPage),
+                                  collectionViewCustomLayout:
+                                    CustomLayout(layoutConfigurator:
+                                                  LayoutConfigurator(numberOfColumns: HomeSection.mainContent.numberOfColumns, section: HomeSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items,.footer], numberOfItemsPerPage: HomeSection.mainContent.numberOfItemsPerPage)))
+      case .save:
+        return SaveViewController(viewModel: DefaultSaveViewModel(fetchImageUsecase:
+                                                                    DefaultFetchImageUsecase(imageRespository:
+                                                                                              DefualtImageRepository(persistentManager: CoreDataManager())), likeImageUescase:
+                                                                    UndoLikeImageUsecase(repository: DefualtImageRepository(persistentManager: CoreDataManager()))), collectionViewCustomLayout:
+                                    CustomLayout(layoutConfigurator:
+                                                  LayoutConfigurator(numberOfColumns:
+                                                                      SaveSection.mainContent.numberOfColumns, section: SaveSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items], numberOfItemsPerPage: SaveSection.mainContent.numberOfItemsPerPage)))
+      }
+    }
+    
+    var image: UIImage? {
+      switch self {
+      case .home:
+        return UIImage(systemName: "photo.on.rectangle.angled")
+      case .save:
+        return UIImage(systemName: "heart")
+      }
+    }
+    
+    var title: String{
+      switch self {
+      case .home:
+        return "Images"
+      case .save:
+        return "Saved"
+      }
+    }
+  }
 }
 
-enum TabBarItemComponent {
-  case home
-  case save
-  var viewController: UIViewController {
+
+fileprivate enum SaveSection: Int, CaseIterable {
+  case mainContent
+  
+  var numberOfColumns: Int {
     switch self {
-    case .home:
-      return HomeViewController(viewModel:
-                                  DefaultHomeViewModel(fetchImageUsecase:
-                                                        DefaultFetchImageUsecase(imageRespository:
-                                                                                  DefualtImageRepository(persistentManager: CoreDataManager())),likeImageUsecase:
-                                                        LikeImageUsecase(repository:
-                                                                          DefualtImageRepository(persistentManager: CoreDataManager())), imagesPerPage: HomeSection.mainContent.numberOfItemsPerPage),
-                                collectionViewCustomLayout:
-                                  CustomLayout(layoutConfigurator:
-                                                LayoutConfigurator(numberOfColumns: HomeSection.mainContent.numberOfColumns, section: HomeSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items,.footer], numberOfItemsPerPage: HomeSection.mainContent.numberOfItemsPerPage)))
-    case .save:
-      return SaveViewController(viewModel: DefaultSaveViewModel(fetchImageUsecase:
-                                                                  DefaultFetchImageUsecase(imageRespository:
-                                                                                            DefualtImageRepository(persistentManager: CoreDataManager())), likeImageUescase:
-                                                                  UndoLikeImageUsecase(repository: DefualtImageRepository(persistentManager: CoreDataManager()))), collectionViewCustomLayout:
-                                  CustomLayout(layoutConfigurator:
-                                                LayoutConfigurator(numberOfColumns:
-                                                                    SaveSection.mainContent.numberOfColumns, section: SaveSection.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items], numberOfItemsPerPage: SaveSection.mainContent.numberOfItemsPerPage)))
+    case .mainContent:
+      return 1
     }
   }
   
-  var image: UIImage? {
+  var numberOfItemsPerPage: Int? {
     switch self {
-    case .home:
-      return UIImage(systemName: "photo.on.rectangle.angled")
-    case .save:
-      return UIImage(systemName: "heart")
+    case .mainContent:
+      return nil
+    }
+  }
+
+}
+
+fileprivate enum HomeSection: Int, CaseIterable {
+  case mainContent
+  
+  var numberOfColumns: Int {
+    switch self {
+    case .mainContent:
+      return 2
     }
   }
   
-  var title: String{
+  var numberOfItemsPerPage: Int {
     switch self {
-    case .home:
-      return "Images"
-    case .save:
-      return "Saved"
+    case .mainContent:
+      return 15
     }
   }
+
 }

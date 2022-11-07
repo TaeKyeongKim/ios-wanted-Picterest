@@ -8,16 +8,12 @@
 import Foundation
 
 enum QueryFactory {
-  
-  static let defaultAPIKEY: String? = Bundle.searchObject(from: "API", key: "key")
-  
+
   case imagesPerPage(pageNumber: Int,perPage: Int)
   case noQuery
   
   var queryItems: [URLQueryItem]? {
-    guard let APIKey = QueryFactory.defaultAPIKEY else {return nil}
-    var baseQuery: [URLQueryItem] = [URLQueryItem(name: Query.clientID.rawValue,
-                                                  value: APIKey)]
+    var baseQuery: [URLQueryItem] = []
     switch self {
     case .imagesPerPage(let pageNumber, let ImagePerPage):
       baseQuery.append(URLQueryItem(name: Query.pageNumber.rawValue,

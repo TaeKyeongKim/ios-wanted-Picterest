@@ -9,7 +9,7 @@ import UIKit
 
 extension UIImageView {
   
-  private var dataTransferService: DataTransferService {
+  private var dataTransferService: NetworkService {
     return NetworkService()
   }
   

@@ -7,15 +7,9 @@
 
 import Foundation
 
-enum HTTPRequest: String {
-  case get = "GET"
-  case post = "POST"
-}
-
 protocol Requestable {
-  var requestType: HTTPRequest {get}
-  var body: Data? {get}
-  var endPoint: EndPoint {get}
-  var value: URLRequest {get}
+  var body: Data? { get }
+  var endPoint: EndPoint { get }
+  func buildRequest(apiConfigurator: APIConfigurable) -> URLRequest
 }
 

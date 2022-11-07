@@ -8,14 +8,7 @@
 import Foundation
 
 protocol EndPointable {
-  var scheme: String {get}
-  var host: String {get}
-  var path: ServerPath {get}
-  var queryItems: [URLQueryItem]? {get}
-  var url: URL {get}
-}
-
-extension EndPointable {
-  var scheme: String {"https"}
-  var host: String {"api.unsplash.com"}
+  var method: HTTPRequest { get }
+  var path: ServerPath { get }
+  var queryItems: [URLQueryItem]? { get }
 }
