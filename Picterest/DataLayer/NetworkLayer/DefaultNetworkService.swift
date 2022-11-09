@@ -10,13 +10,14 @@ import Foundation
 protocol NetworkService {
   typealias CompletionHandler = (Result<Data, NetworkError>) -> Void
   func request(on endPoint: Requestable, completion: @escaping CompletionHandler)
+  func request(on rawURL: URL, completion: @escaping CompletionHandler)
 }
 
 final class DefaultNetworkService: NetworkService {
+
+  let apiConfig: APIConfigurable?
   
-  let apiConfig: APIConfigurable
-  
-  init(apiConfig: APIConfigurable) {
+  init(apiConfig: APIConfigurable?) {
     self.apiConfig = apiConfig
   }
 
@@ -48,8 +49,14 @@ final class DefaultNetworkService: NetworkService {
 extension DefaultNetworkService {
   
   func request(on requestComponent: Requestable, completion: @escaping CompletionHandler) {
-      let urlRequest = requestComponent.buildRequest(apiConfigurator: apiConfig)
+      guard let apiconfig = apiConfig else {return}
+      let urlRequest = requestComponent.buildRequest(apiConfigurator: apiconfig)
       return request(on: urlRequest, completion: completion)
+  }
+  
+  func request(on rawURL: URL, completion: @escaping CompletionHandler) {
+    let urlRequest = URLRequest(url: rawURL)
+    return request(on: urlRequest, completion: completion)
   }
   
 }

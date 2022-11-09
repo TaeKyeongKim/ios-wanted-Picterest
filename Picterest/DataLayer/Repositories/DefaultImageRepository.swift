@@ -32,12 +32,12 @@ extension DefualtImageRepository: ImageRepository {
                    completion: @escaping (Result<[Image], Error>) -> Void) {
     let request = RequsetComponent(endPoint: endPoint)
 
-   self.fetchSavedImage { result in
+   self.fetchSavedImage { [weak self] result in
      
      if case let .success(savedImageEntities) = result {
        let savedImageSets = Set(savedImageEntities.map({$0.toDomain()}))
        
-       self.defaultNetworkService.request(on: request) {[weak self] result in
+       self?.defaultNetworkService.request(on: request) {  result in
          switch result {
          case .success(let data):
            guard let decodedData = self?.decorder.decode(data: data) else {return}

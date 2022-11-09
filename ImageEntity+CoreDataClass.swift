@@ -16,11 +16,11 @@ public class ImageEntity: NSManagedObject {
 
 extension ImageEntity {
   func toDomain() -> Image {
-    return .init(id: self.id,
-                 imageURL: self.imageURL,
-                 width: self.width,
-                 height: self.height,
-                 memo: self.memo,
-                 isliked: self.isLiked)
+    return .init(id: id,
+                 imageURL: imageURL,
+                 width: width,
+                 height: height,
+                 memo: memo,
+                 isliked: isLiked)
   }
 }

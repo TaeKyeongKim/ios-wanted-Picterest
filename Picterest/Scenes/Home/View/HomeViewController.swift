@@ -12,9 +12,13 @@ class HomeViewController: UIViewController {
   private var alertController: UIAlertController?
   let viewModel: HomeViewModel
   let collectionViewCustomLayout: CustomLayout
-  
-  init(viewModel: HomeViewModel, collectionViewCustomLayout: CustomLayout) {
+  private let thumbnailImageRepository: ThumbnailImagesRepository
+
+  init(viewModel: HomeViewModel,
+       thumbnailImageRepository: ThumbnailImagesRepository,
+       collectionViewCustomLayout: CustomLayout) {
     self.viewModel = viewModel
+    self.thumbnailImageRepository = thumbnailImageRepository
     self.collectionViewCustomLayout = collectionViewCustomLayout
     super.init(nibName: nil, bundle: nil)
   }
@@ -73,7 +77,7 @@ private extension HomeViewController {
 
   //15 개의 새로운 image 만 IndexPath 로 만들어서 insert 해주어야함.
   func updateItems(currentImageCount: Int){
-    DispatchQueue.main.async {
+    DispatchQueue.main.async { [unowned self] in
       guard currentImageCount >= self.collectionView.numberOfItems(inSection: 0) else {return}
       var indexPathArray:[IndexPath] = []
       for i in self.collectionView.numberOfItems(inSection: 0)..<currentImageCount {
@@ -145,8 +149,8 @@ extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, 
     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell
            else { return UICollectionViewCell()}
     let image = viewModel[indexPath]
-    if let imageViewModel = viewModel.searchImageViewModel(on: image) {
-      cell.updateViewModel(viewModel: imageViewModel)
+    if let imageViewModel = viewModel.searchImageViewModel(on: image) { 
+      cell.updateViewModel(viewModel: imageViewModel, thumnbnailImageRepository: thumbnailImageRepository)
     }
     return cell
   }
@@ -166,9 +170,9 @@ extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, 
     if contentOffsetY >= (scrollView.contentSize.height - scrollView.bounds.height) - 20 {
       guard !self.isLoading else { return }
       self.isLoading = true
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        self.viewModel.didLoadNextPage()
-        self.isLoading = false
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+        self?.viewModel.didLoadNextPage()
+        self?.isLoading = false
       }
     }
   }

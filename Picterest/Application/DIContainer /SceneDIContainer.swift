@@ -12,6 +12,7 @@ final class SceneDIContainer {
   
   struct Dependencies {
     let defaultNetworkSerivce: NetworkService
+    let imageNetworkService: NetworkService
   }
   
   //MARK: - Persistent Storage & Network Dependency
@@ -41,9 +42,13 @@ final class SceneDIContainer {
     return DefualtImageRepository(persistenStorage: imageStorage, defaultNetworkService: dependencies.defaultNetworkSerivce)
   }
   
+  func makeThumbnailImageRepository() -> ThumbnailImagesRepository {
+    return DefualtThumbnailImagesRepository(imageDataNetworkService: dependencies.imageNetworkService)
+  }
+  
   //MARK: Scenes
   func makeHomeViewController() -> HomeViewController {
-    return HomeViewController(viewModel: makeHomeViewModel(), collectionViewCustomLayout: makeHomeCollectionViewLayout())
+    return HomeViewController(viewModel: makeHomeViewModel(), thumbnailImageRepository: makeThumbnailImageRepository(), collectionViewCustomLayout: makeHomeCollectionViewLayout())
   }
   
   func makeHomeViewModel() -> HomeViewModel {
@@ -51,7 +56,7 @@ final class SceneDIContainer {
   }
   
   func makeSaveViewController() -> SaveViewController {
-    return SaveViewController(viewModel: makeSaveViewModel(), collectionViewCustomLayout: makeHomeCollectionViewLayout())
+    return SaveViewController(viewModel: makeSaveViewModel(), thumbnailImageRepository: makeThumbnailImageRepository(), collectionViewCustomLayout: makeSaveCollectionViewLayout())
   }
   
   func makeSaveViewModel() -> SaveViewModel {

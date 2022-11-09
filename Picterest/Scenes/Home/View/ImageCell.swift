@@ -15,7 +15,7 @@ final class ImageCell: UICollectionViewCell {
       guard let viewModel = viewModel else {
         return
       }
-      self.imageView.setImage(urlSource: viewModel.imageURL)
+
       self.memoLabel.text =  viewModel.memo
       if viewModel.isLiked == true {
         setLikeButtonToOn()
@@ -128,7 +128,18 @@ final class ImageCell: UICollectionViewCell {
 
 extension ImageCell {
   
-  func updateViewModel(viewModel: ImageViewModel) {
+  func updateViewModel(viewModel: ImageViewModel, thumnbnailImageRepository: ThumbnailImagesRepository) {
     self.viewModel = viewModel
+    thumnbnailImageRepository.fetchImageData(with: viewModel.imageURL) { result in
+      switch result {
+      case .success(let data):
+        DispatchQueue.main.async {
+          self.imageView.image = UIImage(data: data)
+        }
+      case .failure(let error):
+        print(error.localizedDescription)
+      }
+    }
+    
   }
 }

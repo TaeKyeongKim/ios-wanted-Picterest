@@ -21,7 +21,7 @@ struct ImageDTO: Decodable {
 struct ImageURL: Decodable {
   let url: URL
   enum CodingKeys: String, CodingKey {
-      case url = "regular"
+      case url = "small"
   }
 }
 

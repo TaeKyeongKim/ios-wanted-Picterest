@@ -10,9 +10,13 @@ import UIKit
 class SaveViewController: UIViewController {
   let viewModel: SaveViewModel
   let collectionViewCustomLayout: CustomLayout
+  private let thumbnailImageRepository: ThumbnailImagesRepository
   
-  init(viewModel: SaveViewModel, collectionViewCustomLayout: CustomLayout) {
+  init(viewModel: SaveViewModel,
+       thumbnailImageRepository: ThumbnailImagesRepository,
+       collectionViewCustomLayout: CustomLayout) {
     self.viewModel = viewModel
+    self.thumbnailImageRepository = thumbnailImageRepository
     self.collectionViewCustomLayout = collectionViewCustomLayout
     super.init(nibName: nil, bundle: nil)
   }
@@ -145,7 +149,7 @@ extension SaveViewController: UICollectionViewDataSource, CustomLayoutDelegate, 
       return UICollectionViewCell()
     }
     let viewModel = viewModel.items.value[indexPath.item]
-    cell.updateViewModel(viewModel: viewModel)
+    cell.updateViewModel(viewModel: viewModel, thumnbnailImageRepository: thumbnailImageRepository)
     return cell
   }
   

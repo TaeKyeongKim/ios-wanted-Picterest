@@ -8,6 +8,7 @@
 import Foundation
 
 struct RequsetComponent: Requestable {
+
   var endPoint: EndPoint
   var body: Data?
 }
@@ -24,13 +25,16 @@ extension RequsetComponent {
     return request
   }
   
+  //Make URL with informations from api configurator and endPoint
   private func makeURL(_ apiConfigurator: APIConfigurable) -> URL {
     var urlComponent = URLComponents()
     urlComponent.scheme = apiConfigurator.scheme
     urlComponent.host =  apiConfigurator.baseURL
     urlComponent.path = endPoint.path.rawValue
-    urlComponent.queryItems = endPoint.queryItems
-    
+    if let queryItems = endPoint.queryItems {
+      urlComponent.queryItems = queryItems + [URLQueryItem(name:Query.apiClient.rawValue, value: apiConfigurator.apiKey)]
+    }
+
     guard let url = urlComponent.url else {
       preconditionFailure("Invalid URL components: \(urlComponent)")
     }

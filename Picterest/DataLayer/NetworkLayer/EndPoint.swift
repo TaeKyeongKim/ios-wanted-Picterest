@@ -14,10 +14,11 @@ enum HTTPRequest: String {
 
 enum ServerPath: String {
   case showList = "/photos"
+  case noPath = ""
 }
 
 enum Query: String {
-  case clientID = "client_id"
+  case apiClient = "client_id"
   case pageNumber = "page"
   case perPage = "per_page"
 }
@@ -33,6 +34,13 @@ struct EndPoint: EndPointable {
     self.path = path
     self.queryItems = query.queryItems
     self.method = method
+  }
+
+}
+
+extension EndPoint {
+  static func getThumbnailImage() -> EndPoint {
+    return EndPoint(method: .get, path: .noPath, query: .noQuery)
   }
 }
 

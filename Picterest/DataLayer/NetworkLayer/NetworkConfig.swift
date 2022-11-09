@@ -8,11 +8,13 @@
 import Foundation
 
 struct DefaultApiConfiguration: APIConfigurable {
+  let apiKey: String
   let scheme: String
   let baseURL: String
   let headers: [String: String]
   
-  init(baseURL: String, headers: [String: String] , scheme: String) {
+  init(apiKey: String, baseURL: String, headers: [String: String] , scheme: String) {
+    self.apiKey = apiKey
     self.baseURL = baseURL
     self.headers = headers
     self.scheme = scheme

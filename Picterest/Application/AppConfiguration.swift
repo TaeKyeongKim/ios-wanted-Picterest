@@ -15,7 +15,7 @@ final class AppConfiguration {
     }
     return apiKey
   }()
-  
+    
   lazy var apiBaseURL: String = {
     guard let apiBaseURL = Bundle.main.object(forInfoDictionaryKey: "ApiBaseURL") as? String else {
       fatalError("ApiBaseURL is missing")
@@ -23,7 +23,15 @@ final class AppConfiguration {
     return apiBaseURL
   }()
   
+  lazy var imageBaseURL: String = {
+    guard let imageBaseURL = Bundle.main.object(forInfoDictionaryKey: "ImageBaseURL") as? String else {
+      fatalError("ApiBaseURL is missing")
+    }
+    return imageBaseURL
+  }()
+  
   lazy var httpsScheme = "https"
+ 
   
   lazy var httpScheme = "http"
   

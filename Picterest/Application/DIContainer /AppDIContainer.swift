@@ -16,15 +16,21 @@ final class AppDIContainer {
   
   //MARK: configure defualtNetworkSerivce
   lazy var defaultNetworkSerivce: DefaultNetworkService = {
-    let apiConfig = DefaultApiConfiguration(baseURL: appConfiguration.apiBaseURL,
+    let apiConfig = DefaultApiConfiguration(apiKey: appConfiguration.apiKey,
+                                            baseURL: appConfiguration.apiBaseURL,
                                             headers: ["Content-Type":"application/json"],
                                             scheme: appConfiguration.httpsScheme)
     return DefaultNetworkService(apiConfig: apiConfig)
   }()
   
+  lazy var imageNetworkSerivce: DefaultNetworkService = {
+    return DefaultNetworkService(apiConfig: nil)
+  }()
+  
+  
   //MARK: Scene dependencies
   func makeSceneDIContainer() -> SceneDIContainer {
-    let dependencies = SceneDIContainer.Dependencies(defaultNetworkSerivce: defaultNetworkSerivce)
+    let dependencies = SceneDIContainer.Dependencies(defaultNetworkSerivce: defaultNetworkSerivce, imageNetworkService: imageNetworkSerivce)
     return SceneDIContainer(dependencies: dependencies)
   }
   

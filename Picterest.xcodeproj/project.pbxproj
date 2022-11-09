@@ -15,6 +15,8 @@
 		B737490829194F9500F1F423 /* SceneDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737490729194F9500F1F423 /* SceneDIContainer.swift */; };
 		B737490B291964EC00F1F423 /* FlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737490A291964EC00F1F423 /* FlowCoordinator.swift */; };
 		B737490D29196E8600F1F423 /* AppFlowCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737490C29196E8600F1F423 /* AppFlowCoordinator.swift */; };
+		B737490F291A46A700F1F423 /* DefaultThumbnailImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B737490E291A46A700F1F423 /* DefaultThumbnailImagesRepository.swift */; };
+		B7374911291A46DD00F1F423 /* ThumbnailImagesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7374910291A46DD00F1F423 /* ThumbnailImagesRepository.swift */; };
 		B78A0B4E288E504300DAC63C /* EndPointable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4D288E504300DAC63C /* EndPointable.swift */; };
 		B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B4F288E504E00DAC63C /* Requestable.swift */; };
 		B78A0B52288E505700DAC63C /* EndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B51288E505700DAC63C /* EndPoint.swift */; };
@@ -64,6 +66,8 @@
 		B737490729194F9500F1F423 /* SceneDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDIContainer.swift; sourceTree = "<group>"; };
 		B737490A291964EC00F1F423 /* FlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowCoordinator.swift; sourceTree = "<group>"; };
 		B737490C29196E8600F1F423 /* AppFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFlowCoordinator.swift; sourceTree = "<group>"; };
+		B737490E291A46A700F1F423 /* DefaultThumbnailImagesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultThumbnailImagesRepository.swift; sourceTree = "<group>"; };
+		B7374910291A46DD00F1F423 /* ThumbnailImagesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailImagesRepository.swift; sourceTree = "<group>"; };
 		B78A0B4D288E504300DAC63C /* EndPointable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPointable.swift; sourceTree = "<group>"; };
 		B78A0B4F288E504E00DAC63C /* Requestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requestable.swift; sourceTree = "<group>"; };
 		B78A0B51288E505700DAC63C /* EndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndPoint.swift; sourceTree = "<group>"; };
@@ -324,6 +328,7 @@
 			isa = PBXGroup;
 			children = (
 				B78A0BB628AC950900DAC63C /* ImageRepository.swift */,
+				B7374910291A46DD00F1F423 /* ThumbnailImagesRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 			isa = PBXGroup;
 			children = (
 				B78A0B79288E8D8200DAC63C /* DefaultImageRepository.swift */,
+				B737490E291A46A700F1F423 /* DefaultThumbnailImagesRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -495,10 +501,12 @@
 				B78A0B6B288E732800DAC63C /* ImageDTO.swift in Sources */,
 				B737490D29196E8600F1F423 /* AppFlowCoordinator.swift in Sources */,
 				B72B5AEB28B54D0600D83260 /* ImageViewModel.swift in Sources */,
+				B737490F291A46A700F1F423 /* DefaultThumbnailImagesRepository.swift in Sources */,
 				B78A0B50288E504E00DAC63C /* Requestable.swift in Sources */,
 				B78A0B962892DA4C00DAC63C /* CoreData.xcdatamodeld in Sources */,
 				DE15E66028604278003DD2F5 /* HomeViewController.swift in Sources */,
 				B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */,
+				B7374911291A46DD00F1F423 /* ThumbnailImagesRepository.swift in Sources */,
 				B78A0B7E288E8DED00DAC63C /* ImagePersistentStorage.swift in Sources */,
 				B78A0B932892CBB700DAC63C /* SaveViewController.swift in Sources */,
 				DE15E65C28604278003DD2F5 /* AppDelegate.swift in Sources */,
@@ -659,6 +667,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 57KUPHDJ89;
 				GENERATE_INFOPLIST_FILE = YES;
+				IMAGE_BASE_URL = images.unsplash.com;
 				INFOPLIST_FILE = Picterest/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -689,6 +698,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 57KUPHDJ89;
 				GENERATE_INFOPLIST_FILE = YES;
+				IMAGE_BASE_URL = images.unsplash.com;
 				INFOPLIST_FILE = Picterest/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
