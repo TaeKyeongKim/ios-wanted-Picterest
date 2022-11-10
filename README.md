@@ -75,9 +75,9 @@
 
 ## 기능 구현 
 ### Home 화면
-|**로드 완료 된 홈 화면 및 Pagination 구현**|
-|---|
-|<img src="https://user-images.githubusercontent.com/36659877/181911873-7ea479ac-bd6c-41f5-ab06-ebcce0a5ea9d.gif" width="200" height="400"/>|
+ <p align="center">
+  <img src="https://user-images.githubusercontent.com/36659877/181911873-7ea479ac-bd6c-41f5-ab06-ebcce0a5ea9d.gif" width="200" height="400"/>
+ </p>
 
 ### [기능 및 레이아웃 구성]
 
@@ -97,9 +97,9 @@
 
 ### Save 화면
 
-|**이미지 저장 과정**|
-|---|
-|<img src="https://user-images.githubusercontent.com/36659877/181914656-83334c49-8906-40c3-9689-944603da1923.gif" width="200" height="400"/>|
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/36659877/181914656-83334c49-8906-40c3-9689-944603da1923.gif" width="200" height="400"/>
+</p>
 
 ### [기능 및 레이아웃 구성]
 
@@ -394,22 +394,28 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 
 <details> 
   <summary> 4.0 Persistent Storage 구성하기 </summary>
+
+  ### CoreData 구성 
      
-     ### CoreData Entity 구성 
-     
-     ### CoreData Concurrency Task
-     
+  - 현 프로젝트의 기능은 ImageEntity 라는 NSManagedObject 1개로 요구사항을 충족시킬수 있다고 생각하여 1개의 Entity 만 선언하였고, 그 record 들을 관리하기위해 CoreData 를 사용했습니다.
+  - persistentContainer 를 사용하여 defualt viewContext 로 persistent store 를 관리해줍니다.   
+  - persistent store 에 있는 데이터를 fetching, insert, delete 등 (Heavy lifting) 작업을 진행할땐 private queue 에서 진행되도록 performBackgroundTask() 메소드를 사용합니다.  
+  - 각작업이 끝나면 background context 를 저장하여 main context 에 자동으로 업데이트 되도록 구현 해주었습니다. 
+
 </details>
 
+<details> 
+  <summary> 5.0 DIContainer </summary> 
   
+  
+</details>
 
+<details>
+  <summary> 6.0 MVVM + Clean Architecture 리팩토링 과정 </summary>
+  1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
+  2.0 [Presentation Layer](https://live-a-life.tistory.com/60) 
+</details>
 
- 
-
-### 6.0 MVVM + Clean Architecture 리팩토링 과정 
-1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
-
-2.0 [Presentation Layer](https://live-a-life.tistory.com/60) 
 
 
 ## 버그 및 에러  노트 
