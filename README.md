@@ -41,7 +41,7 @@
 ### Domain Layer 
 
 > [Model]
-- 어플리케이션에 사용되는 핵심 정보들을 그룹화시켜 하나의 모델로 정의합니다. 
+- 어플리케이션에 사용되는 핵심 정보들을 그룹화시켜 모델로 정의합니다. 
 - 해당 어플리케이션은 `Image` 라는 모델을 가지고 있고, Unsplash API 에서 에 받아오는 정보중 이미지를 보여줄때 필요한 정보들을 모델화 시켰습니다. 
 
 > [Usecase]
@@ -181,30 +181,34 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 
 </details>
 
+## [설계]
 
-### [설계]
-![image](https://user-images.githubusercontent.com/36659877/181914299-d6da2133-fe42-46a4-b630-6f48b9c8bb2d.png)
+![image](https://user-images.githubusercontent.com/36659877/201081407-752b8580-3ad1-48e2-817e-16d24c2aa329.png)
 
-### 역할과 책임 
+## 역할과 책임 
 
-### [EndPoint]
+### [APIConfigurable]
+- API 에대한 기본적인 정보들을 가지고 있습니다. 
+    - api key: API 사용에 필요한 api key 
+    - header: HTTP 해더 
+    - baseURL: API 의 baseURL
 
-- API 요청시 필요한 필수 EndPoint 정보들과 이에 준하는 URL 을 가지고 있습니다.
-    - scheme:  URL 프로토콜을 명시
-    - host:  리소스를 가지고 있는 URL host 명시
+### [EndPointable]
+- API 요청시 특정한 EndPoint 가르킬수있도록 하기위한 정보를 가지고 있습니다. 
+    - method: HTTP 메소드
     - path: host 주소의 특정한 리소스를 받을수 있는 path 명시
     - queryItem: 특정한 path 에 받아올 리소스의 특정 제약사항을 명시
-    - url : 위 정보들을 사용하여 완성된 URL (Computed property)
+   
 
-### [Request]
+### [Requestable]
+- EndPoint 와 APIConfigurator 를 사용하여 최종적인 `URLRequest` 를 만듦니다. 
+    - body: HTTP 요청시 body 에 보낼 데이터 
+    - endPoint: 특정 EndPoint 
 
-- 서버 요청 시 필요한 request 정보를 가지고 있습니다.
-    - requestType: HTTP 요청 타입
-    - body: 요청시 같이 보낼 데이터
-    - endPoint
+## NetworkLayer 의 사용과정 
 
-### [NetworkService]
-- `URLRequest` 객체를 사용하여 서버와 직접적인 커뮤니케이션을 담당합니다.
+
+
 
 
 ## 기능 구현 
