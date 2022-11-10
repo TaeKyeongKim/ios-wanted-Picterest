@@ -69,145 +69,6 @@
 
 ---- 
 
-## NetWork Layer
-
-### [필요 목적]
-
-→ API 호출의 확장성/유지보수 를 고려하여 네트워크 레이어 설계
-
-ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진만 검색하는 기능 이 추가 될경우 를 위하여 
-
-<details>
-
-<summary> API 분석 </summary> 
-  
-**사용 예:** 
-
-[https://api.unsplash.com/photos/?client_id=AK-](https://api.unsplash.com/photos/?client_id=AK-bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50)
-
-[bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50](https://api.unsplash.com/photos/?client_id=AK-bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50)
-
-**Base:**
-
-→ [https://api.unsplash.com/](https://api.unsplash.com/)
-
-**Paths:** 
-
-- 전체 사진 받기
-
-→  photos/
-
-**QueryItems:** 
-
-- Client_id ⇒ AccessKey
-
-<img width="906" alt="image" src="https://user-images.githubusercontent.com/36659877/188916020-b6d4538d-b022-4347-b215-fd0d57d225c6.png">
-
-
-### Response
-
-```swift
-[
-  {
-    "id": "LBI7cgq3pbM",
-    "created_at": "2016-05-03T11:00:28-04:00",
-    "updated_at": "2016-07-10T11:00:01-05:00",
-    "width": 5245,
-    "height": 3497,
-    "color": "#60544D",
-    "blur_hash": "LoC%a7IoIVxZ_NM|M{s:%hRjWAo0",
-    "likes": 12,
-    "liked_by_user": false,
-    "description": "A man drinking a coffee.",
-    "user": {
-      "id": "pXhwzz1JtQU",
-      "username": "poorkane",
-      "name": "Gilbert Kane",
-      "portfolio_url": "https://theylooklikeeggsorsomething.com/",
-      "bio": "XO",
-      "location": "Way out there",
-      "total_likes": 5,
-      "total_photos": 74,
-      "total_collections": 52,
-      "instagram_username": "instantgrammer",
-      "twitter_username": "crew",
-      "profile_image": {
-        "small": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=32&w=32",
-        "medium": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=64&w=64",
-        "large": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=128&w=128"
-      },
-      "links": {
-        "self": "https://api.unsplash.com/users/poorkane",
-        "html": "https://unsplash.com/poorkane",
-        "photos": "https://api.unsplash.com/users/poorkane/photos",
-        "likes": "https://api.unsplash.com/users/poorkane/likes",
-        "portfolio": "https://api.unsplash.com/users/poorkane/portfolio"
-      }
-    },
-    "current_user_collections": [ // The *current user's* collections that this photo belongs to.
-      {
-        "id": 206,
-        "title": "Makers: Cat and Ben",
-        "published_at": "2016-01-12T18:16:09-05:00",
-        "last_collected_at": "2016-06-02T13:10:03-04:00",
-        "updated_at": "2016-07-10T11:00:01-05:00",
-        "cover_photo": null,
-        "user": null
-      },
-      // ... more collections
-    ],
-    "urls": {
-      "raw": "https://images.unsplash.com/face-springmorning.jpg",
-      "full": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg",
-      "regular": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=1080&fit=max",
-      "small": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=400&fit=max",
-      "thumb": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=200&fit=max"
-    },
-    "links": {
-      "self": "https://api.unsplash.com/photos/LBI7cgq3pbM",
-      "html": "https://unsplash.com/photos/LBI7cgq3pbM",
-      "download": "https://unsplash.com/photos/LBI7cgq3pbM/download",
-      "download_location": "https://api.unsplash.com/photos/LBI7cgq3pbM/download"
-    }
-  },
-  // ... more photos
-]
-
-```
-|Scheme|Host|Path|Query|
-|---|---|---|---|
-|https|api.unsplash.com|photos|client_id, page, per_page| 
-
-
-</details>
-
-## [설계]
-
-![image](https://user-images.githubusercontent.com/36659877/201081407-752b8580-3ad1-48e2-817e-16d24c2aa329.png)
-
-## 역할과 책임 
-
-### [APIConfigurable]
-- API 에대한 기본적인 정보들을 가지고 있습니다. 
-    - api key: API 사용에 필요한 api key 
-    - header: HTTP 해더 
-    - baseURL: API 의 baseURL
-
-### [EndPointable]
-- API 요청시 특정한 EndPoint 가르킬수있도록 하기위한 정보를 가지고 있습니다. 
-    - method: HTTP 메소드
-    - path: host 주소의 특정한 리소스를 받을수 있는 path 명시
-    - queryItem: 특정한 path 에 받아올 리소스의 특정 제약사항을 명시
-   
-
-### [Requestable]
-- EndPoint 와 APIConfigurator 를 사용하여 최종적인 `URLRequest` 를 만듦니다. 
-    - body: HTTP 요청시 body 에 보낼 데이터 
-    - endPoint: 특정 EndPoint 
-
-## NetworkLayer 의 사용과정 
-
-![image](https://user-images.githubusercontent.com/36659877/201088856-ba846da3-99b0-464a-9509-6959670ebc5a.png)
 
 
 
@@ -257,9 +118,150 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 --- 
 ## 고민과 해결
 
-### 1.0 데이터 `Save`, `Load`, `Delete` 흐름과 Model 설계 
+<details> 
+<summary> 1.0 Network Layer 설계 </summary>
 
-### [Models] 
+### [필요 목적]
+
+→ API 호출의 확장성/유지보수 를 고려하여 네트워크 레이어 설계
+
+ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진만 검색하는 기능 이 추가 될경우 를 위하여 
+
+<details>
+
+  <summary> API 분석 </summary> 
+
+  **사용 예:** 
+
+  [https://api.unsplash.com/photos/?client_id=AK-](https://api.unsplash.com/photos/?client_id=AK-bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50)
+
+  [bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50](https://api.unsplash.com/photos/?client_id=AK-bF5BwmWGtMcRiSr3Kd74cD0f3QbYlTnhwwYoaxiI&per_page=50)
+
+  **Base:**
+
+  → [https://api.unsplash.com/](https://api.unsplash.com/)
+
+  **Paths:** 
+
+  - 전체 사진 받기
+
+  →  photos/
+
+  **QueryItems:** 
+
+  - Client_id ⇒ AccessKey
+
+  <img width="906" alt="image" src="https://user-images.githubusercontent.com/36659877/188916020-b6d4538d-b022-4347-b215-fd0d57d225c6.png">
+
+
+  ### Response
+
+  ```swift
+  [
+    {
+      "id": "LBI7cgq3pbM",
+      "created_at": "2016-05-03T11:00:28-04:00",
+      "updated_at": "2016-07-10T11:00:01-05:00",
+      "width": 5245,
+      "height": 3497,
+      "color": "#60544D",
+      "blur_hash": "LoC%a7IoIVxZ_NM|M{s:%hRjWAo0",
+      "likes": 12,
+      "liked_by_user": false,
+      "description": "A man drinking a coffee.",
+      "user": {
+        "id": "pXhwzz1JtQU",
+        "username": "poorkane",
+        "name": "Gilbert Kane",
+        "portfolio_url": "https://theylooklikeeggsorsomething.com/",
+        "bio": "XO",
+        "location": "Way out there",
+        "total_likes": 5,
+        "total_photos": 74,
+        "total_collections": 52,
+        "instagram_username": "instantgrammer",
+        "twitter_username": "crew",
+        "profile_image": {
+          "small": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=32&w=32",
+          "medium": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=64&w=64",
+          "large": "https://images.unsplash.com/face-springmorning.jpg?q=80&fm=jpg&crop=faces&fit=crop&h=128&w=128"
+        },
+        "links": {
+          "self": "https://api.unsplash.com/users/poorkane",
+          "html": "https://unsplash.com/poorkane",
+          "photos": "https://api.unsplash.com/users/poorkane/photos",
+          "likes": "https://api.unsplash.com/users/poorkane/likes",
+          "portfolio": "https://api.unsplash.com/users/poorkane/portfolio"
+        }
+      },
+      "current_user_collections": [ // The *current user's* collections that this photo belongs to.
+        {
+          "id": 206,
+          "title": "Makers: Cat and Ben",
+          "published_at": "2016-01-12T18:16:09-05:00",
+          "last_collected_at": "2016-06-02T13:10:03-04:00",
+          "updated_at": "2016-07-10T11:00:01-05:00",
+          "cover_photo": null,
+          "user": null
+        },
+        // ... more collections
+      ],
+      "urls": {
+        "raw": "https://images.unsplash.com/face-springmorning.jpg",
+        "full": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg",
+        "regular": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=1080&fit=max",
+        "small": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=400&fit=max",
+        "thumb": "https://images.unsplash.com/face-springmorning.jpg?q=75&fm=jpg&w=200&fit=max"
+      },
+      "links": {
+        "self": "https://api.unsplash.com/photos/LBI7cgq3pbM",
+        "html": "https://unsplash.com/photos/LBI7cgq3pbM",
+        "download": "https://unsplash.com/photos/LBI7cgq3pbM/download",
+        "download_location": "https://api.unsplash.com/photos/LBI7cgq3pbM/download"
+      }
+    },
+    // ... more photos
+  ]
+
+  ```
+  |Scheme|Host|Path|Query|
+  |---|---|---|---|
+  |https|api.unsplash.com|photos|client_id, page, per_page| 
+
+
+  </details>
+
+## [설계]
+
+![image](https://user-images.githubusercontent.com/36659877/201081407-752b8580-3ad1-48e2-817e-16d24c2aa329.png)
+
+## 역할과 책임 
+
+### [APIConfigurable]
+- API 에대한 기본적인 정보들을 가지고 있습니다. 
+    - api key: API 사용에 필요한 api key 
+    - header: HTTP 해더 
+    - baseURL: API 의 baseURL
+
+### [EndPointable]
+- API 요청시 특정한 EndPoint 가르킬수있도록 하기위한 정보를 가지고 있습니다. 
+    - method: HTTP 메소드
+    - path: host 주소의 특정한 리소스를 받을수 있는 path 명시
+    - queryItem: 특정한 path 에 받아올 리소스의 특정 제약사항을 명시
+   
+
+### [Requestable]
+- EndPoint 와 APIConfigurator 를 사용하여 최종적인 `URLRequest` 를 만듦니다. 
+    - body: HTTP 요청시 body 에 보낼 데이터 
+    - endPoint: 특정 EndPoint 
+
+## NetworkLayer 의 사용과정 
+
+![image](https://user-images.githubusercontent.com/36659877/201088856-ba846da3-99b0-464a-9509-6959670ebc5a.png)
+</details> 
+
+<details> 
+  <summary> 2.0 사용자 이벤트에 따른 데이터 흐름과 Model 설계  </summary> 
 
 - ImageDTO 
 
@@ -332,37 +334,40 @@ public class ImageData: NSManagedObject {
 - `Repository` 에는 `FileManager`, `CoreDataManager` 를 총괄하고 있는 `ImageManager`가 ViewModel 에서 부터온 요청을 처리해줍니다. (아래 다이어그램은 단방향으로 도식화 시킨 일련의 흐름과 Repository 의 계층 을 도식화 했습니다)
 
 - `Delete` 또한 같은 흐름으로 구현 되었습니다.
-
 ![image](https://user-images.githubusercontent.com/36659877/181915661-bda102bd-f7ba-47ed-93ad-eebc8478f48d.png)
 
-### 2.0 Pagination 구현
+### 사용자의 상호작용에 따른 DTO, Entity, CoreData 데이터 흐름
 
-> 문제 
+<img width="1690" alt="image" src="https://user-images.githubusercontent.com/36659877/190572103-6b08abe4-3fc4-4e89-a88f-711b49ccbc3f.png">
 
-요구사항 = **`한 페이지에는 15개의 사진을 배치합니다.`**
+1.0 서버에서 부터 raw 한 데이터들을 ImageDTO 를 사용하여 받는다. 
 
-> 해결 
+2.0 실제 Cell 에 사용될 타입 과 디폴트 데이터들을 ImageDTO 에서 Image 로 맵핑한다. 
 
-→ 사용자가 CollectionView 의 끝에 접근시, API 호출이 되면서 15 개의 이미지를 가져오고, collectionView 는 더해진 cell 만큼 scroll 가능해집니다.
+3.0 ImageViewModel 에 실제로 화면에 보여지는 데이터 를 Image 를 사용해서 초기화/업데이트 한다. 
 
-→ `Observable` 패턴을 사용해 fetch 되는 item 마다 collectionView 에 insert 해주도록 구현했습니다.
+4.0 Cell 에 ImageViewModel 을 맵핑 한다.
 
-> 문제 
-`collectionView.reloadData()` 를 사용함으로써 화면이 깜빡이는 현상을 자연스럽게 바꾸어 사용자의 UX 를 개선 시킬수 있을까?
+5.0 Cell 은 사용자에게 이미지에 대한 정보를 보여준다. 
 
-> 해결 
+6.0 사용자가 Cell 를 터치하여 input 이벤트를 발생시킨다. 
 
-→ `reload()` 하는대신 `insertItems()` 를 사용해줌으로써 UX 를 개선 시킬수 있었습니다. 
-→ 한꺼번에 15개의 cell 이 Insert 되므로 `performBatchUpdate()` 를 사용했습니다. (Invalid Update Error 방지)
+7.0 사용자의 input 에 따라 Cell index 에 해당하는 Image 데이터 를 가지고 CoreData 에 변경된 정보를 저장/업데이트 한다. 
+
+8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
+
+9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
+  
+</details> 
 
 
-### 3.0 CustomCollectionViewLayout 구현
-
+<details>
+  <summary> 3.0 Custom CollectionView Layout 구현 </summary>
 > 문제
-
 - `2개의 열을 가진 가변형 높이의 Cell을 가진 레이아웃으로 구성합니다.`
 
 > 해결 
+- 2개 뿐만 아니라 n 개의 행을 가질수 있는 Layout 을 구현하고자 아래와 같이 컴포넌트를 구성하였습니다. 
 
 1.0 `SceneLayoutDelegate` 의 collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat 를 사용하여 원본이미지의 종횡비율을 계산하여 Prepare() 에서 사용되도록 하였습니다.
 
@@ -455,48 +460,23 @@ CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러�
         footerAttribute.append(footerAtrributes)
         cache.updateValue(footerAttribute, forKey: .footer)
 ```
+  
+</details>
 
 
-### 4.0 이미지 Disk Caching 
+<details> 
+  <summary> 4.0 Persistent Storage 구성하기 </summary>
+     
+     ### CoreData Entity 구성 
+     
+     ### CoreData Concurrency Task
+     
+</details>
 
-> 문제 
-- 현재 사용자가 이미지를 저장하면 현재 실행되고 있는 시뮬레이터의 GUID 는 빌드가 될때마다 바뀌는것을 확인했습니다. 이미지를 저장할때마다 새로운 simulator GUID 의 디렉토리로 저장하기 때문에 저장된 디렉토리 `storedDirectory` 에서 이미지 데이터를 불러오는 로직이 기능을 하지 못하게 되었습니다. 
+  
 
-> 해결 
 
-→ `storedDirectory` 를 지우고, 실행 때마다 fileManager 가 가르키고 있는 GUID 디렉토리 주소로 이미지 id 를 사용해서 디스크 캐싱 처리를 해주었습니다.   
-
-### 5.0 이미지 메모리 캐싱 
-
-> 고민 
-- ImageCell 에 맵핑되는 ImageViewModel 의 이미지 정보는 URL 타입으로 구현이 되어 있다. 
-- View 단에서 어떻게 URL 을 사용해서 caching 이 되있는 이미지 URL 인지 확인할수 있을까? 라는 고민을 했습니다. 
-
-> 해결 
-- ImageCacheManager 의 loadImage() 에 매개변수로 들어온 이미지URL 주소로 데이터 요청을 보내기전 NSCache, 또는 disk 에 저장이 되어 있는지 먼저 확인합니다. 
-- ImageCacheManager 를 싱글톤으로 구현하여 UIIMageView 의 이미지가 setImage(url: URL) 을 통하여 할당될시 ImageCacheManager 을 거쳐서 캐싱이 되어있는 이미지인지 확인한뒤에 없다면 네트워크 요청을 보내는 방식으로 구현했습니다. 
-
-### 6.0 사용자의 상호작용에 따른 DTO, Entity, CoreData 데이터 흐름
-
-<img width="1690" alt="image" src="https://user-images.githubusercontent.com/36659877/190572103-6b08abe4-3fc4-4e89-a88f-711b49ccbc3f.png">
-
-1.0 서버에서 부터 raw 한 데이터들을 ImageDTO 를 사용하여 받는다. 
-
-2.0 실제 Cell 에 사용될 타입 과 디폴트 데이터들을 ImageDTO 에서 Image 로 맵핑한다. 
-
-3.0 ImageViewModel 에 실제로 화면에 보여지는 데이터 를 Image 를 사용해서 초기화/업데이트 한다. 
-
-4.0 Cell 에 ImageViewModel 을 맵핑 한다.
-
-5.0 Cell 은 사용자에게 이미지에 대한 정보를 보여준다. 
-
-6.0 사용자가 Cell 를 터치하여 input 이벤트를 발생시킨다. 
-
-7.0 사용자의 input 에 따라 Cell index 에 해당하는 Image 데이터 를 가지고 CoreData 에 변경된 정보를 저장/업데이트 한다. 
-
-8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
-
-9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
+ 
 
 ### 6.0 MVVM + Clean Architecture 리팩토링 과정 
 1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
