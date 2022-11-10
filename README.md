@@ -405,15 +405,18 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 </details>
 
 <details> 
-  <summary> 5.0 DIContainer </summary> 
+  <summary> 5.0 DIContainer 구현 하기 </summary> 
   
   
 </details>
 
 <details>
   <summary> 6.0 MVVM + Clean Architecture 리팩토링 과정 </summary>
+  
   1.0 [Domain Layer](https://live-a-life.tistory.com/56) 
+  
   2.0 [Presentation Layer](https://live-a-life.tistory.com/60) 
+  
 </details>
 
 
