@@ -312,10 +312,7 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
   8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
 
   9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
-  
 
-  
-  
   > 사용자 이벤트에 따른 Model 데이터의 상태 변화
 
   ***아래 다이어그램은 사용자가 이미지를 `저장` 할때 데이터의 변화를 나태냈습니다.*** 
@@ -330,10 +327,7 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
   - 4.0 Persistent Store 에 성공적으로 저장이 되었다면, 해당 image model 과 viewModel 의 like 상태를 `true` 로 변경해 줍니다. 
   - 5.0 `Save` 화면으로 전환될때 `SaveViewModel` 은 persistent Store 에 저장되어 있는 NSManagedObject 를 Fetch 해오고, Image Model 로 변환된 데이터를 가지고 있습니다. 
   - 6.0 Fetch 된 데이터를 `Save` 화면에 나타내 줍니다.  
-  
-  
-  
-  
+ 
   ***아래 다이어그램은 사용자가 이미지를 `삭제` 할때 데이터의 변화를 나태냈습니다.*** 
   
   <p align="center">
@@ -345,192 +339,56 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
   - 3.0 성공적으로 삭제 되었다면 해당 Image 와 ImageViewModel 을 SaveViewModel 에서 삭제 시킵니다.
   - 4.0 Home 화면으로 전환되었을때 현재 persistent store 에 저장되어있는 NSManagedObject 들을 fetch 해옵니다.
   - 5.0 image Model 에서 liked 되어있는 model 들과 viewModel 중 persistent store 로부터 받아온데이터 에 없는 model 과 viewModel 의 like 상태를 false 로 업데이트시킵니다.   
- 
-  
- 
 
-  
-  
-  
-  
-  - ImageDTO 
-
-```swift
-struct ImageDTO: Decodable { 
-let id: String
-  let width: Int
-  let height: Int
-  let imageURL: ImageURL
-}
-
-struct ImageURL: Decodable {
-  let url: URL
-}
-```
-- ID
-`선택 이유:`  저장한 데이터를 ID 값으로 매칭 시키기 위함.
-- 사진의 원본 url
-`선택 이유:` 이미지를 다운로드 받고 화면에 보여주기 위한 URL 
-- 원본 width, height
-`선택 이유:` 이미지의 비율에 맞춰서 화면상에 보여주기 위함.
-
-→ API 호출로 부터 받는 Response 의 raw 한 데이터를 받을수 있는 그릇 역할을 하는 객체
-
-- ImageEntity
-
-```swift 
-final class ImageEntity: Identifiable {
-let id: String
-  let imageURL: URL
-  private(set) var width: CGFloat?
-  private(set) var height: CGFloat?
-  private(set) var isLiked: Bool
-  private(set) var memo: String?
-  private(set) var image: UIImage?
-  private(set) var storedDirectory: URL?
-}
-```
-
-→ 서버 응답으로 부터 받아온 DTO 객체 프로퍼티 들은 Raw 한 타입을 가지고 있어서 View 에 쉽게 사용하기 위해 캐스팅 작업을 거쳐야합니다.
-
-→ 따라서 필요에 맞게 DTO 프로퍼티들을 가공한 객체를 Entity 라고 불르고, 위와 같이 설계 하였습니다. 
-
-→ 현 프로젝트에서 Entity 는 Cell 의 ViewModel 이라고도 생각할수 있습니다.
-
-→ 저장 여부를 판단하기 위해서 `isLiked` 라는 변수를 주었습니다. 
-
-→ 메모, 저장여부 들은 계속 바뀔수 있는 프로퍼티 들이고 참조된 객체들의 상태를 바로 변경 함으로써 화면상에 특정 이미지 객체의 저장 상태를 확인 할수 있게 됩니다. 
-그렇기 때문에 `Imageentity` 를 `class` 로 작성하였습니다.
-
-- ImageData 
-
-```swift
-@objc(ImageData)
-public class ImageData: NSManagedObject {
-  @NSManaged public var id: String
-  @NSManaged public var memo: String?
-  @NSManaged public var imageURL: URL
-  @NSManaged public var storedDirectory: URL?
-}
-```
-→ CoreData 에 사용되는 entity 로써, 사용자가 저장할 이미지의 정보를 위와같이 정의해주었습니다.
-
-### [`Save`, `Load`, `Delete` 흐름]
-
-![image](https://user-images.githubusercontent.com/36659877/181915085-59edcfba-8f04-47f4-9bb9-87af2b60689e.png)
-
-- 전체적인 저장, 불러오기 흐름은 `ImageEntity` 에서 `ImageData` 의 캐스팅 작업이 주된 가운데, `ViewModel` 들과 `Repository` 사이의 교류로 이루어 집니다.
-
-- `Repository` 에는 `FileManager`, `CoreDataManager` 를 총괄하고 있는 `ImageManager`가 ViewModel 에서 부터온 요청을 처리해줍니다. (아래 다이어그램은 단방향으로 도식화 시킨 일련의 흐름과 Repository 의 계층 을 도식화 했습니다)
-
-- `Delete` 또한 같은 흐름으로 구현 되었습니다.
-![image](https://user-images.githubusercontent.com/36659877/181915661-bda102bd-f7ba-47ed-93ad-eebc8478f48d.png)
-
-
-  
 </details> 
 
 
 <details>
   <summary> 3.0 Custom CollectionView Layout 구현 </summary>
-> 문제
-- `2개의 열을 가진 가변형 높이의 Cell을 가진 레이아웃으로 구성합니다.`
-
-> 해결 
-- 2개 뿐만 아니라 n 개의 행을 가질수 있는 Layout 을 구현하고자 아래와 같이 컴포넌트를 구성하였습니다. 
-
-1.0 `SceneLayoutDelegate` 의 collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat 를 사용하여 원본이미지의 종횡비율을 계산하여 Prepare() 에서 사용되도록 하였습니다.
-
-`((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio` 공식은 
-현재 화면 과 collectionView 의 Column 개수, 각 cell 의 leading, trailing space 를 고려한 비율을 계산합니다. 
-
-```swift 
-func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-    guard let image = viewModel[indexPath],
-          let width = image.width,
-          let height = image.height
-    else {return 0}
-    //→ 가변 Height 는 각 이미지의 종횡비율 을 구합니다.
-    //ex) 1980 x  1080 ⇒ 이미지 ratio = 1980 / 1080 = 1.7777…
-    let widthRatio = width / height
-    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
-  }
-```
   
-2.0 Custom CollectionViewLayout 을 사용하여 높이 가변 Cell 구현 하고 각 cell 의 `UICollectionViewLayoutAttributes` 의 frame 를 계산하는 로직을 추가했습니다. 
+  ### 고민의 동기
+  - 해당 어플리케이션의 `Home`,`Save` 화면은 CollectionView 로 구현이 되어있는데, 각각의 Cell 의 높이는 실제 이미지의 비율과 같은 비율로 화면에 나타나야합니다. 
+  - 여기서 Cell 의 높이는 현재 주어진 CollectionView width 와 행의 개수를 고려해서 각각 Cell 의 height 를 설정해주어야합니다. 
+  - 이때 `Home` 과 `Save` 화면 에 사용될 Layout 을 custom 하게 구현해야하는데, 1,2 개의 행 뿐만아니라 여러개의 행도 나타내어줄수있게 설계해 보려고 고민 했습니다. 
 
-```swift 
-//@SceneLayout, prepare()
-for item in 0..<collectionView.numberOfItems(inSection: 0) {
-      let indexPath = IndexPath(item: item, section: 0)
-      
-      //9
-      let photoHeight = delegate?.collectionView(
-        collectionView, heightForPhotoAtIndexPath: indexPath) ?? 0
-      let height = cellPadding * 2 + photoHeight
-      
-      let frame = CGRect(x: xOffset[column],
-                         y: yOffset[column],
-                         width: columnWidth,
-                         height: height)
-      let insetFrame = frame.insetBy(dx: cellPadding, dy: cellPadding)
-      
-      //10
-      let attributes = UICollectionViewLayoutAttributes(forCellWith:
-                                                          indexPath)
-      attributes.frame = insetFrame
-      guard var itemAttribute = cache[.items]
-      else {
-        return
-      }
-      itemAttribute.append(attributes)
-      cache.updateValue(itemAttribute, forKey: .items)
-      
-      //11
-      contentHeight = max(contentHeight, frame.maxY)
-      yOffset[column] = yOffset[column] + height
-```     
+  > 해결 
 
-3.0 이전 Cell frame 이 옆 컬럼의 frame 값보다 작다면, 같은 컬럼에서 Cell 을 추가 하도록 구현했습니다.
-
-```swift 
-let otherCol = column == 0 ? 1:0
-column = yOffset[column] < yOffset[otherCol] ? column : otherCol
-```
-
-> 문제
-
-CollectionView 가 끝까지 스크롤 되고 새로운 이미지들을 불러올때 CollectionView 끝에 Loading Indicator 를 보여줍니다.
-
-> 해결 
-
-→ `UICollectionViewLayoutAttributes` 의 종류를 `Cache` 라는 변수를 이용해 item, footer 로 나누어 관리했습니다. 
-
-→`Layout` 의 `prepare()` 메서드에서 footer 의 업데이트가 언제 되고 collectionView 내부의 footer 위치를 설정해주는 로직을 추가했습니다. 
-
-```swift 
-  private var cache: [cacheType: [UICollectionViewLayoutAttributes]] = [.items:[], .footer:[]]
-  ... 
-  //@Prepare()
-   if ((item + 1) % 15 == 0) {
-        let footerAtrributes = UICollectionViewLayoutAttributes(
-          forSupplementaryViewOfKind:
-            UICollectionView.elementKindSectionFooter,
-          with: 
-            IndexPath(
-              item: item,
-              section: 0)
-        )
-        footerAtrributes.frame = CGRect(x: 0, y: max(contentHeight, frame.maxY),
-                                        width: UIScreen.main.bounds.width, height: 50)
-        
-        
-        guard var footerAttribute = cache[.footer] else {return}
-        footerAttribute.removeAll()
-        footerAttribute.append(footerAtrributes)
-        cache.updateValue(footerAttribute, forKey: .footer)
-```
+  ### Custom CollectionView Layout 설계   
   
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201158989-f124f494-a4db-4cf4-a21b-7ddfa74345c8.png" width="500" height="300"/>
+  </p>
+  
+  ### 역할과 책임 
+  
+  ### [LayoutConfigurable]
+  - 여러개의 열을 만들기 위한 핵심적인 데이터를 가지고 있습니다. 
+    - numberOfColumns: 원하는 행의 개수를 지정할수 있습니다. 
+    - section: 하나의 화면에 여러개의 section 이 있을때 각 section 마다 다른 개수의 행을 가질수 있도록 section 값을 주었습니다. 
+    - cellPadding: cell 들의 간격을 나타냅니다.
+    - cacheOptions: section 에 header, item, footer 등의 옵션을 줄수 있습니다. 
+    - numberOfItemsPerPage: footer 가 있을 경우에 몇개의 item 마다 footer 의 position 을 업데이트 해주기 위해 선언했습니다. 
+ 
+  ### [CustomLayoutDelegate]
+  - 각 Cell 에 사용될 사진의 비율을 viewcontroller 에서부터 받아올수 도록 delegate 함수를 가지고 있습니다.
+  
+  ### [CustomLayout]
+  - CollectionViewLayout 을 override 함으로써 prepare() 에 원하는 열개수만큼 보여지기 위해 로직을 구성하고 있습니다.
+  
+  
+  > 결과 
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201164989-c29b1ab5-cb42-47ed-8882-e0e71bf4964c.png" width="300" height="500"/>
+  </p>
+  
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201164792-f35a4bef-adde-4dd6-b101-aed264014581.png" width="300" height="500"/>
+  </p>
+  
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201164933-c429f597-5c81-4f3f-a7e2-b7384af89272.png" width="300" height="500"/>
+  </p>
+
 </details>
 
 
