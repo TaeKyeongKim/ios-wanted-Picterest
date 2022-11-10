@@ -19,27 +19,54 @@
 
 ----
 ## Architecture
-![image](https://user-images.githubusercontent.com/36659877/181913974-cfdfd837-21bb-4819-ab53-93162d212a2f.png)
+ - Presentation, Domain, Data, 3가지 Layer 로 구성되었습니다.
+ - 해당 아키텍처는 `Clean Architecture` 의 개념을 적용하였고, `DDD(Domain Driven Design)` 방식으로 진행 되었습니다. 
+   - Domain Layer 는 해당 어플리케이션의 핵심 로직을 포함하고 있습니다. Presentation, Data Layer 는 Domain Layer 를 의존하고 있어 Domain 에서 변경이 생길시 다른 레이어도 바뀐 로직에 따른 수정이 요구 됩니다. (반대로 Presentation, Data Layer 가 바뀌어도 Domain Layer 의 로직에는 수정이 필요하지 않습니다) 
+ 
+ ![image](https://user-images.githubusercontent.com/36659877/201013194-b6424ab0-2fed-4342-b6ac-db5a6733491a.png)
+  
 
 ### 책임과 역할
 
-### [View] (View & ViewController)
-
+### Presentation Layer (MVVM 적용)
+> [View] (View & ViewController)
 - 사용자와 어플리케이션의 원활한 상호작용 을 도와줍니다.
 - 사용자에게 업데이트된 화면을 보여주고, 이벤트 핸들링 을 담당합니다.
 
-### [ViewModel]
+> [ViewModel]
 - 필요한 데이터를 가공 및 받아와 View 에 전달합니다.
-- 데이터의 모든 변화는 ViewModel 에서 처리됩니다.
-- ViewController 에서 부터 전달받은 특정한 이벤트 에 필요한 **데이터** 를 찾아서 전해줍니다.
-- 필요시 Repository 에 요청을 보내서 데이터를 fetch 해옵니다.
-- Repository 에서 부터 받은 DTO 를 뷰에 바로 보여주기 쉽게 제작된 객체 (Entity) 로 맵핑시켜 줍니다.
+- View 에 보여지는 데이터의 생성 및 가공은 모두 ViewModel 에서 처리됩니다.
+- 각 이벤트에 맞는 Usecase 를 이용하여 View 에서 요청된 작업을 진행합니다. 
 
-### [Repository]
+### Domain Layer 
 
-- ViewModel 에서 필요한 데이터를 네트워크 혹은, 각종 저장소에서 가져와 전달합니다.
-- 네트워크 서비스를 이용하여 특정 API request 및, Data 를 DTO 로 디코딩 해줍니다.
-- Disk 와 coreData 에 데이터를 저장합니다.
+> [Model]
+- 어플리케이션에 사용되는 핵심 정보들을 그룹화시켜 하나의 모델로 정의합니다. 
+- 해당 어플리케이션은 `Image` 라는 모델을 가지고 있고, Unsplash API 에서 에 받아오는 정보중 이미지를 보여줄때 필요한 정보들을 모델화 시켰습니다. 
+
+> [Usecase]
+- 시스템의 동작을 사용자의 입장에서 표현한 시나리오이며, 시스템에 관련한 요구사항을 알아내는 과정입니다.
+- 사용자가 이루려고하는 행동 하나하나를 인터페이스화 시켰고, 이를 통해 Usecase 만 보아도 어떤 기능을 하는 어플리케이션인지 파악할수 있습니다. 
+
+> [Repository] (Interfaces) 
+- 각 Usecase 에서 필요한 데이터를 Network Service 혹은 Persistent Storage 에서 가져오는 역할을 합니다. 
+- Domain Layer 에서는 Reopository 의 인터페이스만 구성하고 구현체는 DataLayer 에서 구성됩니다. 따라서 Usecase 에서 Repository 는 dependency inversion 이 적용되어 data Layer 가 domain Layer 에 의존할수 있게 됩니다. 
+
+### Data Layer 
+
+> [Repository] (Implementation)
+- 각 Usecase 에서 필요한 데이터를 Network Service 혹은 Persistent Storage 에서 가져오는 역할을 합니다. 
+- 서버에서 받아오는 데이터 DTO, Persistent Storage 에서 받아오는 Entity 등이 Domain Model 로 맵핑 되는 곳입니다. 
+
+> [NetworkService] 
+- 네트워크 에 필요한 데이터를 요청하는 인터페이스와 로직을 가지고 있습니다. 
+- 따라서 실질적인 Network 구현체에 사용되는 기술스텍은 사용자가 선택할수 있습니다. 
+- 현재 프로젝트에선 URLSession 이 사용되었고 Network Layer 를 만들어 각 Usecase 마다 필요한 API 를 생성합니다.
+
+> [Persistent Storage] 
+- 이미지를 기기 내부에 저장하거나 삭제할때 사용됩니다. 
+- 현재 프로젝트에선 CoreData 가 사용되었습니다.
+
 ---- 
 
 ## NetWork Layer
