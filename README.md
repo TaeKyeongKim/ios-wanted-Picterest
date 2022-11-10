@@ -121,9 +121,9 @@
 <details> 
 <summary> 1.0 Network Layer 설계 </summary>
 
-### [필요 목적]
+### 고민의 동기
 
-→ API 호출의 확장성/유지보수 를 고려하여 네트워크 레이어 설계
+- API 호출의 확장성/유지보수 를 고려하여 네트워크 레이어 설계
 
 ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진만 검색하는 기능 이 추가 될경우 를 위하여 
 
@@ -231,39 +231,129 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 
   </details>
 
-## [설계]
+  > 해결
+  ## [설계]
 
-![image](https://user-images.githubusercontent.com/36659877/201081407-752b8580-3ad1-48e2-817e-16d24c2aa329.png)
+  ![image](https://user-images.githubusercontent.com/36659877/201081407-752b8580-3ad1-48e2-817e-16d24c2aa329.png)
 
-## 역할과 책임 
+  ## 역할과 책임 
 
-### [APIConfigurable]
-- API 에대한 기본적인 정보들을 가지고 있습니다. 
-    - api key: API 사용에 필요한 api key 
-    - header: HTTP 해더 
-    - baseURL: API 의 baseURL
+  ### [APIConfigurable]
+  - API 에대한 기본적인 정보들을 가지고 있습니다. 
+      - api key: API 사용에 필요한 api key 
+      - header: HTTP 해더 
+      - baseURL: API 의 baseURL
 
-### [EndPointable]
-- API 요청시 특정한 EndPoint 가르킬수있도록 하기위한 정보를 가지고 있습니다. 
-    - method: HTTP 메소드
-    - path: host 주소의 특정한 리소스를 받을수 있는 path 명시
-    - queryItem: 특정한 path 에 받아올 리소스의 특정 제약사항을 명시
-   
+  ### [EndPointable]
+  - API 요청시 특정한 EndPoint 가르킬수있도록 하기위한 정보를 가지고 있습니다. 
+      - method: HTTP 메소드
+      - path: host 주소의 특정한 리소스를 받을수 있는 path 명시
+      - queryItem: 특정한 path 에 받아올 리소스의 특정 제약사항을 명시
 
-### [Requestable]
-- EndPoint 와 APIConfigurator 를 사용하여 최종적인 `URLRequest` 를 만듦니다. 
-    - body: HTTP 요청시 body 에 보낼 데이터 
-    - endPoint: 특정 EndPoint 
 
-## NetworkLayer 의 사용과정 
+  ### [Requestable]
+  - EndPoint 와 APIConfigurator 를 사용하여 최종적인 `URLRequest` 를 만듦니다. 
+      - body: HTTP 요청시 body 에 보낼 데이터 
+      - endPoint: 특정 EndPoint 
 
-![image](https://user-images.githubusercontent.com/36659877/201088856-ba846da3-99b0-464a-9509-6959670ebc5a.png)
+  ## NetworkLayer 의 사용과정 
+
+  ![image](https://user-images.githubusercontent.com/36659877/201088856-ba846da3-99b0-464a-9509-6959670ebc5a.png)
+  
 </details> 
 
 <details> 
-  <summary> 2.0 사용자 이벤트에 따른 데이터 흐름과 Model 설계  </summary> 
+  <summary> 2.0 사용자 이벤트에 따른 Model 데이터의 상태 변화와 데이터의 흐름 설계 </summary> 
 
-- ImageDTO 
+  ### 고민의 동기
+  
+  1.0 사용자의 상호작용에 따른 DTO, Model, ViewModel 흐름 설계
+  
+  - 서버로부터 raw 한 데이터를 받기 위해 설계된 decoderable 한 데이터 스트럭처 `DTO`, 애플리케이션의 목적에 따라 만들어진 Domain Model `Model`, 화면에 보여지는 데이터를 관리해주는 `ViewModel` 과 같이 여러 개념의 데이터 스트럭처가 사용되었습니다. 
+  
+  - 비슷한 데이터를 가지고 있더라도 각각의 사용용도가 다르기 때문에 어떤 데이터가 언제 불리고, 어떤 책임과 역할을 하는지 정확한 흐름을 설계해봐야 겠다는 고민을 했습니다. 
+  
+  
+  2.0 사용자 이벤트에 따른 Model 데이터 변화
+  - 두개의 다른 화면에 사용되는 이미지 데이터는 사용자가 좋아요를 표시할때 사용되는 `Liked` 의 상태와 사용자의 메모 `Memo` 값의 여부만 다를뿐, 필요한 데이터는 같습니다. 
+  - 완전히 공통적인 요소를 가지고 있기때문에 두 화면에서 사용되는 한개의 model, `Image` 를 사용해서 구현 하려고 진행했습니다. 
+  - 하지만 요구사항을 구현하는과정에서 아래와 같은 문제 를 겪게 되었고 이미지가 저장되어질때 데이터의 변화 흐름을 수립해야 겠다는 고민을 했습니다. 
+  
+  > `Home` 화면에서 이미지를 저장할때 메모를 남기고 저장을 할때 
+  
+  - 사용자가 입력한 메모는 HomeViewModel 에 있는 Image 데이터의 `Like` 상태를 바꾸어주어도 되지만 `Memo` 에 사용자가 입력한 메모를 업데이트해주면 안됩니다. (Home 화면의 이미지 메모는 `N 번째 사진` 으로 그대로 남아 있어야합니다).  
+  
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/36659877/201116952-c494a33b-0a3c-4908-bdeb-eceba9885460.png" width="400" height="400"/>
+</p>
+
+
+  
+  ### 해결 
+  
+  > 사용자의 상호작용에 따른 DTO, Model, ViewModel 흐름
+
+  <img width="1690" alt="image" src="https://user-images.githubusercontent.com/36659877/190572103-6b08abe4-3fc4-4e89-a88f-711b49ccbc3f.png">
+
+  1.0 서버에서 부터 raw 한 데이터들을 ImageDTO 를 사용하여 받는다. 
+
+  2.0 실제 Cell 에 사용될 타입 과 디폴트 데이터들을 ImageDTO 에서 Image 로 맵핑한다. 
+
+  3.0 ImageViewModel 에 실제로 화면에 보여지는 데이터 를 Image 를 사용해서 초기화/업데이트 한다. 
+
+  4.0 Cell 에 ImageViewModel 을 맵핑 한다.
+
+  5.0 Cell 은 사용자에게 이미지에 대한 정보를 보여준다. 
+
+  6.0 사용자가 Cell 를 터치하여 input 이벤트를 발생시킨다. 
+
+  7.0 사용자의 input 에 따라 Cell index 에 해당하는 Image 데이터 를 가지고 CoreData 에 변경된 정보를 저장/업데이트 한다. 
+
+  8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
+
+  9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
+  
+
+  
+  
+  > 사용자 이벤트에 따른 Model 데이터의 상태 변화
+
+  ***아래 다이어그램은 사용자가 이미지를 `저장` 할때 데이터의 변화를 나태냈습니다.*** 
+  
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201129172-2ee222ab-22b0-43d3-97c9-9a15a77b45c6.png" width="700" height="400"/>
+  </p>
+  
+  - 1.0 선택한 index 에 있는 model 을 homeViewModel 로 부터 찾아줍니다. 
+  - 2.0 순서에 맞는 model 의 copy 를 만들어 like, memo 정보를 바꾸어줍니다. 
+  - 3.0 Image Model 은 ImageEntity 로 변환되어 persistent Store 에 저장됩니다. 
+  - 4.0 Persistent Store 에 성공적으로 저장이 되었다면, 해당 image model 과 viewModel 의 like 상태를 `true` 로 변경해 줍니다. 
+  - 5.0 `Save` 화면으로 전환될때 `SaveViewModel` 은 persistent Store 에 저장되어 있는 NSManagedObject 를 Fetch 해오고, Image Model 로 변환된 데이터를 가지고 있습니다. 
+  - 6.0 Fetch 된 데이터를 `Save` 화면에 나타내 줍니다.  
+  
+  
+  
+  
+  ***아래 다이어그램은 사용자가 이미지를 `삭제` 할때 데이터의 변화를 나태냈습니다.*** 
+  
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/36659877/201153160-6a72d98c-7ec8-4a22-a763-f92ebd3654fc.png" width="700" height="400"/>
+  </p>
+
+  - 1.0 삭제가 선택된 index path 에 맞는 image 모델을 찾아줍니다. 
+  - 2.0 persistent Store 에 저장되어 있던 Entity 중 id 가 같는 오브젝트를 삭제 합니다.
+  - 3.0 성공적으로 삭제 되었다면 해당 Image 와 ImageViewModel 을 SaveViewModel 에서 삭제 시킵니다.
+  - 4.0 Home 화면으로 전환되었을때 현재 persistent store 에 저장되어있는 NSManagedObject 들을 fetch 해옵니다.
+  - 5.0 image Model 에서 liked 되어있는 model 들과 viewModel 중 persistent store 로부터 받아온데이터 에 없는 model 과 viewModel 의 like 상태를 false 로 업데이트시킵니다.   
+ 
+  
+ 
+
+  
+  
+  
+  
+  - ImageDTO 
 
 ```swift
 struct ImageDTO: Decodable { 
@@ -336,27 +426,7 @@ public class ImageData: NSManagedObject {
 - `Delete` 또한 같은 흐름으로 구현 되었습니다.
 ![image](https://user-images.githubusercontent.com/36659877/181915661-bda102bd-f7ba-47ed-93ad-eebc8478f48d.png)
 
-### 사용자의 상호작용에 따른 DTO, Entity, CoreData 데이터 흐름
 
-<img width="1690" alt="image" src="https://user-images.githubusercontent.com/36659877/190572103-6b08abe4-3fc4-4e89-a88f-711b49ccbc3f.png">
-
-1.0 서버에서 부터 raw 한 데이터들을 ImageDTO 를 사용하여 받는다. 
-
-2.0 실제 Cell 에 사용될 타입 과 디폴트 데이터들을 ImageDTO 에서 Image 로 맵핑한다. 
-
-3.0 ImageViewModel 에 실제로 화면에 보여지는 데이터 를 Image 를 사용해서 초기화/업데이트 한다. 
-
-4.0 Cell 에 ImageViewModel 을 맵핑 한다.
-
-5.0 Cell 은 사용자에게 이미지에 대한 정보를 보여준다. 
-
-6.0 사용자가 Cell 를 터치하여 input 이벤트를 발생시킨다. 
-
-7.0 사용자의 input 에 따라 Cell index 에 해당하는 Image 데이터 를 가지고 CoreData 에 변경된 정보를 저장/업데이트 한다. 
-
-8.0 CoreData 에 성공적으로 변경이 적용됐다면 Image 의 정보를 업데이트 한다. 
-
-9.0 업데이트 된정보로  3.0, 4.0, 5.0 과정을 되풀이한다.
   
 </details> 
 
