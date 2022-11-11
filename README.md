@@ -63,7 +63,7 @@
 > [NetworkService] 
 - 네트워크 에 필요한 데이터를 요청하는 인터페이스와 로직을 가지고 있습니다. 
 - 따라서 실질적인 Network 구현체에 사용되는 기술스텍은 사용자가 선택할수 있습니다. 
-- 현재 프로젝트에선 URLSession 이 사용되었고 Network Layer 를 만들어 각 Usecase 마다 필요한 API 를 생성합니다.
+- 현재 프로젝트에선 URLSession 이 사용되었고 Network Layer 를 만들어 각 Usecase 마다 필요한 API 가 담긴 EndPoint 를 사용해 서버와 통신합니다.
 
 > [Persistent Storage] 
 - 이미지를 기기 내부에 저장하거나 삭제할때 사용됩니다. 
