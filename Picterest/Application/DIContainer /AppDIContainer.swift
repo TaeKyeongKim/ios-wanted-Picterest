@@ -15,7 +15,7 @@ final class AppDIContainer {
   lazy var appConfiguration = AppConfiguration()
   
   //MARK: configure defualtNetworkSerivce
-  lazy var defaultNetworkSerivce: DefaultNetworkService = {
+  lazy var defaultNetworkSerivce: NetworkService = {
     let apiConfig = DefaultApiConfiguration(apiKey: appConfiguration.apiKey,
                                             baseURL: appConfiguration.apiBaseURL,
                                             headers: ["Content-Type":"application/json"],
@@ -23,7 +23,7 @@ final class AppDIContainer {
     return DefaultNetworkService(apiConfig: apiConfig)
   }()
   
-  lazy var imageNetworkSerivce: DefaultNetworkService = {
+  lazy var imageNetworkSerivce: NetworkService = {
     return DefaultNetworkService(apiConfig: nil)
   }()
   

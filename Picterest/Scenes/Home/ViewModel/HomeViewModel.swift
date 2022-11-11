@@ -71,7 +71,8 @@ final class DefaultHomeViewModel: HomeViewModel {
     likeImageUsecase.execute(on: newImage) { [unowned self] result in
         switch result {
         case .success(_):
-          guard let imageViewModel = searchImageViewModel(on: newImage) else {return}
+          guard let imageViewModel = searchImageViewModel(on: newImage), let imageIndex = imageList.firstIndex(of: newImage) else {return}
+          imageList[imageIndex].changeLikeState(to: true)
           imageViewModel.changeLikeState(to: newImage.isLiked)
           completion(.success(()))
         case .failure(let error):

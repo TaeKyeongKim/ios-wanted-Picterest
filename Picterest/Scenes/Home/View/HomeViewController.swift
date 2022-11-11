@@ -5,7 +5,7 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController{
   
   private var isLoading = false
   private var loadingView: Footer?
@@ -41,6 +41,7 @@ class HomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
+    setGuesture()
     setConstraints()
     bind(to: viewModel)
     fetchData()
@@ -104,6 +105,26 @@ private extension HomeViewController {
     ])
   }
   
+  func setGuesture() {
+    let lpgr : UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                           action: #selector(handleLongPress))
+    lpgr.minimumPressDuration = 0.5
+    lpgr.delegate = self
+    lpgr.delaysTouchesBegan = true
+    self.collectionView.addGestureRecognizer(lpgr)
+  }
+  
+  @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+    if gestureRecognizer.state == .began {
+      let selectedLocation = gestureRecognizer.location(in: self.collectionView)
+      if let indexPath = self.collectionView.indexPathForItem(at: selectedLocation) {
+        didReceiveToogleLikeStatus(on: indexPath)
+      } else {
+        print("couldn't find index path")
+      }
+    }
+  }
+  
   func didReceiveToogleLikeStatus(on index: IndexPath) {
       let alert = MemoAlert.makeAlertController(title: nil,
                                                 message: "이미지를 저장 하시겠습니까?",
@@ -138,7 +159,7 @@ private extension HomeViewController {
   }
 }
 
-extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, UICollectionViewDelegate {  
+extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, UICollectionViewDelegate, UIGestureRecognizerDelegate  {
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     let count = viewModel.items.value.count
@@ -154,12 +175,7 @@ extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, 
     }
     return cell
   }
-  
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    didReceiveToogleLikeStatus(on: indexPath)
-  }
-  
-  
+ 
   func collectionView(_ collectionView: UICollectionView, didSetWidthRatioAt indexPath: IndexPath) -> CGFloat {
     let imageViewModel = viewModel[indexPath]
     return CGFloat(imageViewModel.width) / CGFloat(imageViewModel.height)

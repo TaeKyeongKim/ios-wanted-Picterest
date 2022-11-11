@@ -9,7 +9,7 @@ import Foundation
 
 protocol Requestable {
   var body: Data? { get }
-  var endPoint: EndPoint { get }
+  var endPoint: EndPointable { get }
   func buildRequest(apiConfigurator: APIConfigurable) -> URLRequest
 }
 

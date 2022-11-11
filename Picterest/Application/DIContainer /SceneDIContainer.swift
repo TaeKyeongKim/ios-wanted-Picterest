@@ -73,7 +73,7 @@ final class SceneDIContainer {
   }
   
   func makeHomeLayoutConfigurator() -> LayoutConfigurator {
-    return LayoutConfigurator(numberOfColumns: HomeScene.mainContent.numberOfColumns, section: HomeScene.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items,.footer], numberOfItemsPerPage: HomeScene.mainContent.numberOfItemsPerPage)
+    return LayoutConfigurator(numberOfColumns: 2, section: HomeScene.mainContent.rawValue, cellPadding: 6, cacheOptions: [.items,.footer], numberOfItemsPerPage: HomeScene.mainContent.numberOfItemsPerPage)
   }
   
   func makeSaveLayoutConfigurator() -> LayoutConfigurator {

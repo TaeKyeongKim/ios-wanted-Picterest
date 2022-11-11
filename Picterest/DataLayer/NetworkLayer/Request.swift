@@ -8,8 +8,7 @@
 import Foundation
 
 struct RequsetComponent: Requestable {
-
-  var endPoint: EndPoint
+  var endPoint: EndPointable
   var body: Data?
 }
 

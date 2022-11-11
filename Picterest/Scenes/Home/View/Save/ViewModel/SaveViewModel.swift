@@ -9,7 +9,7 @@ import Foundation
 
 protocol SaveViewModelInput {
   func fetchImage()
-  func didLikeImage(viewModel: ImageViewModel)
+  func didUnLikeImage(viewModel: ImageViewModel)
 //  func viewWillDisappear()
 }
 
@@ -90,7 +90,7 @@ final class DefaultSaveViewModel {
 //  }
 //
 
-//
+
 //  func toogleLikeState(item entity: Image, completion: @escaping ((Error?) -> Void)) {
 //    if entity.isLiked == true {
 //      repository.deleteImage(imageEntity: entity){ error in
@@ -108,14 +108,12 @@ final class DefaultSaveViewModel {
 }
 
 extension DefaultSaveViewModel: SaveViewModel {
-  func didLikeImage(viewModel: ImageViewModel) {
-    //
-  }
-  
+
   func fetchImage() {
     self.fetchSavedImages()
   }
   
-
-
+  func didUnLikeImage(viewModel: ImageViewModel) {
+    //
+  }
 }

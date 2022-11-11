@@ -34,7 +34,7 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
                completion: @escaping (Result<[Image], Error>) -> Void) {
     
-    let endPoint = EndPoint(method: .get, path: .showList,
+    let endPoint = EndPoint(method: .get, path: .photos,
                             query: .imagesPerPage(pageNumber: requestValue.page,
                                                   perPage: requestValue.imagesPerPage))
     //TODO: repository

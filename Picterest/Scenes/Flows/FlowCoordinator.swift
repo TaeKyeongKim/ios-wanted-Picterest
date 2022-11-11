@@ -12,7 +12,7 @@ protocol FlowCoordinatorDependencies {
   func makeSaveViewController() -> SaveViewController
 }
 
-final class FlowCoordinator {
+final class FlowCoordinator: FlowCoordinatable {
   
   private weak var tabBarController: UITabBarController?
   private let dependencies: FlowCoordinatorDependencies
@@ -26,7 +26,7 @@ final class FlowCoordinator {
   }
   
   func start() {
-    tabBarController?.viewControllers = setTabBarItems(tarBarItems: TabBarItemComponent.homeScene(dependencies),TabBarItemComponent.saveScene(dependencies))
+    tabBarController?.viewControllers = setTabBarItems(tarBarItems: .homeScene(dependencies),.saveScene(dependencies))
   }
   
   private func setTabBarItems (tarBarItems: TabBarItemComponent...) -> [UIViewController] {

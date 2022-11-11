@@ -137,7 +137,7 @@ extension CustomLayout {
       contentHeight = max(contentHeight, frame.maxY)
       yOffset[currentColumn] = yOffset[currentColumn] + height
       
-      let nextColumn = currentColumn < layoutConfigurator.numberOfColumns-1 ? currentColumn+1 : 0
+      let nextColumn = currentColumn < numberOfColumns-1 ? currentColumn+1 : 0
       currentColumn = yOffset[currentColumn] < yOffset[nextColumn] ? currentColumn : nextColumn
       
       if layoutConfigurator.cacheOptions.contains(cacheType.footer) {

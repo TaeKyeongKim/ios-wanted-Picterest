@@ -13,7 +13,7 @@ enum HTTPRequest: String {
 }
 
 enum ServerPath: String {
-  case showList = "/photos"
+  case photos = "/photos"
   case noPath = ""
 }
 

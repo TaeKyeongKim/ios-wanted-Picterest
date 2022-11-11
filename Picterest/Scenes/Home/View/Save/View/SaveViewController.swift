@@ -111,8 +111,8 @@ private extension SaveViewController {
   
   @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
     if gestureRecognizer.state == .began {
-      let p = gestureRecognizer.location(in: self.collectionView)
-      if let indexPath = self.collectionView.indexPathForItem(at: p) {
+      let selectedLocation = gestureRecognizer.location(in: self.collectionView)
+      if let indexPath = self.collectionView.indexPathForItem(at: selectedLocation) {
         guard let model = viewModel[indexPath] else {return}
         handleAlert(model)
       } else {
@@ -131,6 +131,7 @@ private extension SaveViewController {
 //          print(error.localizedDescription)
 //        }
 //      }
+      
     }), .cancel, from: self)
   }
   

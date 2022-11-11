@@ -8,7 +8,11 @@
 
 import UIKit
 
-final class AppFlowCoordinator {
+protocol FlowCoordinatable {
+  func start()
+}
+
+final class AppFlowCoordinator: FlowCoordinatable {
   
   var tabBarController: UITabBarController
   private var appDIContainer: AppDIContainer
