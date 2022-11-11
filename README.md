@@ -405,7 +405,56 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 </details>
 
 <details> 
-  <summary> 5.0 DIContainer 구현 하기 </summary> 
+  <summary> 5.0 DIContainer, FlowCoordinator 구성 하기 </summary> 
+  
+  ### 고민의 동기
+  - 컴포넌트들의 단일 책임원칙을 어떻게 하면 더 명확히 나눌수 있을까? 라는 고민에서부터 시작되었습니다. 
+  - 어플리케이션에 사용되는 모든 컴포넌트의 초기화 를 한곳에서 관리하면 유지보수시 초기화 관련 버그나, 기능을 추가해야할때 DIContainer 의 어떤부분을 봐야할지 명확해지므로 구현해봐야겠다는 생각을 했습니다. 
+  - 화면내의 Navigation logic 을 한군데 모아 관리하는 flowCoordinator 또한 적용해 보면 좋겠다는 생각이 들었습니다. 
+    
+  ### 해결 
+  
+  ### DIContainer 
+  - 2가지의 DIContainer, `AppDIContainer` , `SceneDIContainer` 가 적용되었습니다. 
+  
+  - `AppDIContainer` : 
+    - 핵심 네트워크 정보 (API key, baseURL, Header) 들을 사용해 Network Service 를 생성, SceneDIContainer 를 생성하는 역할을 합니다.
+    - `AppConfigurator` 라는 클래스를 가지고 있는데, 이는 프로젝트에 사용되는 핵심 API 정보들을 가지고 있습니다. 이를 통해서 `Repository` 에 사용되는 `NetworkService` 를 생성해줍니다. 
+    - 메소드 `makeSceneDIContainer()` 는 위에서 초기화된 네트워크 서비스들을 SceneDIContainer 의 Dependencies 에 주입해 SceneDIContainer 를 생성하게됩니다.
+
+  - `SceneDIContainer` :
+    - 어플리케이션에 사용되는 ViewController, viewModel, Usecase, Repository, CollectionViewLayout 등을 생성하는 역할을합니다. 
+    - 모든 컴포넌트를 생성할수 있는 팩토리인 SceneDIContainer 는 FlowCoordinatorDependencies 라는 프로토콜을 채택하고 있는데, 각 화면의 ViewController 를 생성시켜주는 메소드 를 포함하고 있습니다.
+
+
+  ### FlowCoordinator 
+  - 2가지의 `AppFlowCoordinator`, `FlowCoordinator` 가 사용되었습니다.
+  
+  - `AppFlowCoordinator`: 
+    - 앱이 시작될때 사용되는 Coordinator 로 AppDIContainer 를 사용하여 SceneDIContainer 를 생성, flowCoordinator 를 생성하여 어플리케이션의 시작을 알리는 역할을합니다.
+    - SceneDelegate 에서부터 사용되고, TabBarController,  AppDIcontainer 를 생성자 parameter 로 할당받습니다. 
+
+  - `FlowCoordinator`: 
+    - 핵심 Embedded Controller 인 TabBarController 를 사용하여 탭을 구성하고 
+    - 메소드 `start()` 에 구성한 tabBarItems 를 tabBarController 의 viewController 로 할당합니다.     
+
+ 
+ ### SceneDelegate 에서부터 DIContainer 와 FlowCoordinator 의 상호관계 및 흐름 
+ ![image](https://user-images.githubusercontent.com/36659877/201271682-b677f865-b8b1-4716-85ce-8f0ae2a47ae1.png) 
+  - 1.0 AppDIcontainer 는 핵심 네트워크 configuration 을 AppConfiguration 으로 부터 정의되어있는 AppKey, BaseURL, Header, 등을 사용하여 NetworkSerivce 들을 생성, 소유하고 있습니다. 
+  - 2.0 SceneDelegate 에서 window 로 사용될 rootViewController 를 TabBarController 로 할당하고, 생성된 tabBarController 과 AppDIContainer 를 사용하여 AppFlowCoordinator 를 생성해줍니다.
+  - 3.0 AppFlowCoordinator 의 Start() 메소드 내에는 AppDIContainer 를 사용하여 SceneDIContainer 를 생성하게되는데, 이때 SceneDIContainer 의 Dependency 인 networkService 들은 APPDIContainer 에 정의되어있던 networkSerivce 가 사용됩니다.
+  - 4.0 SceneDIContainer 의 메소드 `makeFlowCoordinator()` 를 통해서 FlowCoordinator 를 생성하게 됩니다. SceneDIContainer 는 TabBarController 를 가지고 있지 않기 때문에 FlowCoordinator 는 AppFlowCoordinator 가 가지고 있는 tabBarController 를 넘겨 받습니다. 
+  - 5.0 마지막으로 FlowCoordinator 내부에서 TabBarItems 를 생성시킨다음, Start() 메소드를 통해 tabBarController 의 viewController 를 할당해줍니다.
+
+ 
+ 
+ 
+
+
+
+
+
   
   
 </details>
