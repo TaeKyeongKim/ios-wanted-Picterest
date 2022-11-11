@@ -29,11 +29,11 @@ final class SceneDIContainer {
     return DefaultFetchImageUsecase(imageRespository: makeImageRepository())
   }
   
-  func makeLikeImageUsecase() -> UpdateImageLikeStateUsecase {
+  func makeLikeImageUsecase() -> LikeImageUsecase {
     return LikeImageUsecase(repository: makeImageRepository())
   }
   
-  func makeUndoLikeImageUsecase() -> UpdateImageLikeStateUsecase {
+  func makeUndoLikeImageUsecase() -> UndoLikeImageUsecase {
     return UndoLikeImageUsecase(repository: makeImageRepository())
   }
   
@@ -60,7 +60,7 @@ final class SceneDIContainer {
   }
   
   func makeSaveViewModel() -> SaveViewModel {
-    return DefaultSaveViewModel(fetchImageUsecase: makeFetchImageUsecase(), likeImageUescase: makeUndoLikeImageUsecase())
+    return DefaultSaveViewModel(fetchImageUsecase: makeFetchImageUsecase(), undolikeImageUescase: makeUndoLikeImageUsecase())
   }
 
   //MARK: CollectionViewLayout
@@ -90,7 +90,7 @@ final class SceneDIContainer {
 
 extension SceneDIContainer: FlowCoordinatorDependencies {}
 
-fileprivate enum SaveScene: Int, CaseIterable {
+enum SaveScene: Int, CaseIterable {
   case mainContent
   
   var numberOfColumns: Int {
@@ -109,7 +109,7 @@ fileprivate enum SaveScene: Int, CaseIterable {
 
 }
 
-fileprivate enum HomeScene: Int, CaseIterable {
+enum HomeScene: Int, CaseIterable {
   case mainContent
   
   var numberOfColumns: Int {

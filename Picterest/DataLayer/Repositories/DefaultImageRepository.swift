@@ -23,11 +23,7 @@ final class DefualtImageRepository {
 
 extension DefualtImageRepository: ImageRepository {
 
-//
-//  func resetRepository(completion: @escaping ((Error?) -> Void)) {
-//    print("TBD")
-//  }
-  
+
   func fetchImages(endPoint: EndPoint,
                    completion: @escaping (Result<[Image], Error>) -> Void) {
     let request = RequsetComponent(endPoint: endPoint)
@@ -35,8 +31,7 @@ extension DefualtImageRepository: ImageRepository {
    self.fetchSavedImage { [weak self] result in
      
      if case let .success(savedImageEntities) = result {
-       let savedImageSets = Set(savedImageEntities.map({$0.toDomain()}))
-       
+       let savedImageSets = Set(savedImageEntities)
        self?.defaultNetworkService.request(on: request) {  result in
          switch result {
          case .success(let data):
@@ -56,7 +51,7 @@ extension DefualtImageRepository: ImageRepository {
     }
   }
   
-  func fetchSavedImage(completion: @escaping (Result<[ImageEntity], Error>) -> Void) {
+  func fetchSavedImage(completion: @escaping (Result<[Image], Error>) -> Void) {
     persistenStorage.fetchStoredImages(completion: completion)
   }
 
@@ -64,24 +59,9 @@ extension DefualtImageRepository: ImageRepository {
     persistenStorage.insertImage(image, completion: completion)
   }
 
-  
-  
-  func deleteImage(_ image: Image, completion: @escaping ((Error?) -> Void)) {
-//    ImageCacheManager.shared.deleteSavedImage(imageEntity: imageEntity) { error in
-//      if let error = error {
-//        completion(error)
-//      }else {
-//        completion(nil)
-//      }
-//    }
+
+  func deleteImage(_ image: Image, completion: @escaping (Result<Image,Error>) -> Void) {
+    persistenStorage.delete(image, completion: completion)
   }
-  
-//  func resetRepository(completion: @escaping ((Error?) -> Void)) {
-//    ImageManager.shared.clearStorage(){ result in
-//      if case let .failure(error) = result {
-//        completion(error)
-//      }
-//    }
-//  }
   
 }

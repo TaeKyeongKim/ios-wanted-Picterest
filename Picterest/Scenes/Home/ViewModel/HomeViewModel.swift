@@ -5,14 +5,14 @@
 //  Created by Kai Kim on 2022/07/25.
 //
 
-import UIKit
+import Foundation
 
 protocol HomeViewModelInput {
   func fetchData()
   func didLoadNextPage()
   func didLikeImage(itemIndex: IndexPath, memo: String?, completion: @escaping (Result<Void,Error>) -> Void)
-  func viewWillDisappear()
   func searchImageViewModel(on: Image) -> ImageViewModel?
+  func refreshData(completion: @escaping ([Int]) -> Void)
 }
 
 protocol HomeViewModelOutput {
@@ -25,10 +25,11 @@ protocol HomeViewModelOutput {
 protocol HomeViewModel: HomeViewModelInput, HomeViewModelOutput {}
 
 final class DefaultHomeViewModel: HomeViewModel {
-  
+
+
   private var imageList: [Image] = []
   private let fetchImageUsecase: FetchImageUsecase
-  private let likeImageUsecase: UpdateImageLikeStateUsecase
+  private let likeImageUsecase: LikeImageUsecase
   let imagesPerPage: Int
   private var currentPage: Int {
     return self.imageList.count / imagesPerPage
@@ -38,7 +39,7 @@ final class DefaultHomeViewModel: HomeViewModel {
   var error = Observable<String>("")
   
   init(fetchImageUsecase: FetchImageUsecase,
-       likeImageUsecase: UpdateImageLikeStateUsecase,
+       likeImageUsecase: LikeImageUsecase,
        imagesPerPage: Int) {
     self.fetchImageUsecase = fetchImageUsecase
     self.likeImageUsecase = likeImageUsecase
@@ -67,6 +68,28 @@ final class DefaultHomeViewModel: HomeViewModel {
     })
   }
   
+  private func refreshLists(completion: @escaping ([Int]) -> Void) {
+    fetchImageUsecase.execute { [weak self] result in
+      guard let self = self else {return}
+      var deletedIndex: [Int] = []
+      switch result {
+      case .success(let images):
+        let imageSets = Set(images)
+        for i in 0..<self.imageList.count{
+          if !imageSets.contains(self.imageList[i]) {
+            deletedIndex.append(i)
+            self.imageList[i].changeLikeState(to: false)
+            self.items.value[i].changeLikeState(to: false)
+          }
+        }
+        completion(deletedIndex)
+      case .failure(let error):
+        self.error.value = error.localizedDescription
+      }
+    }
+  }
+  
+  
   private func saveImage(newImage: Image, memo: String?, completion: @escaping (Result<Void,Error>) -> Void) {
     likeImageUsecase.execute(on: newImage) { [unowned self] result in
         switch result {
@@ -81,7 +104,7 @@ final class DefaultHomeViewModel: HomeViewModel {
         }
       }
   }
-  
+
 }
 
 
@@ -91,11 +114,7 @@ extension DefaultHomeViewModel {
   subscript(index: IndexPath) -> Image {
     return imageList[index.row]
   }
-  
-  func viewWillDisappear() {
-//    resetList()
-  }
-  
+
   func fetchData() {
     fetchImages(FetchImageUsecaseRequestValue(page: 0, imagesPerPage: imagesPerPage))
   }
@@ -115,5 +134,9 @@ extension DefaultHomeViewModel {
   func searchImageViewModel(on image: Image) -> ImageViewModel? {
    return self.items.value.first(where:{$0.id == image.id})
  }
-  
+ 
+  func refreshData(completion: @escaping ([Int]) -> Void) {
+    refreshLists(completion: completion)
+  }
+
 }

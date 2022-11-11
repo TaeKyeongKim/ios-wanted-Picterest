@@ -12,6 +12,7 @@ protocol UpdateImageLikeStateUsecase {
 }
 
 
+
 final class LikeImageUsecase: UpdateImageLikeStateUsecase {
   
   private var repository: ImageRepository
@@ -35,13 +36,7 @@ final class UndoLikeImageUsecase: UpdateImageLikeStateUsecase {
   }
   
   func execute(on image: Image, completion: @escaping (Result<Image, Error>) -> Void) {
-//    repository.deleteImage(image) { error in
-//      if let error = error {
-//        completion(error)
-//      }else {
-//        completion(nil)
-//      }
-//    }
+    repository.deleteImage(image, completion: completion)
   }
   
 }

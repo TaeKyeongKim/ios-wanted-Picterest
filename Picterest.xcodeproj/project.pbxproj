@@ -42,7 +42,7 @@
 		B78A0BA4289544D400DAC63C /* EmptyIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA3289544D300DAC63C /* EmptyIndicatorView.swift */; };
 		B78A0BA728954C3200DAC63C /* ImageConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA628954C3200DAC63C /* ImageConfigurable.swift */; };
 		B78A0BAF28AB720100DAC63C /* FetchImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */; };
-		B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */; };
+		B78A0BB128AB720F00DAC63C /* LikeImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB028AB720F00DAC63C /* LikeImageUsecase.swift */; };
 		B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB628AC950900DAC63C /* ImageRepository.swift */; };
 		B7C2D5CB291001F300F98BFF /* ImageEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */; };
 		B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */; };
@@ -91,7 +91,7 @@
 		B78A0BA3289544D300DAC63C /* EmptyIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyIndicatorView.swift; sourceTree = "<group>"; };
 		B78A0BA628954C3200DAC63C /* ImageConfigurable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConfigurable.swift; sourceTree = "<group>"; };
 		B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchImageUsecase.swift; sourceTree = "<group>"; };
-		B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateImageLikeStateUsecase.swift; sourceTree = "<group>"; };
+		B78A0BB028AB720F00DAC63C /* LikeImageUsecase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeImageUsecase.swift; sourceTree = "<group>"; };
 		B78A0BB628AC950900DAC63C /* ImageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageRepository.swift; sourceTree = "<group>"; };
 		B7C2D5C9291001F200F98BFF /* ImageEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B7C2D5CA291001F300F98BFF /* ImageEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ImageEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -297,7 +297,7 @@
 			isa = PBXGroup;
 			children = (
 				B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */,
-				B78A0BB028AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift */,
+				B78A0BB028AB720F00DAC63C /* LikeImageUsecase.swift */,
 			);
 			path = Usecases;
 			sourceTree = "<group>";
@@ -471,7 +471,7 @@
 				B7C2D5CC291001F300F98BFF /* ImageEntity+CoreDataProperties.swift in Sources */,
 				B7C2D5D52910E16C00F98BFF /* CoreDataStorage.swift in Sources */,
 				B78A0B77288E8CCF00DAC63C /* Observable.swift in Sources */,
-				B78A0BB128AB720F00DAC63C /* UpdateImageLikeStateUsecase.swift in Sources */,
+				B78A0BB128AB720F00DAC63C /* LikeImageUsecase.swift in Sources */,
 				B7C2D5CB291001F300F98BFF /* ImageEntity+CoreDataClass.swift in Sources */,
 				B73749042917FE3900F1F423 /* APIConfigurable.swift in Sources */,
 				B78A0B61288E560500DAC63C /* DefaultNetworkService.swift in Sources */,

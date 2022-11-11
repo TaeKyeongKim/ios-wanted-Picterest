@@ -40,7 +40,6 @@ class SaveViewController: UIViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-//    resetData()
     fetchImage()
   }
 
@@ -48,35 +47,41 @@ class SaveViewController: UIViewController {
     super.viewDidLoad()
     collectionView.dataSource = self
     setGuesture()
-    setDataBinding()
+    bind(to: viewModel)
     setConstraints()
   }
   
 }
 
 private extension SaveViewController {
-//  
-//  func resetData(){
-////    viewModel.resetList()
-//  }
-  
+
   func fetchImage() {
     viewModel.fetchImage()
   }
   
-  func setDataBinding() {
-    viewModel.items.bind({ list in
-      DispatchQueue.main.async {
-        if list.isEmpty {
-          self.defaultView.isHidden = false
-        }else {
-          self.defaultView.isHidden = true
-        }
-        self.collectionView.performBatchUpdates {
-          self.collectionView.reloadSections(IndexSet(integer: 0))
-        }
-      }
+  func bind(to viewModel: SaveViewModel) {
+    viewModel.items.bind({ [weak self] _ in
+      self?.updateItems()
     })
+    viewModel.error.bind({ [weak self] in self?.showError($0)})
+  }
+
+  func updateItems() {
+    DispatchQueue.main.async {
+      if self.viewModel.items.value.isEmpty {
+        self.defaultView.isHidden = false
+      }else {
+        self.defaultView.isHidden = true
+      }
+      self.collectionView.performBatchUpdates {
+        self.collectionView.reloadSections(IndexSet(integer: 0))
+      }
+    }
+  }
+  
+  func showError(_ error: String) {
+    guard !error.isEmpty else { return }
+    print(error)
   }
   
   func setConstraints() {
@@ -126,12 +131,7 @@ private extension SaveViewController {
     _ = MemoAlert.makeAlertController(title: nil,
                                       message: "선택하신 메모 '\(memo)' 를 지우시겠습니까?",
                                       actions: .ok({ _ in
-//      self.viewModel.toogleLikeState(item: model) { error in
-//        if let error = error {
-//          print(error.localizedDescription)
-//        }
-//      }
-      
+      self.viewModel.didUnLikeImage(model){_ in }
     }), .cancel, from: self)
   }
   

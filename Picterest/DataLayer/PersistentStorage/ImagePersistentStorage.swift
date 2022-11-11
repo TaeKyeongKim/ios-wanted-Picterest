@@ -9,8 +9,9 @@
 import CoreData
 
 protocol ImagePersistentStorage {
-  func fetchStoredImages(completion: @escaping (Result<[ImageEntity],Error>) -> Void)
+  func fetchStoredImages(completion: @escaping (Result<[Image],Error>) -> Void)
   func insertImage(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void)
+  func delete(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void)
 }
 
 final class CoreDataImagePersistentStorage: ImagePersistentStorage {
@@ -21,11 +22,11 @@ final class CoreDataImagePersistentStorage: ImagePersistentStorage {
     self.storage = coredataStorage
   }
 
-  func fetchStoredImages(completion: @escaping (Result<[ImageEntity],Error>) -> Void) {
+  func fetchStoredImages(completion: @escaping (Result<[Image],Error>) -> Void) {
     storage.performBackgroundTask { context in
       do {
         let data = try context.fetch(ImageEntity.fetchRequest())
-        completion(.success(data))
+        completion(.success(data.map({$0.toDomain()})))
       }catch{
         completion(.failure(CoreDataStorageError.readError(error)))
       }
@@ -50,38 +51,20 @@ final class CoreDataImagePersistentStorage: ImagePersistentStorage {
       }
     }
   }
-  
-//  func isSaved(id: String) -> Bool {
-//    guard let _ =  fetchStoredImages().filter({$0.id == id}).first
-//    else {return false}
-//    return true
-//  }
-  
-//  func delete(_ model: Image) {
-//    guard let targetModel = fetchStoredImages().filter({$0.id == model.id}).first
-//    else {return}
-//    context.delete(targetModel)
-//    save()
-//  }
-  
-//  func deleteAll(){
-//    let fetchResults = fetchStoredImages()
-//    for item in fetchResults {
-//      context.delete(item)
-//    }
-//    save()
-//  }
-  
-//  private func save() {
-//    do {
-//      let startTime = CFAbsoluteTimeGetCurrent()
-//      try context.save()
-//      let endTime = CFAbsoluteTimeGetCurrent()
-//      let elapsedTime = endTime-startTime * 1000
-//      print(elapsedTime)
-//    }catch{
-//      print(error.localizedDescription)
-//    }
-//  }
-  
+
+  func delete(_ model: Image, completion: @escaping (Result<Image,Error>) -> Void) {
+    storage.performBackgroundTask { context in
+      do {
+        let data = try context.fetch(ImageEntity.fetchRequest())
+        guard let deletionObject = data.filter({$0.id == model.id}).first else {return}
+        context.delete(deletionObject)
+        try context.save()
+        completion(.success(model))
+      }catch {
+        completion(.failure(error))
+      }
+    }
+    
+  }
+
 }

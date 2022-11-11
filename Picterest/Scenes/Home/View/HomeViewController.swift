@@ -46,6 +46,11 @@ class HomeViewController: UIViewController{
     bind(to: viewModel)
     fetchData()
   }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    refreshData()
+  }
     
 }
 
@@ -55,9 +60,12 @@ private extension HomeViewController {
     viewModel.fetchData()
   }
   
-  func reload() {
-    DispatchQueue.main.async {
-      self.collectionView.reloadData()
+  func refreshData() {
+    viewModel.refreshData() { [weak self] updatedIndex in
+      let indexPath = updatedIndex.map({IndexPath(item: $0, section: HomeScene.mainContent.rawValue)})
+      DispatchQueue.main.async {
+        self?.collectionView.reloadItems(at: indexPath)
+      }
     }
   }
   
@@ -79,10 +87,10 @@ private extension HomeViewController {
   //15 개의 새로운 image 만 IndexPath 로 만들어서 insert 해주어야함.
   func updateItems(currentImageCount: Int){
     DispatchQueue.main.async { [unowned self] in
-      guard currentImageCount >= self.collectionView.numberOfItems(inSection: 0) else {return}
+      guard currentImageCount >= self.collectionView.numberOfItems(inSection: HomeScene.mainContent.rawValue) else {return}
       var indexPathArray:[IndexPath] = []
-      for i in self.collectionView.numberOfItems(inSection: 0)..<currentImageCount {
-        indexPathArray.append(IndexPath(item: i, section: 0))
+      for i in self.collectionView.numberOfItems(inSection: HomeScene.mainContent.rawValue)..<currentImageCount {
+        indexPathArray.append(IndexPath(item: i, section: HomeScene.mainContent.rawValue))
       }
       self.collectionView.performBatchUpdates {
         self.collectionView.insertItems(at:indexPathArray)

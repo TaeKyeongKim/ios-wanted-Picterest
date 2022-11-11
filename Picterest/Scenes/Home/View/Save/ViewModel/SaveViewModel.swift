@@ -9,8 +9,7 @@ import Foundation
 
 protocol SaveViewModelInput {
   func fetchImage()
-  func didUnLikeImage(viewModel: ImageViewModel)
-//  func viewWillDisappear()
+  func didUnLikeImage(_ image: Image ,completion: @escaping (Error?) -> Void)
 }
 
 protocol SaveViewModelOutput {
@@ -30,11 +29,11 @@ final class DefaultSaveViewModel {
   var didUpdateLikeStatusAt: ((Int) -> Void)?
   private var imageList: [Image] = []
   private let fetchImageUsecase: FetchImageUsecase
-  private let likeImageUsecase: UpdateImageLikeStateUsecase
+  private let undolikeImageUsecase: UndoLikeImageUsecase
   
-  init(fetchImageUsecase: FetchImageUsecase, likeImageUescase: UpdateImageLikeStateUsecase) {
+  init(fetchImageUsecase: FetchImageUsecase, undolikeImageUescase: UndoLikeImageUsecase) {
     self.fetchImageUsecase = fetchImageUsecase
-    self.likeImageUsecase = likeImageUescase
+    self.undolikeImageUsecase = undolikeImageUescase
   }
   
   subscript(index: IndexPath) -> Image? {
@@ -42,7 +41,6 @@ final class DefaultSaveViewModel {
   }
   
   
-  //MARK: 1.0 appendList(Image):
   private func appendList(images: [Image]) {
     var tempViewModel: [ImageViewModel] = []
     for image in images {
@@ -59,51 +57,26 @@ final class DefaultSaveViewModel {
     fetchImageUsecase.execute { [weak self] result in
       switch result {
       case.success(let imageEntity):
-        self?.appendList(images: imageEntity.map({$0.toDomain()}))
+        self?.appendList(images: imageEntity)
       case .failure(let error):
         self?.error.value = NSLocalizedString("Fetching Error", comment: error.localizedDescription)
       }
     }
   }
-  
- 
-  
-//  func resetList() {
-//    imageList.value.removeAll()
-//  }
-//
-//  func updateLikeStatus() {
-//    let storedModels = repository.fetchSavedImageData()
-//    imageList.value.forEach({ imageEntity in
-//      if storedModels.contains(where: {$0.id == imageEntity.id}) {
-//        imageEntity.toogleLikeStates()
-//      }
-//    })
-//  }
-//
-//  func resetLikeStatus() {
-//    imageList.value.forEach({ imageEntity in
-//      if imageEntity.isLiked == true {
-//        imageEntity.toogleLikeStates()
-//      }
-//    })
-//  }
-//
 
-
-//  func toogleLikeState(item entity: Image, completion: @escaping ((Error?) -> Void)) {
-//    if entity.isLiked == true {
-//      repository.deleteImage(imageEntity: entity){ error in
-//        if let error = error {
-//          completion(error)
-//        }else {
-//          guard let index = self.imageList.value.firstIndex (where: { $0.id == entity.id}) else {return}
-//          self.imageList.value.remove(at: index)
-//          completion(nil)
-//        }
-//      }
-//    }
-//  }
+  func unLikeImage(item model: Image, completion: @escaping ((Error?) -> Void)) {
+    undolikeImageUsecase.execute(on: model) { [weak self] result in
+      switch result {
+      case .success(let deletedImage):
+        guard let index = self?.imageList.firstIndex (where: { $0 == deletedImage}) else {return}
+        self?.imageList.remove(at: index)
+        self?.items.value.remove(at: index)
+      case .failure(let error):
+        self?.error.value = error.localizedDescription
+        completion(error)
+      }
+    }
+  }
   
 }
 
@@ -113,7 +86,7 @@ extension DefaultSaveViewModel: SaveViewModel {
     self.fetchSavedImages()
   }
   
-  func didUnLikeImage(viewModel: ImageViewModel) {
-    //
+  func didUnLikeImage(_ image: Image, completion: @escaping (Error?) -> Void) {
+    self.unLikeImage(item: image, completion: completion)
   }
 }
