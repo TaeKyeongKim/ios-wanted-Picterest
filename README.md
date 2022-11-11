@@ -21,7 +21,6 @@
 ## Architecture
  - Presentation, Domain, Data, 3가지 Layer 로 구성되었습니다.
  - 해당 아키텍처는 `Clean Architecture` 의 개념을 적용하였고, `DDD(Domain Driven Design)` 방식으로 진행 되었습니다. 
-   - Domain Layer 는 해당 어플리케이션의 핵심 로직을 포함하고 있습니다. Presentation, Data Layer 는 Domain Layer 를 의존하고 있어 Domain 에서 변경이 생길시 다른 레이어도 바뀐 로직에 따른 수정이 요구 됩니다. (반대로 Presentation, Data Layer 가 바뀌어도 Domain Layer 의 로직에는 수정이 필요하지 않습니다) 
  
  ![image](https://user-images.githubusercontent.com/36659877/201013194-b6424ab0-2fed-4342-b6ac-db5a6733491a.png)
   
@@ -40,7 +39,10 @@
 
 ### Domain Layer 
 
+- Domain Layer 는 해당 어플리케이션의 핵심 로직을 포함하고 있습니다. Presentation, Data Layer 는 Domain Layer 를 의존하고 있어 Domain 에서 변경이 생길시 다른 레이어도 바뀐 로직에 따른 수정이 요구 됩니다. (반대로 Presentation, Data Layer 가 바뀌어도 Domain Layer 의 로직에는 수정이 필요하지 않습니다) 
+
 > [Model]
+
 - 어플리케이션에 사용되는 핵심 정보들을 그룹화시켜 모델로 정의합니다. 
 - 해당 어플리케이션은 `Image` 라는 모델을 가지고 있고, Unsplash API 에서 에 받아오는 정보중 이미지를 보여줄때 필요한 정보들을 모델화 시켰습니다. 
 
