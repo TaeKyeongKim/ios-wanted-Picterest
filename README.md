@@ -78,7 +78,7 @@
 ## 기능 구현 
 ### Home 화면
  <p align="center">
-  <img src="https://user-images.githubusercontent.com/36659877/201272690-19a14a99-7c17-4462-a398-10611d8bdbb5.gif" width="200" height="400"/>
+  <img src="https://user-images.githubusercontent.com/36659877/201394620-e1a5d61d-e517-4f0c-b3b1-57e31c6bd31e.gif" width="200" height="400"/>
  </p>
 
 ### [기능 및 레이아웃 구성]
