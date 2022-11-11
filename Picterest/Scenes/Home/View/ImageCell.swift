@@ -10,27 +10,41 @@ import UIKit
 final class ImageCell: UICollectionViewCell {
   
   static let id = "ImageCell"
-  //  private var model: ImageEntity?
-  private var model: ImageViewModel?
-  var saveDidTap: ((ImageViewModel) -> Void)?
+  private var viewModel: ImageViewModel? {
+    didSet{
+      guard let viewModel = viewModel else {
+        return
+      }
+
+      self.memoLabel.text =  viewModel.memo
+      if viewModel.isLiked == true {
+        setLikeButtonToOn()
+      }else {
+        setLikeButtonToUndoLike()
+      }
+    }
+  }
   
-  private let likeImage: UIImage? = {
+  var saveDidTap: ((ImageViewModel) -> Void)?
+  private var isLiked: Bool?
+
+  
+  private let likeStateImage: UIImage? = {
     let image = UIImage(systemName: "star.fill")
     return image
   }()
   
-  private let defaultLikeImage: UIImage? = {
+  private let unlikeStateImage: UIImage? = {
     let image = UIImage(systemName: "star")
     return image
   }()
   
-  private lazy var likeButton: UIButton = {
-    let button = UIButton()
-    button.backgroundColor = .clear
-    button.tintColor = UIColor(red: 0.9882352941, green: 0.7607843137, blue: 0, alpha: 1)
-    button.setImage(defaultLikeImage, for: .normal)
-    button.addTarget(self, action: #selector(saveButtonDidTap), for: .touchUpInside)
-    return button
+  private lazy var likeImage: UIImageView = {
+    var imageView = UIImageView()
+    imageView.contentMode = .scaleAspectFit
+    imageView.image = unlikeStateImage
+    imageView.tintColor = UIColor(red: 0.9882352941, green: 0.7607843137, blue: 0, alpha: 1)
+    return imageView
   }()
   
   private let memoLabel: UILabel = {
@@ -42,7 +56,7 @@ final class ImageCell: UICollectionViewCell {
   }()
   
   private lazy var labelStackView: UIStackView = {
-    let stackView = UIStackView(arrangedSubviews: [likeButton, memoLabel])
+    let stackView = UIStackView(arrangedSubviews: [likeImage, memoLabel])
     stackView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
     stackView.axis = .horizontal
     stackView.distribution = .equalSpacing
@@ -78,16 +92,13 @@ final class ImageCell: UICollectionViewCell {
       labelStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
     ])
   }
-  
-  @objc private func saveButtonDidTap(){
-    guard let model = self.model else {return}
-    if model.isLiked == false {
-      saveDidTap?(model)
-    }
+
+  private func setLikeButtonToUndoLike() {
+    likeImage.image = unlikeStateImage
   }
   
-  private func setLikeButtonToUndoLike() {
-    likeButton.setImage(defaultLikeImage, for: .normal)
+  private func setLikeButtonToOn() {
+    likeImage.image = likeStateImage
   }
   
   private func setCellToSaveState(model: Image) {
@@ -110,33 +121,25 @@ final class ImageCell: UICollectionViewCell {
   override func prepareForReuse() {
     imageView.image = nil
     memoLabel.text = nil
-    likeButton.setImage(defaultLikeImage, for: .normal)
+    likeImage.image = unlikeStateImage
   }
   
 }
 
 extension ImageCell {
   
-  func configureAsHomeCell(model: ImageViewModel) {
-    self.model = model
-    self.imageView.setImage(urlSource: model.imageURL)
-    self.memoLabel.text =  model.memo
-    if model.isLiked == true {
-      setLikeButtonToOn()
-    }else {
-      setLikeButtonToUndoLike()
+  func updateViewModel(viewModel: ImageViewModel, thumnbnailImageRepository: ThumbnailImagesRepository) {
+    self.viewModel = viewModel
+    thumnbnailImageRepository.fetchImageData(with: viewModel.imageURL) { result in
+      switch result {
+      case .success(let data):
+        DispatchQueue.main.async {
+          self.imageView.image = UIImage(data: data)
+        }
+      case .failure(let error):
+        print(error.localizedDescription)
+      }
     }
+    
   }
-  
-  func configureAsSaveCell(model: ImageViewModel) {
-    self.model = model
-    self.imageView.setImage(urlSource: model.imageURL)
-    setLikeButtonToOn()
-    self.memoLabel.text = model.memo
-  }
-  
-  func setLikeButtonToOn() {
-    likeButton.setImage(likeImage, for: .normal)
-  }
-  
 }

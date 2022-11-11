@@ -9,16 +9,21 @@ import Foundation
 
 protocol FetchImageUsecase {
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[Image],NetworkError>) -> Void)
-  func execute(cached: @escaping ([Image]) -> Void)
+               completion: @escaping (Result<[Image],Error>) -> Void)
+  func execute(comepletion: @escaping (Result<[Image], Error>) -> Void)
 }
 
 struct FetchImageUsecaseRequestValue {
   let page: Int
-  let imagesPerPage: Int = 15
+  let imagesPerPage: Int
+  init(page: Int, imagesPerPage: Int) {
+    self.page = page
+    self.imagesPerPage = imagesPerPage
+  }
 }
 
 final class DefaultFetchImageUsecase: FetchImageUsecase {
+  
   
   private let imageRepository: ImageRepository
   
@@ -26,24 +31,19 @@ final class DefaultFetchImageUsecase: FetchImageUsecase {
     self.imageRepository = imageRespository
   }
   
-  //TODO: Consider cached data as ImageEntity. Not only Image itself.
   func execute(requestValue: FetchImageUsecaseRequestValue,
-               completion: @escaping (Result<[Image], NetworkError>) -> Void) {
+               completion: @escaping (Result<[Image], Error>) -> Void) {
     
-    let endPoint = EndPoint(path: .showList,
+    let endPoint = EndPoint(method: .get, path: .photos,
                             query: .imagesPerPage(pageNumber: requestValue.page,
                                                   perPage: requestValue.imagesPerPage))
     //TODO: repository
     return imageRepository.fetchImages(endPoint: endPoint,
-                                       completion: { result in
-      completion(result)
-    })
+                                       completion: completion)
   }
   
-  func execute(cached: @escaping ([Image]) -> Void) {
-//    return imageRepository.fetchSavedImage(cached: cached)
-  }
   
+  func execute(comepletion: @escaping (Result<[Image], Error>) -> Void) {
+    return imageRepository.fetchSavedImage(completion: comepletion)
+  }
 }
-
-

@@ -5,7 +5,7 @@
 //  Created by Kai Kim on 2022/08/24.
 //
 
-import UIKit
+import Foundation
 
 final class ImageViewModel: Identifiable {
   
@@ -24,12 +24,8 @@ final class ImageViewModel: Identifiable {
 
 extension ImageViewModel {
   
-  func toogleLikeStates() {
-    self.isLiked = !isLiked
-  }
-  
-  func setMemo(memo: String) {
-    self.memo = memo
+  func changeLikeState(to newState: Bool) {
+    self.isLiked = newState
   }
 
 }

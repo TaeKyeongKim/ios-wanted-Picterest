@@ -12,7 +12,6 @@ protocol ImageConfigurable {
   func fetchImages()
   func resetList()
   func updateLikeStatus()
-  func resetLikeStatus()
   func toogleLikeState(item entity: Image, completion: @escaping ((Error?) -> Void))
   subscript(index: IndexPath) -> Image? { get }
 }

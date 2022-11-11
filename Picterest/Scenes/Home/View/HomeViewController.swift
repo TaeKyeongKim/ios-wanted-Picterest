@@ -5,16 +5,21 @@
 
 import UIKit
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController{
   
-  var viewModel: DefaultHomeViewModel
-  let layoutProvider = SceneLayout(scene: .home, cellPadding: 6)
   private var isLoading = false
   private var loadingView: Footer?
   private var alertController: UIAlertController?
-  
-  init(viewModel: DefaultHomeViewModel) {
+  let viewModel: HomeViewModel
+  let collectionViewCustomLayout: CustomLayout
+  private let thumbnailImageRepository: ThumbnailImagesRepository
+
+  init(viewModel: HomeViewModel,
+       thumbnailImageRepository: ThumbnailImagesRepository,
+       collectionViewCustomLayout: CustomLayout) {
     self.viewModel = viewModel
+    self.thumbnailImageRepository = thumbnailImageRepository
+    self.collectionViewCustomLayout = collectionViewCustomLayout
     super.init(nibName: nil, bundle: nil)
   }
   
@@ -23,7 +28,7 @@ class HomeViewController: UIViewController {
   }
   
   private lazy var collectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layoutProvider)
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewCustomLayout)
     collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.id)
     collectionView.register(Footer.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
@@ -33,72 +38,70 @@ class HomeViewController: UIViewController {
   }()
   
   
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    fetchImage()
-  }
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     collectionView.dataSource = self
-    bindErrorMessage()
-    setDataBinding()
+    setGuesture()
     setConstraints()
+    bind(to: viewModel)
+    fetchData()
   }
   
-
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    viewModel.viewWillDisappear() 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    refreshData()
   }
-  
+    
 }
 
 private extension HomeViewController {
+    
+  func fetchData() {
+    viewModel.fetchData()
+  }
   
-  func updateData() {
-    DispatchQueue.main.async {
-      self.collectionView.reloadSections(IndexSet(integer: 0))
+  func refreshData() {
+    viewModel.refreshData() { [weak self] updatedIndex in
+      let indexPath = updatedIndex.map({IndexPath(item: $0, section: HomeScene.mainContent.rawValue)})
+      DispatchQueue.main.async {
+        self?.collectionView.reloadItems(at: indexPath)
+      }
     }
+  }
+  
+  
+  func bind(to viewModel: HomeViewModel) {
+    viewModel.items.bind({ [weak self] newImages in
+      self?.updateItems(currentImageCount: newImages.count)
+    })
+    viewModel.error.bind({ [weak self] in self?.showError($0)})
   }
 
+
+  func showError(_ error: String) {
+    guard !error.isEmpty else { return }
+    print(error)
+  }
   
-  func fetchImage() {
-    if viewModel.items.value.isEmpty {
-      viewModel.didLoadNextPage()
+
+  //15 개의 새로운 image 만 IndexPath 로 만들어서 insert 해주어야함.
+  func updateItems(currentImageCount: Int){
+    DispatchQueue.main.async { [unowned self] in
+      guard currentImageCount >= self.collectionView.numberOfItems(inSection: HomeScene.mainContent.rawValue) else {return}
+      var indexPathArray:[IndexPath] = []
+      for i in self.collectionView.numberOfItems(inSection: HomeScene.mainContent.rawValue)..<currentImageCount {
+        indexPathArray.append(IndexPath(item: i, section: HomeScene.mainContent.rawValue))
+      }
+      self.collectionView.performBatchUpdates {
+        self.collectionView.insertItems(at:indexPathArray)
+      }
     }
-  }
-  
-  func bindErrorMessage() {
-    self.viewModel.error.bind({ errorMessage in
-      print(errorMessage)
-    })
-  }
-  
-  func setDataBinding() {
-    self.viewModel.items.bind({ list in
-          DispatchQueue.main.async {
-            let indexPathArray = self.makeIndexPathArray(list: list.count)
-            self.collectionView.performBatchUpdates {
-              self.collectionView.insertItems(at: indexPathArray)
-            }
-          }
-    })
-  }
-  
-  func makeIndexPathArray(list: Int) -> [IndexPath] {
-    var indexPathArray:[IndexPath] = []
-    for i in self.collectionView.numberOfItems(inSection: 0)..<list {
-      indexPathArray.append(IndexPath(item: i, section: 0))
-    }
-    return indexPathArray
   }
   
   
   func setConstraints() {
     view.addSubview(collectionView)
-    if let layout = collectionView.collectionViewLayout as? SceneLayout {
+    if let layout = collectionView.collectionViewLayout as? CustomLayout {
       layout.delegate = self
     }
     collectionView.delegate = self
@@ -110,15 +113,38 @@ private extension HomeViewController {
     ])
   }
   
-  func didReceiveToogleLikeStatus(on cell: ImageCell) {
-    cell.saveDidTap = { selectedImageEntity in
+  func setGuesture() {
+    let lpgr : UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                           action: #selector(handleLongPress))
+    lpgr.minimumPressDuration = 0.5
+    lpgr.delegate = self
+    lpgr.delaysTouchesBegan = true
+    self.collectionView.addGestureRecognizer(lpgr)
+  }
+  
+  @objc func handleLongPress(gestureRecognizer : UILongPressGestureRecognizer){
+    if gestureRecognizer.state == .began {
+      let selectedLocation = gestureRecognizer.location(in: self.collectionView)
+      if let indexPath = self.collectionView.indexPathForItem(at: selectedLocation) {
+        didReceiveToogleLikeStatus(on: indexPath)
+      } else {
+        print("couldn't find index path")
+      }
+    }
+  }
+  
+  func didReceiveToogleLikeStatus(on index: IndexPath) {
       let alert = MemoAlert.makeAlertController(title: nil,
                                                 message: "이미지를 저장 하시겠습니까?",
                                                 actions: .ok({
         guard let memo = $0 else {return}
-        print("\(memo) is to be saved!")
-        self.viewModel.didLikeImage(id: selectedImageEntity.id)
-        cell.setLikeButtonToOn()
+        self.viewModel.didLikeImage(itemIndex: index, memo: memo){ result in
+          if case .success() = result {
+            DispatchQueue.main.async {
+              self.collectionView.reloadItems(at: [index])
+            }
+          }
+        }
       }),
                                                 .cancel,
                                                 from: self)
@@ -128,7 +154,6 @@ private extension HomeViewController {
       })
       alert.actions[0].isEnabled = false
       self.alertController = alert
-    }
   }
   
   @objc func textChanged(_ sender:UITextField) {
@@ -142,7 +167,7 @@ private extension HomeViewController {
   }
 }
 
-extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, UICollectionViewDelegate {
+extension HomeViewController: UICollectionViewDataSource, CustomLayoutDelegate, UICollectionViewDelegate, UIGestureRecognizerDelegate  {
   
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     let count = viewModel.items.value.count
@@ -150,17 +175,18 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
   }
   
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell else { return UICollectionViewCell()}
-    let viewModel = viewModel.items.value[indexPath.item]
-    cell.configureAsHomeCell(model: viewModel)
-    didReceiveToogleLikeStatus(on: cell)
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.id, for: indexPath) as? ImageCell
+           else { return UICollectionViewCell()}
+    let image = viewModel[indexPath]
+    if let imageViewModel = viewModel.searchImageViewModel(on: image) { 
+      cell.updateViewModel(viewModel: imageViewModel, thumnbnailImageRepository: thumbnailImageRepository)
+    }
     return cell
   }
-  
-  func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
-    guard let image = viewModel[indexPath] else {return 0}
-    let widthRatio = CGFloat(image.width) / CGFloat(image.height)
-    return ((view.frame.width / CGFloat(layoutProvider.numberOfColumns)) - layoutProvider.cellPadding * 2) / widthRatio
+ 
+  func collectionView(_ collectionView: UICollectionView, didSetWidthRatioAt indexPath: IndexPath) -> CGFloat {
+    let imageViewModel = viewModel[indexPath]
+    return CGFloat(imageViewModel.width) / CGFloat(imageViewModel.height)
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -168,9 +194,9 @@ extension HomeViewController: UICollectionViewDataSource, SceneLayoutDelegate, U
     if contentOffsetY >= (scrollView.contentSize.height - scrollView.bounds.height) - 20 {
       guard !self.isLoading else { return }
       self.isLoading = true
-      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-        self.viewModel.didLoadNextPage()
-        self.isLoading = false
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+        self?.viewModel.didLoadNextPage()
+        self?.isLoading = false
       }
     }
   }

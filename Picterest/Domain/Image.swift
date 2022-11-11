@@ -7,8 +7,7 @@
 
 import Foundation
 
-final class Image: Identifiable {
-  
+struct Image: Identifiable {
   let id: String
   let imageURL: URL
   private(set) var width: Float
@@ -25,8 +24,22 @@ final class Image: Identifiable {
     self.isLiked = isliked
   }
 
-  func changeLikeState(to state: Bool){
+  mutating func changeLikeState(to state: Bool){
     self.isLiked = state
+  }
+  
+  mutating func makeMemo(with memo: String?) {
+    self.memo = memo
   }
 }
 
+extension Image: Hashable {
+  
+  static func ==(lhs: Image, rhs: Image) -> Bool {
+    return lhs.id == rhs.id
+  }
+  
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(id)
+  }
+}
