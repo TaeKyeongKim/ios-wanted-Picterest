@@ -76,7 +76,7 @@
 ## 기능 구현 
 ### Home 화면
  <p align="center">
-  <img src="https://user-images.githubusercontent.com/36659877/181911873-7ea479ac-bd6c-41f5-ab06-ebcce0a5ea9d.gif" width="200" height="400"/>
+  <img src="https://user-images.githubusercontent.com/36659877/201272690-19a14a99-7c17-4462-a398-10611d8bdbb5.gif" width="200" height="400"/>
  </p>
 
 ### [기능 및 레이아웃 구성]
@@ -86,13 +86,12 @@
 - 2개의 열을 가진 가변형 높이의 Cell을 가진 레이아웃으로 구성합니다.
 - 두 열 중 길이가 짧은 열의 아래쪽으로 새로운 사진을 배치합니다
 - 사진은 원본 이미지의 종횡비 를 계산하여 잘림, 왜곡 없이 표현 되었습니다.
-- 저장된 이미지는 `별 모양 버튼` 이 채워진 채로 표현 됩니다. 
 
-> [Caching]  
+> [기능] 
 
-- 다운로드 된 이미지는 memory caching 을 진행하여 스크롤이 될시 미리 저장된 이미지 를 사용합니다. 
-- 이미지 좌상단 `별 모양 버튼` 을 누르면 메모를 남길수 있는 Alert 이 나타납니다.
-- Alert 을 통해 사진을 저장할시, `FileManager` 는 해당이미지를 `diskCaching` 하고, `CoreData` 에 이미지에 대한 정보를 저장합니다. 
+- 이미지를 길게 탭할시 메모를 남길수 있는 Alert 이 나타납니다.
+- Alert 을 통해 사진을 저장할시, Persistent Storage 에 이미지에 대한 정보를 저장합니다. 
+- 저장이 완료되면 이미지의 `별 모양 버튼` 이 채워진 채로 표현 됩니다. 
 
 
 ### Save 화면
