@@ -314,7 +314,7 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
 
   > 2.0 사용자 이벤트에 따른 Model 데이터의 상태 변화
 
-  ***아래 다이어그램은 사용자가 이미지를 `저장` 할때 데이터의 변화를 나태냈습니다.*** 
+  ***아래 다이어그램은 사용자가 이미지를 `저장` 할때 데이터의 변화를 나타냈습니다.*** 
   
   <p align="center">
     <img src="https://user-images.githubusercontent.com/36659877/201129172-2ee222ab-22b0-43d3-97c9-9a15a77b45c6.png" width="700" height="400"/>
@@ -327,7 +327,7 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
   - 5.0 `Save` 화면으로 전환될때 `SaveViewModel` 은 persistent Store 에 저장되어 있는 NSManagedObject 를 Fetch 해오고, Image Model 로 변환된 데이터를 가지고 있습니다. 
   - 6.0 Fetch 된 데이터를 `Save` 화면에 나타내 줍니다.  
  
-  ***아래 다이어그램은 사용자가 이미지를 `삭제` 할때 데이터의 변화를 나태냈습니다.*** 
+  ***아래 다이어그램은 사용자가 이미지를 `삭제` 할때 데이터의 변화를 나냈습니다.*** 
   
   <p align="center">
     <img src="https://user-images.githubusercontent.com/36659877/201153160-6a72d98c-7ec8-4a22-a763-f92ebd3654fc.png" width="700" height="400"/>
