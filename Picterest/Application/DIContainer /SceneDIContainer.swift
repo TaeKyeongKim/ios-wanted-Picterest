@@ -5,7 +5,6 @@
 //  Created by Kai Kim on 2022/11/07.
 //
 
-import Foundation
 import UIKit
 
 final class SceneDIContainer {

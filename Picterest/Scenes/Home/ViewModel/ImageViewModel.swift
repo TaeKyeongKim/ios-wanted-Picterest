@@ -5,7 +5,7 @@
 //  Created by Kai Kim on 2022/08/24.
 //
 
-import UIKit
+import Foundation
 
 final class ImageViewModel: Identifiable {
   

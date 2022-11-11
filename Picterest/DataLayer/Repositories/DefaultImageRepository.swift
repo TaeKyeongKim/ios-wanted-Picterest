@@ -7,7 +7,6 @@
 
 import Foundation
 
-//Infrastructure layer has to be reconstructed. 
 final class DefualtImageRepository {
 
   private let defaultNetworkService: NetworkService

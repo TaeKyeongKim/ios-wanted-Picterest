@@ -134,7 +134,7 @@ extension CustomLayout {
       let frame = CGRect(x: xOffset[currentColumn],y: yOffset[currentColumn],width: columnWidth,height: height)
       
       updateItemCacheAttribute(on: indexPath, currentFrame: frame)
-      contentHeight = max(contentHeight, frame.maxY)
+      contentHeight = frame.maxY
       yOffset[currentColumn] = yOffset[currentColumn] + height
       
       let nextColumn = currentColumn < numberOfColumns-1 ? currentColumn+1 : 0
