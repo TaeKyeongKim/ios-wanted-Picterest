@@ -39,7 +39,6 @@
 		B78A0B9E2892F57100DAC63C /* MemoAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0B9D2892F57100DAC63C /* MemoAlert.swift */; };
 		B78A0BA22893E0A700DAC63C /* SaveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA12893E0A700DAC63C /* SaveViewModel.swift */; };
 		B78A0BA4289544D400DAC63C /* EmptyIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA3289544D300DAC63C /* EmptyIndicatorView.swift */; };
-		B78A0BA728954C3200DAC63C /* ImageConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BA628954C3200DAC63C /* ImageConfigurable.swift */; };
 		B78A0BAF28AB720100DAC63C /* FetchImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BAE28AB720100DAC63C /* FetchImageUsecase.swift */; };
 		B78A0BB128AB720F00DAC63C /* LikeImageUsecase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB028AB720F00DAC63C /* LikeImageUsecase.swift */; };
 		B78A0BB728AC950900DAC63C /* ImageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B78A0BB628AC950900DAC63C /* ImageRepository.swift */; };
@@ -495,7 +494,6 @@
 				B737490829194F9500F1F423 /* SceneDIContainer.swift in Sources */,
 				B78A0B54288E506300DAC63C /* Request.swift in Sources */,
 				B78A0B5B288E53A000DAC63C /* QueryFactory.swift in Sources */,
-				B78A0BA728954C3200DAC63C /* ImageConfigurable.swift in Sources */,
 				B7C2D5E02916971A00F98BFF /* LayoutConfigurator.swift in Sources */,
 				B78A0B4E288E504300DAC63C /* EndPointable.swift in Sources */,
 				DE15E65E28604278003DD2F5 /* SceneDelegate.swift in Sources */,
