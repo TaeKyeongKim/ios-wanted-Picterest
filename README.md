@@ -376,14 +376,17 @@ ex) 한 페이지에 나타낼수 있는 사진 개수를 변경/ 특정 사진�
   
   
   > 결과 
+  ### 2개의 행으로 구성 
   <p align="center">
     <img src="https://user-images.githubusercontent.com/36659877/201164989-c29b1ab5-cb42-47ed-8882-e0e71bf4964c.png" width="300" height="500"/>
   </p>
   
+  ### 3개의 행으로 구성
   <p align="center">
     <img src="https://user-images.githubusercontent.com/36659877/201164792-f35a4bef-adde-4dd6-b101-aed264014581.png" width="300" height="500"/>
   </p>
   
+  ### 4개의 행으로 구성
   <p align="center">
     <img src="https://user-images.githubusercontent.com/36659877/201164933-c429f597-5c81-4f3f-a7e2-b7384af89272.png" width="300" height="500"/>
   </p>
